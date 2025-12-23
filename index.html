@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
     
     <style>
-        /* --- THEME & LAYOUT --- */
+        /* --- THEME --- */
         body {
             background: radial-gradient(circle at center, #ffffff 0%, #f3f4f6 100%);
             height: 100vh;
@@ -18,7 +18,7 @@
             align-items: center;
             justify-content: center;
             perspective: 1000px;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap box on mobile */
         }
 
         .font-script { font-family: 'Great Vibes', cursive; }
@@ -33,17 +33,17 @@
             transition: transform 0.1s;
             z-index: 50;
         }
-        
+
         .gift-container:active { transform: scale(0.95); }
 
+        /* Box Faces */
         .face {
             position: absolute;
             width: 150px;
             height: 150px;
-            background: #ef4444;
+            background: #ef4444; /* Red */
             border: 1px solid #dc2626;
         }
-
         .face-front  { transform: translateZ(75px); }
         .face-back   { transform: rotateY(180deg) translateZ(75px); }
         .face-right  { transform: rotateY(90deg) translateZ(75px); }
@@ -51,9 +51,11 @@
         .face-top    { transform: rotateX(90deg) translateZ(75px); background: #f87171; }
         .face-bottom { transform: rotateX(-90deg) translateZ(75px); box-shadow: 0 50px 50px rgba(0,0,0,0.2); }
 
+        /* Ribbon */
         .ribbon-v { position: absolute; left: 60px; width: 30px; height: 100%; background: #fbbf24; }
         .ribbon-h { position: absolute; top: 60px; width: 100%; height: 30px; background: #fbbf24; }
 
+        /* Lid */
         .lid {
             position: absolute;
             width: 160px;
@@ -65,6 +67,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        /* Bow */
         .bow {
             position: absolute;
             top: -50px;
@@ -84,7 +87,7 @@
         .bow-l { transform: rotate(45deg); left: -10px; }
         .bow-r { transform: rotate(135deg) scaleX(-1); left: 20px; }
 
-        /* --- THE TICKET --- */
+        /* --- TICKET --- */
         #ticket {
             background: white;
             border-radius: 20px;
@@ -99,15 +102,6 @@
             opacity: 0;
             display: none;
             border: 1px solid #f3f4f6;
-        }
-
-        /* --- SPOTIFY CONTAINER --- */
-        #spotify-wrapper {
-            margin-top: 15px;
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         /* --- ANIMATIONS --- */
@@ -128,9 +122,20 @@
             animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(100vh); } }
+
+        /* Spotify Visual Only */
+        #spotify-visual {
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            pointer-events: none; /* Make it unclickable so it doesn't conflict */
+        }
     </style>
 </head>
 <body>
+
+    <audio id="native-player" preload="auto"></audio>
 
     <div id="snow"></div>
 
@@ -176,60 +181,60 @@
             "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
         </p>
 
-        <div id="spotify-wrapper">
-            <div id="embed-iframe"></div>
+        <div id="spotify-visual">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/28e5c222718f4857b286?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
     </div>
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
-    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-    
     <script>
-        let embedController;
-
-        // 1. Initialize Spotify Embed immediately
-        window.onSpotifyIframeApiReady = (IFrameAPI) => {
-            const element = document.getElementById('embed-iframe');
-            const options = {
-                // Forrest Frank - Good Day (Confirmed ID)
-                uri: 'spotify:track:28e5c222718f4857b286',
-                width: '100%',
-                height: '80', // Compact player
-                theme: 'light'
-            };
-            
-            const callback = (EmbedController) => {
-                embedController = EmbedController;
-                // We do NOT play yet. We wait for the click.
-                console.log("Spotify Ready");
-            };
-            
-            IFrameAPI.createController(element, options, callback);
-        };
-
-        // 2. Interaction Logic
-        document.getElementById('gift-wrapper').addEventListener('click', function() {
-            const box = document.getElementById('gift-wrapper');
-            const ticket = document.getElementById('ticket');
-
-            // --- TRIGGER AUDIO ---
-            // Because this is inside a user click, this command is allowed!
-            if (embedController) {
-                embedController.play();
+        // --- 1. AUDIO FETCH (JSONP Method - Mobile Safe) ---
+        // This grabs the raw audio file from iTunes immediately
+        function handleMusic(data) {
+            if(data.results && data.results.length > 0) {
+                const player = document.getElementById('native-player');
+                player.src = data.results[0].previewUrl;
+                player.volume = 1.0;
+                console.log("Audio file ready for mobile playback");
             }
+        }
+        
+        // Inject script to call iTunes API securely
+        const script = document.createElement('script');
+        script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=handleMusic';
+        document.body.appendChild(script);
+
+        // --- 2. INTERACTION LOGIC ---
+        // We attach the listener to the wrapper to capture touch events
+        const giftBox = document.getElementById('gift-wrapper');
+        const ticket = document.getElementById('ticket');
+        const audio = document.getElementById('native-player');
+        let hasOpened = false;
+
+        function triggerSurprise(e) {
+            // Prevent double firing on some devices that fire touch AND click
+            if (hasOpened) return;
+            if (e.type === 'touchstart') e.preventDefault(); // Prevents delay
+            hasOpened = true;
+
+            // --- AUDIO TRIGGER ---
+            // Direct .play() on a user interaction event is the "Holy Grail" for mobile
+            audio.play()
+                .then(() => console.log("Playing audio..."))
+                .catch(err => console.log("Audio failed:", err));
 
             // --- ANIMATION ---
-            box.classList.add('shaking');
+            giftBox.classList.add('shaking');
 
             setTimeout(() => {
                 // Explode box
-                box.style.transition = "all 0.5s ease-in";
-                box.style.transform = "scale(1.2) rotate(15deg)";
-                box.style.opacity = "0";
+                giftBox.style.transition = "all 0.5s ease-in";
+                giftBox.style.transform = "scale(1.2) rotate(15deg)";
+                giftBox.style.opacity = "0";
 
                 setTimeout(() => {
-                    box.style.display = 'none';
+                    giftBox.style.display = 'none';
                     ticket.style.display = 'block';
                     
                     // Ticket slide up
@@ -242,9 +247,14 @@
                     startConfetti();
                 }, 300);
             }, 600);
-        });
+        }
 
-        // --- CONFETTI ---
+        // Add both Touch and Click listeners for maximum compatibility
+        giftBox.addEventListener('touchstart', triggerSurprise, {passive: false});
+        giftBox.addEventListener('click', triggerSurprise);
+
+
+        // --- 3. CONFETTI ---
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -279,7 +289,7 @@
             if(particles.length > 0) requestAnimationFrame(animateConfetti);
         }
 
-        // --- SNOW ---
+        // --- 4. SNOW ---
         const snowContainer = document.getElementById('snow');
         for(let i=0; i<30; i++) {
             const flake = document.createElement('div');
