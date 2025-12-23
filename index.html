@@ -14,7 +14,6 @@
     
     html, body {
       height: 100%;
-      background: #04060d;
     }
 
     body {
@@ -30,7 +29,6 @@
 
     /* Background - fixed, full bleed */
     .bg {
-      position: fixed;
       inset: 0;
       z-index: 0;
       background:
@@ -38,13 +36,10 @@
         radial-gradient(ellipse 1200px 1000px at 90% 20%, rgba(126,215,193,.22), transparent 58%),
         radial-gradient(ellipse 800px 600px at 50% 120%, rgba(126,215,193,.12), transparent 55%),
         linear-gradient(175deg, #04060d 0%, #071021 45%, #0a1628 75%, #050815 100%);
-      background-color: #04060d;
     }
 
     .bg::after {
       content: "";
-      position: absolute;
-      inset: -80px;
       background:
         radial-gradient(ellipse 1000px 600px at 25% 5%, rgba(214,180,106,.2), transparent 65%),
         radial-gradient(ellipse 1000px 700px at 85% 12%, rgba(126,215,193,.16), transparent 68%);
