@@ -7,14 +7,14 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#04060d" />
+  <meta name="theme-color" content="#0a1525" />
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    html, body {
+    html {
       height: 100%;
-      /* This background extends fully edge-to-edge including safe areas */
+      /* Background applied here covers the iOS overscroll area (rubber banding) */
       background: linear-gradient(170deg, #0a1525 0%, #071018 40%, #04080f 100%);
       background-color: #050a12;
     }
@@ -28,15 +28,17 @@
       overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior: none;
+      /* Transparent body so html background shows through */
+      background: transparent;
     }
 
-    /* Lights at top - positioned in safe area */
+    /* Lights at top */
     .lights {
       position: fixed;
       left: 0;
       right: 0;
       top: 0;
-      padding-top: env(safe-area-inset-top, 0px);
+      /* REMOVED: padding-top: env(safe-area-inset-top, 0px); */
       z-index: 20;
       pointer-events: none;
     }
@@ -128,19 +130,18 @@
     #spark { z-index: 25; }
 
     /* Scroll container */
-    @media (max-height: 700px) {
-      .scroll {
-        justify-content: center;
-        padding-top: env(safe-area-inset-top, 0px);
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-      }
+    .scroll {
+      justify-content: center;
+      /* REMOVED: padding-top/bottom env() to fix the black bars issue */
     }
 
     /* Card */
     .stage {
       width: min(560px, 92vw);
       animation: cardEnter .7s cubic-bezier(.2,.9,.3,1) both;
-      max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px);
+      /* Adjusted max-height logic to be cleaner */
+      max-height: 96dvh;
+      margin: 20px auto; 
     }
 
     @keyframes cardEnter {
