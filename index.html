@@ -1,678 +1,1007 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>🎁</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <title>🎁</title>
 
-  <!-- Helps Safari tint its UI closer to your page (still not perfect) -->
-  <meta name="theme-color" content="#071021" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#0a0a0a" />
+    <!-- iOS Safari full bleed -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#04060d" />
 
-  <style>
-    :root{
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBottom: env(safe-area-inset-bottom, 0px);
+    <style>
+      :root {
+        --safeTop: env(safe-area-inset-top, 0px);
+        --safeBottom: env(safe-area-inset-bottom, 0px);
+        --safeLeft: env(safe-area-inset-left, 0px);
+        --safeRight: env(safe-area-inset-right, 0px);
 
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.62);
-      --hair: rgba(255,255,255,.10);
+        --text: rgba(255, 255, 255, 0.94);
+        --muted: rgba(255, 255, 255, 0.62);
+        --hair: rgba(255, 255, 255, 0.1);
 
-      --shadow: 0 28px 90px rgba(0,0,0,.62);
-      --radius: 26px;
+        --shadow: 0 28px 90px rgba(0, 0, 0, 0.62);
+        --radius: 28px;
 
-      --gold: 214, 180, 106;
-      --mint: 126, 215, 193;
-    }
+        --gold: 214, 180, 106;
+        --mint: 126, 215, 193;
+        --red: 239, 68, 68;
+      }
 
-    *{ box-sizing:border-box; }
-    html, body{
-      height:100%;
-      margin:0;
-      padding:0;
-      background:#000;
-      overflow:hidden; /* IMPORTANT: stop body/page rubber-band */
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body{
-      color: var(--text);
-      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, system-ui;
-      -webkit-font-smoothing: antialiased;
-      position:relative;
-    }
+      html {
+        height: 100%;
+        background: #04060d;
+      }
 
-    /* Fullscreen background layer (never scrolls) */
-    .bg{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      background:
-        radial-gradient(1200px 820px at 18% 10%, rgba(var(--gold), .26), transparent 65%),
-        radial-gradient(1100px 900px at 88% 24%, rgba(var(--mint), .20), transparent 62%),
-        radial-gradient(1000px 740px at 50% 115%, rgba(255,255,255,.07), transparent 60%),
-        linear-gradient(180deg, #04060d 0%, #071021 58%, #050815 100%);
-      background-color:#04060d;
-      transform: translateZ(0);
-    }
+      body {
+        min-height: 100%;
+        min-height: 100dvh; /* Dynamic viewport height for iOS */
+        margin: 0;
+        padding: 0;
+        background: #04060d;
+        color: var(--text);
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, system-ui;
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-size-adjust: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: none;
+      }
 
-    .bg::after{
-      content:"";
-      position:absolute;
-      inset:-60px;
-      background:
-        radial-gradient(960px 520px at 30% 6%, rgba(var(--gold), .18), transparent 72%),
-        radial-gradient(960px 620px at 86% 16%, rgba(var(--mint), .14), transparent 74%);
-      filter: blur(30px);
-      opacity:.80;
-    }
+      /* Fullscreen background - truly edge to edge */
+      .bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        background: radial-gradient(
+            ellipse 1400px 900px at 15% 8%,
+            rgba(var(--gold), 0.28),
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 1200px 1000px at 90% 20%,
+            rgba(var(--mint), 0.22),
+            transparent 58%
+          ),
+          radial-gradient(
+            ellipse 800px 600px at 50% 120%,
+            rgba(var(--mint), 0.12),
+            transparent 55%
+          ),
+          linear-gradient(
+            175deg,
+            #04060d 0%,
+            #071021 45%,
+            #0a1628 75%,
+            #050815 100%
+          );
+        background-color: #04060d;
+      }
 
-    .bg::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      opacity:.08;
-    }
+      .bg::after {
+        content: "";
+        position: absolute;
+        inset: -80px;
+        background: radial-gradient(
+            ellipse 1000px 600px at 25% 5%,
+            rgba(var(--gold), 0.2),
+            transparent 65%
+          ),
+          radial-gradient(
+            ellipse 1000px 700px at 85% 12%,
+            rgba(var(--mint), 0.16),
+            transparent 68%
+          );
+        filter: blur(40px);
+        opacity: 0.85;
+        animation: bgPulse 8s ease-in-out infinite;
+      }
 
-    /* Fixed scroll container so Safari doesn't expose UI colors via rubber-band */
-    .scroll{
-      position:fixed;
-      inset:0;
-      z-index:10;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-      display:flex;
-      align-items:center;           /* center vertically */
-      justify-content:center;       /* center horizontally */
-      padding:
-        calc(110px + var(--safeTop))
-        16px
-        calc(34px + var(--safeBottom));
-    }
+      @keyframes bgPulse {
+        0%,
+        100% {
+          opacity: 0.85;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.95;
+          transform: scale(1.02);
+        }
+      }
 
-    /* Snow + sparkle */
-    canvas{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:4;
-    }
-    #snow{ z-index:3; opacity:.9; }
-    #spark{ z-index:6; }
+      .bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+        opacity: 0.06;
+      }
 
-    /* Lights */
-    .lights{
-      position:fixed;
-      left:0; right:0;
-      top:0;
-      padding-top: calc(10px + var(--safeTop));
-      height: calc(84px + var(--safeTop));
-      display:flex;
-      justify-content:center;
-      pointer-events:none;
-      z-index: 12;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.55));
-    }
-    .wire{
-      position:relative;
-      width:min(780px, 96vw);
-      height:64px;
-    }
-    .wire::before{
-      content:"";
-      position:absolute;
-      left:0; right:0;
-      top:14px;
-      height:2px;
-      border-radius:999px;
-      background: rgba(255,255,255,.18);
-      transform: rotate(-1deg);
-    }
-    .bulb{
-      position:absolute;
-      top:0;
-      width:14px; height:24px;
-      transform-origin: 50% 0%;
-      animation: sway 4.2s ease-in-out infinite;
-      color: rgba(255,255,255,.9);
-    }
-    .bulb::before{
-      content:"";
-      position:absolute;
-      left:50%; top:10px;
-      width:14px; height:14px;
-      transform: translateX(-50%);
-      border-radius:999px;
-      background: currentColor;
-      box-shadow: 0 0 10px currentColor, 0 0 22px rgba(255,255,255,.10);
-      animation: twinkle 2.2s ease-in-out infinite;
-      opacity:.9;
-    }
-    .bulb::after{
-      content:"";
-      position:absolute;
-      left:50%; top:7px;
-      width:9px; height:6px;
-      transform: translateX(-50%);
-      border-radius: 6px;
-      background: rgba(255,255,255,.20);
-    }
-    @keyframes twinkle{
-      0%,100%{ filter:brightness(1); opacity:.78; }
-      50%{ filter:brightness(1.25); opacity:1; }
-    }
-    @keyframes sway{
-      0%,100%{ transform: rotate(-2deg); }
-      50%{ transform: rotate(2deg); }
-    }
+      /* Lights - better wire curve and glow */
+      .lights {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 20;
+        pointer-events: none;
+        padding-top: var(--safeTop);
+      }
 
-    /* The “big” card */
-    .stage{
-      width: min(640px, 94vw);
-    }
+      .wire {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        height: 58px;
+        margin: 0 auto;
+        padding: 0 8px;
+      }
 
-    .card{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.090), rgba(255,255,255,.040));
-      border: 1px solid var(--hair);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      overflow:hidden;
-    }
+      .wire svg {
+        position: absolute;
+        top: 8px;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        overflow: visible;
+      }
 
-    .inner{
-      padding: 28px;
-    }
-    @media (min-width: 420px){
-      .inner{ padding: 32px; }
-    }
+      .wire svg path {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
 
-    .chipRow{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom: 16px;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.90);
-      font-weight: 650;
-      letter-spacing: .2px;
-      font-size: 14px;
-      white-space:nowrap;
-    }
-    .hint{
-      color: rgba(255,255,255,.58);
-      font-size: 14px;
-      line-height: 1.2;
-      text-align:right;
-    }
+      .bulb {
+        position: absolute;
+        width: 12px;
+        height: 20px;
+        transform-origin: 50% 0%;
+      }
 
-    .heroIcon{
-      font-size: 40px;
-      line-height: 1;
-      margin-bottom: 10px;
-      opacity: .92;
-    }
+      .bulb-cap {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 8px;
+        height: 5px;
+        transform: translateX(-50%);
+        border-radius: 3px 3px 0 0;
+        background: rgba(255, 255, 255, 0.25);
+      }
 
-    h1{
-      margin: 0 0 10px;
-      font-size: clamp(34px, 9vw, 54px); /* BIGGER */
-      letter-spacing: -0.9px;
-      line-height: 1.02;
-      font-weight: 800;
-    }
+      .bulb-glass {
+        position: absolute;
+        left: 50%;
+        top: 4px;
+        width: 10px;
+        height: 12px;
+        transform: translateX(-50%);
+        border-radius: 50% 50% 45% 45%;
+        background: currentColor;
+        box-shadow: 0 0 8px currentColor, 0 0 16px currentColor,
+          0 0 24px rgba(255, 255, 255, 0.15);
+        animation: bulbGlow 2s ease-in-out infinite;
+      }
 
-    .lead{
-      margin: 0 0 18px;
-      color: rgba(255,255,255,.66);
-      font-size: clamp(16px, 4.8vw, 18px); /* BIGGER */
-      line-height: 1.55;
-    }
+      .bulb-glass::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 3px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+      }
 
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-      margin: 18px 0 20px;
-    }
+      @keyframes bulbGlow {
+        0%,
+        100% {
+          filter: brightness(0.9);
+          opacity: 0.8;
+        }
+        50% {
+          filter: brightness(1.2);
+          opacity: 1;
+        }
+      }
 
-    /* Slider (bigger + more “in your face”) */
-    .sliderWrap{
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
-      padding: 16px;
-    }
+      @keyframes sway {
+        0%,
+        100% {
+          transform: rotate(-1.5deg);
+        }
+        50% {
+          transform: rotate(1.5deg);
+        }
+      }
 
-    .track{
-      position:relative;
-      height: 68px; /* BIGGER */
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-      border: 1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: none;
-    }
-    .track::before{
-      content:"";
-      position:absolute; inset:-60px;
-      background: radial-gradient(620px 220px at 18% 40%, rgba(255,255,255,.14), transparent 60%);
-      transform: rotate(-8deg);
-      opacity:.55;
-      pointer-events:none;
-    }
-    .trackLabel{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color: rgba(255,255,255,.76);
-      font-weight: 700;
-      letter-spacing: .2px;
-      font-size: 17px; /* BIGGER */
-      pointer-events:none;
-      transition: opacity .15s ease;
-    }
-    .fill{
-      position:absolute;
-      left:0; top:0; bottom:0;
-      width: 0%;
-      background: linear-gradient(90deg, rgba(var(--gold), .34), rgba(var(--mint), .24));
-    }
-    .thumb{
-      position:absolute;
-      top: 8px;
-      left: 8px;
-      width: 52px;   /* BIGGER */
-      height: 52px;  /* BIGGER */
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
-      box-shadow: 0 14px 26px rgba(0,0,0,.38), inset 0 0 0 1px rgba(0,0,0,.10);
-      display:grid;
-      place-items:center;
-      color: rgba(0,0,0,.72);
-      font-size: 22px;
-      transform: translateX(var(--x, 0px));
-      transition: transform .18s ease-out;
-    }
-    .dragging .thumb{ transition:none; }
+      /* Canvas layers */
+      canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+      #snow {
+        z-index: 5;
+      }
+      #spark {
+        z-index: 25;
+      }
 
-    .reveal{
-      display:none;
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      animation: rise .55s cubic-bezier(.2,.9,.2,1) both;
-    }
-    @keyframes rise{
-      from{ opacity:0; transform: translateY(10px); }
-      to{ opacity:1; transform: translateY(0); }
-    }
+      /* Main content scroll area */
+      .scroll {
+        position: relative;
+        z-index: 10;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: calc(80px + var(--safeTop)) 16px calc(40px + var(--safeBottom));
+      }
 
-    .reveal h2{
-      margin:0 0 6px;
-      font-size: clamp(20px, 6.2vw, 26px);
-      letter-spacing: -0.25px;
-      font-weight: 760;
-    }
-    .reveal p{
-      margin:0;
-      color: rgba(255,255,255,.66);
-      line-height: 1.5;
-      font-size: 15px;
-    }
+      /* Card */
+      .stage {
+        width: min(580px, 92vw);
+        animation: cardEnter 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+      }
 
-    .audioRow{
-      margin-top: 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap:wrap;
-    }
-    .audioStatus{
-      color: rgba(255,255,255,.65);
-      font-size: 12.5px;
-      line-height: 1.35;
-      flex: 1 1 230px;
-    }
-    .playBtn{
-      display:none;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.10);
-      color: rgba(255,255,255,.90);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-weight: 700;
-      letter-spacing: .2px;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+      @keyframes cardEnter {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
 
-    .details{
-      display:none;
-      margin-top: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      overflow:hidden;
-    }
-    .row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding: 14px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      font-size: 14.5px;
-    }
-    .row:last-child{ border-bottom:none; }
-    .k{ color: rgba(255,255,255,.55); min-width:72px; }
-    .v{ text-align:right; color: rgba(255,255,255,.90); }
-    .v small{ display:block; color: rgba(255,255,255,.60); margin-top:2px; }
+      .card {
+        border-radius: var(--radius);
+        background: linear-gradient(
+          175deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          0 0 0 1px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(24px) saturate(1.2);
+        -webkit-backdrop-filter: blur(24px) saturate(1.2);
+        overflow: hidden;
+        position: relative;
+      }
 
-    .foot{
-      margin-top: 14px;
-      text-align:center;
-      color: rgba(255,255,255,.45);
-      font-size: 12px;
-      line-height: 1.35;
-      display:none;
-    }
-  </style>
-</head>
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 600px 300px at 30% 0%,
+          rgba(255, 255, 255, 0.08),
+          transparent 60%
+        );
+        pointer-events: none;
+      }
 
-<body>
-  <div class="bg" aria-hidden="true"></div>
+      .inner {
+        padding: 28px 24px;
+      }
+      @media (min-width: 420px) {
+        .inner {
+          padding: 36px 32px;
+        }
+      }
 
-  <div class="lights" aria-hidden="true">
-    <div class="wire" id="wire"></div>
-  </div>
+      .chipRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
 
-  <canvas id="snow"></canvas>
-  <canvas id="spark"></canvas>
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.03)
+        );
+        color: rgba(255, 255, 255, 0.92);
+        font-weight: 650;
+        letter-spacing: 0.3px;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
 
-  <div class="scroll">
-    <div class="stage">
-      <section class="card">
-        <div class="inner">
-          <div class="chipRow">
-            <div class="chip">🎄 Merry Christmas</div>
-            <div class="hint">Slide to open</div>
-          </div>
+      .hint {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+        line-height: 1.2;
+        text-align: right;
+        animation: hintPulse 2s ease-in-out infinite;
+      }
 
-          <!-- no spoilers -->
-          <div class="heroIcon">🎁</div>
-          <h1>For you.</h1>
-          <p class="lead">Open when you’re ready.</p>
+      @keyframes hintPulse {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
 
-          <div class="divider"></div>
+      .heroIcon {
+        font-size: 48px;
+        line-height: 1;
+        margin-bottom: 14px;
+        display: inline-block;
+        animation: giftBounce 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+      }
 
-          <div class="sliderWrap">
-            <div class="track" id="track" role="button" aria-label="Slide to open">
-              <div class="fill" id="fill"></div>
-              <div class="trackLabel" id="trackLabel">Slide to open</div>
-              <div class="thumb" id="thumb">›</div>
+      @keyframes giftBounce {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-2deg);
+        }
+        50% {
+          transform: translateY(-6px) rotate(2deg);
+        }
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(38px, 10vw, 58px);
+        letter-spacing: -1px;
+        line-height: 1;
+        font-weight: 800;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 255, 255, 0.85) 50%,
+          rgba(var(--gold), 0.9) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .lead {
+        margin: 0 0 22px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: clamp(17px, 5vw, 19px);
+        line-height: 1.5;
+      }
+
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 5%,
+          rgba(255, 255, 255, 0.14) 50%,
+          transparent 95%
+        );
+        margin: 20px 0 24px;
+      }
+
+      /* Slider */
+      .sliderWrap {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        padding: 14px;
+      }
+
+      .track {
+        position: relative;
+        height: 64px;
+        border-radius: 16px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.03)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: none;
+        cursor: grab;
+      }
+
+      .track:active {
+        cursor: grabbing;
+      }
+
+      .track::before {
+        content: "";
+        position: absolute;
+        inset: -60px;
+        background: radial-gradient(
+          ellipse 500px 200px at 20% 50%,
+          rgba(255, 255, 255, 0.12),
+          transparent 55%
+        );
+        transform: rotate(-6deg);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .trackLabel {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        font-size: 16px;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+
+      .trackLabel span {
+        margin-left: 8px;
+        animation: arrowSlide 1.5s ease-in-out infinite;
+      }
+
+      @keyframes arrowSlide {
+        0%,
+        100% {
+          transform: translateX(0);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateX(6px);
+          opacity: 1;
+        }
+      }
+
+      .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          rgba(var(--gold), 0.4),
+          rgba(var(--mint), 0.3)
+        );
+        transition: width 0.05s linear;
+      }
+
+      .thumb {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fff 0%, #e8e8e8 100%);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 1),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+        display: grid;
+        place-items: center;
+        color: rgba(0, 0, 0, 0.65);
+        font-size: 24px;
+        font-weight: 700;
+        transform: translateX(var(--x, 0px));
+        transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .dragging .thumb {
+        transition: none;
+      }
+
+      .thumb::after {
+        content: "→";
+        font-size: 20px;
+      }
+
+      /* Reveal section */
+      .reveal {
+        display: none;
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.07),
+          rgba(255, 255, 255, 0.03)
+        );
+        animation: revealRise 0.6s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+      }
+
+      @keyframes revealRise {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .reveal h2 {
+        margin: 0 0 8px;
+        font-size: clamp(22px, 6.5vw, 28px);
+        letter-spacing: -0.3px;
+        font-weight: 750;
+        line-height: 1.2;
+      }
+
+      .reveal p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.5;
+        font-size: 15px;
+      }
+
+      .audioRow {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .audioStatus {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 13px;
+        line-height: 1.35;
+        flex: 1 1 200px;
+      }
+
+      .playBtn {
+        display: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.06)
+        );
+        color: rgba(255, 255, 255, 0.92);
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-weight: 650;
+        letter-spacing: 0.3px;
+        font-size: 14px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.15s ease;
+      }
+
+      .playBtn:active {
+        transform: scale(0.96);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .details {
+        display: none;
+        margin-top: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 14px;
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+
+      .k {
+        color: rgba(255, 255, 255, 0.5);
+        min-width: 70px;
+      }
+
+      .v {
+        text-align: right;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .v small {
+        display: block;
+        color: rgba(255, 255, 255, 0.55);
+        margin-top: 2px;
+        font-size: 12px;
+      }
+
+      .foot {
+        margin-top: 16px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 12px;
+        line-height: 1.4;
+        display: none;
+      }
+
+      /* Ensure content extends to edges on all devices */
+      @supports (padding: max(0px)) {
+        .scroll {
+          padding-left: max(16px, var(--safeLeft));
+          padding-right: max(16px, var(--safeRight));
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <div class="lights" aria-hidden="true">
+      <div class="wire" id="wire">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M 0,12 Q 25,22 50,14 T 100,12" />
+        </svg>
+      </div>
+    </div>
+
+    <canvas id="snow"></canvas>
+    <canvas id="spark"></canvas>
+
+    <div class="scroll">
+      <div class="stage">
+        <section class="card">
+          <div class="inner">
+            <div class="chipRow">
+              <div class="chip">🎄 Merry Christmas</div>
+              <div class="hint">Slide to open</div>
             </div>
 
-            <div class="reveal" id="reveal"></div>
-            <div class="foot" id="foot">If audio doesn’t start, tap Play once.</div>
+            <div class="heroIcon">🎁</div>
+            <h1>For you.</h1>
+            <p class="lead">
+              A little something special—open when you're ready.
+            </p>
+
+            <div class="divider"></div>
+
+            <div class="sliderWrap">
+              <div
+                class="track"
+                id="track"
+                role="button"
+                aria-label="Slide to open"
+              >
+                <div class="fill" id="fill"></div>
+                <div class="trackLabel" id="trackLabel">
+                  Slide to open <span>→</span>
+                </div>
+                <div class="thumb" id="thumb"></div>
+              </div>
+
+              <div class="reveal" id="reveal"></div>
+              <div class="foot" id="foot">
+                If audio doesn't start, tap Play once.
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
-  </div>
 
-  <script>
-    // Lights
-    (function buildLights(){
-      const wire = document.getElementById("wire");
-      const colors = ["#ef4444","#22c55e","#f7b733","#60a5fa","#a78bfa"];
-      const count = 18;
-      for (let i=0;i<count;i++){
-        const b = document.createElement("div");
-        b.className = "bulb";
-        const x = (i/(count-1))*100;
-        b.style.left = `calc(${x}% - 7px)`;
-        b.style.animationDelay = `${(i%7)*0.12}s`;
-        b.style.color = colors[i % colors.length];
-        wire.appendChild(b);
-      }
-    })();
+    <script>
+      // Christmas lights along the curved wire
+      (function buildLights() {
+        const wire = document.getElementById("wire");
+        const colors = [
+          "#ef4444",
+          "#22c55e",
+          "#facc15",
+          "#3b82f6",
+          "#a855f7",
+          "#ec4899",
+        ];
+        const count = 14;
 
-    // Snow
-    const snowCanvas = document.getElementById("snow");
-    const sn = snowCanvas.getContext("2d");
-    let flakes = [];
+        // Points along the curve (matching the SVG path)
+        for (let i = 0; i < count; i++) {
+          const t = i / (count - 1);
+          // Approximate the curve: y = 12 + sin wave
+          const x = t * 100;
+          const y =
+            12 +
+            Math.sin(t * Math.PI * 2) * 4 +
+            (t < 0.5 ? t * 8 : (1 - t) * 8);
 
-    function resizeSnow(){
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      snowCanvas.width = Math.floor(window.innerWidth * dpr);
-      snowCanvas.height = Math.floor(window.innerHeight * dpr);
-      snowCanvas.style.width = window.innerWidth + "px";
-      snowCanvas.style.height = window.innerHeight + "px";
-      sn.setTransform(dpr,0,0,dpr,0,0);
+          const bulb = document.createElement("div");
+          bulb.className = "bulb";
+          bulb.style.left = `calc(${x}% - 6px)`;
+          bulb.style.top = `${y}px`;
+          bulb.style.color = colors[i % colors.length];
+          bulb.style.animation = `sway 3.5s ease-in-out infinite`;
+          bulb.style.animationDelay = `${(i % 5) * 0.15}s`;
 
-      flakes = [];
-      const n = Math.floor(Math.min(160, 80 + window.innerWidth / 7));
-      for (let i=0;i<n;i++){
-        flakes.push({
-          x: Math.random()*window.innerWidth,
-          y: Math.random()*window.innerHeight,
-          r: 0.9 + Math.random()*2.6,
-          vy: 0.7 + Math.random()*1.6,
-          vx: -0.25 + Math.random()*0.5,
-          wob: Math.random()*Math.PI*2,
-          a: 0.35 + Math.random()*0.55
-        });
-      }
-    }
-    window.addEventListener("resize", resizeSnow);
-    resizeSnow();
+          bulb.innerHTML = `
+          <div class="bulb-cap"></div>
+          <div class="bulb-glass" style="animation-delay: ${i * 0.2}s"></div>
+        `;
 
-    function drawSnow(){
-      sn.clearRect(0,0,window.innerWidth,window.innerHeight);
-      for (const f of flakes){
-        f.wob += 0.01;
-        f.x += f.vx + Math.sin(f.wob)*0.20;
-        f.y += f.vy;
-
-        if (f.y > window.innerHeight + 12){ f.y = -12; f.x = Math.random()*window.innerWidth; }
-        if (f.x < -12) f.x = window.innerWidth + 12;
-        if (f.x > window.innerWidth + 12) f.x = -12;
-
-        sn.beginPath();
-        sn.arc(f.x, f.y, f.r, 0, Math.PI*2);
-        sn.fillStyle = `rgba(255,255,255,${0.75*f.a})`;
-        sn.fill();
-      }
-      requestAnimationFrame(drawSnow);
-    }
-    drawSnow();
-
-    // Sparkles
-    const sparkCanvas = document.getElementById("spark");
-    const sctx = sparkCanvas.getContext("2d");
-    let sparks = [];
-
-    function resizeSpark(){
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      sparkCanvas.width = Math.floor(window.innerWidth * dpr);
-      sparkCanvas.height = Math.floor(window.innerHeight * dpr);
-      sparkCanvas.style.width = window.innerWidth + "px";
-      sparkCanvas.style.height = window.innerHeight + "px";
-      sctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    window.addEventListener("resize", resizeSpark);
-    resizeSpark();
-
-    function burstSparks(){
-      const cx = window.innerWidth * 0.5;
-      const cy = Math.min(window.innerHeight * 0.28, 260);
-      const palette = ["rgba(214,180,106,.95)","rgba(126,215,193,.90)","rgba(255,255,255,.85)"];
-      const count = 110;
-
-      for (let i=0;i<count;i++){
-        const a = Math.random()*Math.PI*2;
-        const sp = 1.6 + Math.random()*4.6;
-        sparks.push({
-          x: cx, y: cy,
-          vx: Math.cos(a)*sp,
-          vy: Math.sin(a)*sp - 2.2,
-          r: 1 + Math.random()*2.2,
-          g: 0.08 + Math.random()*0.10,
-          life: 85 + Math.random()*55,
-          c: palette[i % palette.length]
-        });
-      }
-    }
-
-    function drawSparks(){
-      sctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-      for (let i=sparks.length-1;i>=0;i--){
-        const p = sparks[i];
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 1;
-
-        sctx.beginPath();
-        sctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-        sctx.fillStyle = p.c;
-        sctx.globalAlpha = Math.max(0, Math.min(1, p.life/120));
-        sctx.fill();
-
-        if (p.life <= 0 || p.y > window.innerHeight + 60) sparks.splice(i,1);
-      }
-      sctx.globalAlpha = 1;
-      requestAnimationFrame(drawSparks);
-    }
-    drawSparks();
-
-    // Slider + reveal (no spoilers before unlock)
-    const track = document.getElementById("track");
-    const thumb = document.getElementById("thumb");
-    const fill = document.getElementById("fill");
-    const trackLabel = document.getElementById("trackLabel");
-    const reveal = document.getElementById("reveal");
-    const foot = document.getElementById("foot");
-
-    let dragging = false;
-    let startX = 0;
-    let x = 0;
-    let unlocked = false;
-
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-    function metrics(){
-      const r = track.getBoundingClientRect();
-      const maxX = (r.width - 16 - 52); // padding-ish + thumb width
-      return { maxX };
-    }
-    function setX(px){
-      x = px;
-      thumb.style.setProperty("--x", x + "px");
-      const { maxX } = metrics();
-      const pct = clamp((x / maxX) * 100, 0, 100);
-      fill.style.width = pct + "%";
-      trackLabel.style.opacity = String(0.95 - pct/120);
-    }
-    function snapBack(){
-      track.classList.remove("dragging");
-      const start = x;
-      const t0 = performance.now();
-      const dur = 180;
-      function step(now){
-        const p = clamp((now - t0)/dur, 0, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        setX(start * (1 - ease));
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    // Audio (iOS-safe)
-    const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
-    let audio = null;
-
-    function primeAudio(){
-      if (audio) return;
-      audio = new Audio(audioUrl);
-      audio.preload = "auto";
-      try { audio.load(); } catch {}
-    }
-
-    function tryPlayAudio(audioStatusEl, playBtnEl){
-      if (!audio) primeAudio();
-      try{
-        const p = audio.play();
-        if (p && typeof p.then === "function"){
-          p.catch(() => {
-            audioStatusEl.textContent = "Tap Play once.";
-            playBtnEl.style.display = "inline-block";
-          });
-        } else {
-          setTimeout(() => {
-            if (audio && audio.paused){
-              audioStatusEl.textContent = "Tap Play once.";
-              playBtnEl.style.display = "inline-block";
-            }
-          }, 250);
+          wire.appendChild(bulb);
         }
-      } catch {
-        audioStatusEl.textContent = "Tap Play once.";
-        playBtnEl.style.display = "inline-block";
+      })();
+
+      // Snow particles
+      const snowCanvas = document.getElementById("snow");
+      const sn = snowCanvas.getContext("2d");
+      let flakes = [];
+
+      function resizeSnow() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        snowCanvas.width = Math.floor(window.innerWidth * dpr);
+        snowCanvas.height = Math.floor(window.innerHeight * dpr);
+        snowCanvas.style.width = window.innerWidth + "px";
+        snowCanvas.style.height = window.innerHeight + "px";
+        sn.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        flakes = [];
+        const n = Math.floor(Math.min(140, 60 + window.innerWidth / 8));
+        for (let i = 0; i < n; i++) {
+          flakes.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: 0.8 + Math.random() * 2.4,
+            vy: 0.5 + Math.random() * 1.4,
+            vx: -0.2 + Math.random() * 0.4,
+            wob: Math.random() * Math.PI * 2,
+            a: 0.3 + Math.random() * 0.5,
+          });
+        }
       }
-      setTimeout(() => {
-        if (audio && audio.paused){
-          audioStatusEl.textContent = "Tap Play once.";
+      window.addEventListener("resize", resizeSnow);
+      resizeSnow();
+
+      function drawSnow() {
+        sn.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        for (const f of flakes) {
+          f.wob += 0.008;
+          f.x += f.vx + Math.sin(f.wob) * 0.18;
+          f.y += f.vy;
+
+          if (f.y > window.innerHeight + 10) {
+            f.y = -10;
+            f.x = Math.random() * window.innerWidth;
+          }
+          if (f.x < -10) f.x = window.innerWidth + 10;
+          if (f.x > window.innerWidth + 10) f.x = -10;
+
+          sn.beginPath();
+          sn.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          sn.fillStyle = `rgba(255,255,255,${0.7 * f.a})`;
+          sn.fill();
+        }
+        requestAnimationFrame(drawSnow);
+      }
+      drawSnow();
+
+      // Sparkle burst effect
+      const sparkCanvas = document.getElementById("spark");
+      const sctx = sparkCanvas.getContext("2d");
+      let sparks = [];
+
+      function resizeSpark() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        sparkCanvas.width = Math.floor(window.innerWidth * dpr);
+        sparkCanvas.height = Math.floor(window.innerHeight * dpr);
+        sparkCanvas.style.width = window.innerWidth + "px";
+        sparkCanvas.style.height = window.innerHeight + "px";
+        sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener("resize", resizeSpark);
+      resizeSpark();
+
+      function burstSparks(cx, cy) {
+        const palette = [
+          "rgba(214,180,106,.95)",
+          "rgba(126,215,193,.90)",
+          "rgba(255,255,255,.85)",
+          "rgba(250,204,21,.90)",
+          "rgba(239,68,68,.85)",
+        ];
+        const count = 100;
+
+        for (let i = 0; i < count; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const sp = 2 + Math.random() * 5;
+          sparks.push({
+            x: cx,
+            y: cy,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp - 2.5,
+            r: 1.2 + Math.random() * 2,
+            g: 0.1 + Math.random() * 0.08,
+            life: 80 + Math.random() * 50,
+            c: palette[i % palette.length],
+          });
+        }
+      }
+
+      function drawSparks() {
+        sctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const p = sparks[i];
+          p.vy += p.g;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 1;
+
+          const alpha = Math.max(0, Math.min(1, p.life / 100));
+          sctx.beginPath();
+          sctx.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
+          sctx.fillStyle = p.c;
+          sctx.globalAlpha = alpha;
+          sctx.fill();
+
+          if (p.life <= 0 || p.y > window.innerHeight + 50) {
+            sparks.splice(i, 1);
+          }
+        }
+        sctx.globalAlpha = 1;
+        requestAnimationFrame(drawSparks);
+      }
+      drawSparks();
+
+      // Slider logic
+      const track = document.getElementById("track");
+      const thumb = document.getElementById("thumb");
+      const fill = document.getElementById("fill");
+      const trackLabel = document.getElementById("trackLabel");
+      const reveal = document.getElementById("reveal");
+      const foot = document.getElementById("foot");
+
+      let dragging = false;
+      let startX = 0;
+      let x = 0;
+      let unlocked = false;
+
+      function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function metrics() {
+        const r = track.getBoundingClientRect();
+        const maxX = r.width - 12 - 52; // padding + thumb width
+        return { maxX, trackRect: r };
+      }
+
+      function setX(px) {
+        x = px;
+        thumb.style.setProperty("--x", x + "px");
+        const { maxX } = metrics();
+        const pct = clamp((x / maxX) * 100, 0, 100);
+        fill.style.width = pct + "%";
+        trackLabel.style.opacity = String(Math.max(0, 0.9 - pct / 80));
+      }
+
+      function snapBack() {
+        track.classList.remove("dragging");
+        const start = x;
+        const t0 = performance.now();
+        const dur = 200;
+        function step(now) {
+          const p = clamp((now - t0) / dur, 0, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          setX(start * (1 - ease));
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      // Audio handling
+      const audioUrl = new URL(
+        "./good-day.mp3",
+        window.location.href
+      ).toString();
+      let audio = null;
+
+      function primeAudio() {
+        if (audio) return;
+        audio = new Audio(audioUrl);
+        audio.preload = "auto";
+        try {
+          audio.load();
+        } catch {}
+      }
+
+      function tryPlayAudio(audioStatusEl, playBtnEl) {
+        if (!audio) primeAudio();
+        try {
+          const p = audio.play();
+          if (p && typeof p.then === "function") {
+            p.then(() => {
+              audioStatusEl.textContent = "🎵 Now playing…";
+            }).catch(() => {
+              audioStatusEl.textContent = "Tap Play to start music";
+              playBtnEl.style.display = "inline-block";
+            });
+          }
+        } catch {
+          audioStatusEl.textContent = "Tap Play to start music";
           playBtnEl.style.display = "inline-block";
         }
-      }, 450);
-    }
+      }
 
-    function unlock(){
-      if (unlocked) return;
-      unlocked = true;
+      function unlock() {
+        if (unlocked) return;
+        unlocked = true;
 
-      const { maxX } = metrics();
-      setX(maxX);
-      track.classList.remove("dragging");
-      trackLabel.textContent = "Opened";
-      trackLabel.style.opacity = "0.92";
+        const { maxX, trackRect } = metrics();
+        setX(maxX);
+        track.classList.remove("dragging");
+        track.style.cursor = "default";
+        trackLabel.innerHTML = "✓ Opened";
+        trackLabel.style.opacity = "0.85";
 
-      burstSparks();
+        // Burst from center of card
+        const cardRect = document
+          .querySelector(".card")
+          .getBoundingClientRect();
+        burstSparks(
+          cardRect.left + cardRect.width / 2,
+          cardRect.top + cardRect.height * 0.3
+        );
 
-      reveal.innerHTML = `
-        <h2>We’re going to see <span style="color: rgba(214,180,106,.95)">Forrest Frank</span>.</h2>
-        <p>🤍</p>
+        reveal.innerHTML = `
+        <h2>We're going to see <span style="background: linear-gradient(135deg, rgba(214,180,106,1), rgba(255,220,150,1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Forrest Frank</span> 🎤</h2>
+        <p style="font-size: 24px; margin: 8px 0;">🤍</p>
         <div class="audioRow">
           <div class="audioStatus" id="audioStatus">Starting music…</div>
-          <button class="playBtn" id="playBtn" type="button">Play</button>
+          <button class="playBtn" id="playBtn" type="button">▶ Play</button>
         </div>
         <div class="details" id="details"></div>
       `;
-      reveal.style.display = "block";
-      foot.style.display = "block";
+        reveal.style.display = "block";
+        foot.style.display = "block";
 
-      const audioStatus = document.getElementById("audioStatus");
-      const playBtn = document.getElementById("playBtn");
-      const details = document.getElementById("details");
+        const audioStatus = document.getElementById("audioStatus");
+        const playBtn = document.getElementById("playBtn");
+        const details = document.getElementById("details");
 
-      details.innerHTML = `
+        details.innerHTML = `
         <div class="row">
           <div class="k">Venue</div>
           <div class="v"><b>Lenovo Center</b><small>Raleigh, NC</small></div>
@@ -682,65 +1011,77 @@
           <div class="v">Good Day energy ✨</div>
         </div>
       `;
-      details.style.display = "block";
+        details.style.display = "block";
 
-      playBtn.style.display = "none";
-      tryPlayAudio(audioStatus, playBtn);
-
-      playBtn.addEventListener("click", () => {
-        audioStatus.textContent = "Starting music…";
+        playBtn.style.display = "none";
         tryPlayAudio(audioStatus, playBtn);
+
+        playBtn.addEventListener("click", () => {
+          playBtn.style.display = "none";
+          audioStatus.textContent = "Starting…";
+          tryPlayAudio(audioStatus, playBtn);
+        });
+
+        setTimeout(() => {
+          reveal.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 200);
+      }
+
+      // Pointer events
+      track.addEventListener("pointerdown", (e) => {
+        if (unlocked) return;
+        primeAudio();
+        dragging = true;
+        track.classList.add("dragging");
+        track.setPointerCapture?.(e.pointerId);
+        startX = e.clientX;
       });
 
-      setTimeout(() => reveal.scrollIntoView({ behavior:"smooth", block:"start" }), 180);
-    }
+      track.addEventListener("pointermove", (e) => {
+        if (!dragging || unlocked) return;
+        const { maxX } = metrics();
+        setX(clamp(e.clientX - startX, 0, maxX));
+      });
 
-    track.addEventListener("pointerdown", (e) => {
-      if (unlocked) return;
-      primeAudio();
-      dragging = true;
-      track.classList.add("dragging");
-      track.setPointerCapture?.(e.pointerId);
-      startX = e.clientX;
-    });
+      function endDrag() {
+        if (!dragging || unlocked) return;
+        dragging = false;
 
-    track.addEventListener("pointermove", (e) => {
-      if (!dragging || unlocked) return;
-      const { maxX } = metrics();
-      setX(clamp(e.clientX - startX, 0, maxX));
-    });
+        const { maxX } = metrics();
+        const pct = x / maxX;
+        if (pct > 0.88) unlock();
+        else snapBack();
+      }
 
-    function endDrag(){
-      if (!dragging || unlocked) return;
-      dragging = false;
+      track.addEventListener("pointerup", endDrag);
+      track.addEventListener("pointercancel", endDrag);
 
-      const { maxX } = metrics();
-      const pct = x / maxX;
-      if (pct > 0.92) unlock();
-      else snapBack();
-    }
+      // Touch fallback for iOS
+      track.addEventListener(
+        "touchstart",
+        (e) => {
+          if (unlocked) return;
+          primeAudio();
+          dragging = true;
+          track.classList.add("dragging");
+          startX = e.touches[0].clientX;
+        },
+        { passive: true }
+      );
 
-    track.addEventListener("pointerup", endDrag);
-    track.addEventListener("pointercancel", endDrag);
+      track.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!dragging || unlocked) return;
+          const { maxX } = metrics();
+          setX(clamp(e.touches[0].clientX - startX, 0, maxX));
+        },
+        { passive: true }
+      );
 
-    // iOS touch fallback
-    track.addEventListener("touchstart", (e) => {
-      if (unlocked) return;
-      primeAudio();
-      dragging = true;
-      track.classList.add("dragging");
-      startX = e.touches[0].clientX;
-    }, { passive:true });
+      track.addEventListener("touchend", endDrag);
 
-    track.addEventListener("touchmove", (e) => {
-      if (!dragging || unlocked) return;
-      const { maxX } = metrics();
-      setX(clamp(e.touches[0].clientX - startX, 0, maxX));
-    }, { passive:true });
-
-    track.addEventListener("touchend", endDrag);
-
-    setX(0);
-  </script>
-</body>
+      setX(0);
+    </script>
+  </body>
 </html>
