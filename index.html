@@ -22,7 +22,7 @@
 
         .font-script { font-family: 'Great Vibes', cursive; }
 
-        /* --- POLISHED CSS 3D BOX --- */
+        /* --- 3D GIFT BOX --- */
         .gift-container {
             position: relative;
             width: 150px;
@@ -33,7 +33,6 @@
             z-index: 50;
         }
 
-        /* Hover Bounce */
         .gift-container:hover {
             animation: bounce 0.5s infinite alternate ease-in-out;
         }
@@ -42,7 +41,7 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: #ef4444; /* Bright Christmas Red */
+            background: #ef4444;
             border: 1px solid #dc2626;
         }
 
@@ -53,25 +52,9 @@
         .face-top    { transform: rotateX(90deg) translateZ(75px); background: #f87171; }
         .face-bottom { transform: rotateX(-90deg) translateZ(75px); box-shadow: 0 50px 50px rgba(0,0,0,0.2); }
 
-        /* Gold Ribbon */
-        .ribbon-v {
-            position: absolute;
-            left: 60px;
-            width: 30px;
-            height: 100%;
-            background: #fbbf24; /* Gold */
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
-        }
-        .ribbon-h {
-            position: absolute;
-            top: 60px;
-            width: 100%;
-            height: 30px;
-            background: #fbbf24;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
-        }
+        .ribbon-v { position: absolute; left: 60px; width: 30px; height: 100%; background: #fbbf24; }
+        .ribbon-h { position: absolute; top: 60px; width: 100%; height: 30px; background: #fbbf24; }
 
-        /* 3D Lid */
         .lid {
             position: absolute;
             width: 160px;
@@ -83,7 +66,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* CSS Bow */
         .bow {
             position: absolute;
             top: -50px;
@@ -103,14 +85,14 @@
         .bow-l { transform: rotate(45deg); left: -10px; }
         .bow-r { transform: rotate(135deg) scaleX(-1); left: 20px; }
 
-        /* --- THE TICKET (Modern Card) --- */
+        /* --- THE TICKET --- */
         #ticket {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.15);
             width: 90%;
             max-width: 400px;
-            padding: 40px 30px;
+            padding: 30px 20px;
             text-align: center;
             position: absolute;
             z-index: 40;
@@ -122,7 +104,6 @@
 
         /* --- ANIMATIONS --- */
         @keyframes bounce { to { transform: translateY(-10px); } }
-        
         .shaking { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 
             10%, 90% { transform: translate3d(-1px, 0, 0); } 
@@ -141,31 +122,26 @@
         }
         @keyframes fall { to { transform: translateY(100vh); } }
 
-        /* Hidden Player */
-        #player-wrapper { position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none; z-index: -1; }
+        /* Spotify Container */
+        #spotify-wrapper {
+            margin-top: 20px;
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
 
-    <div id="player-wrapper"><div id="player"></div></div>
-
     <div id="snow"></div>
 
     <div id="gift-wrapper" class="gift-container" onclick="openGift()">
-        <div class="face face-front">
-            <div class="ribbon-v"></div>
-            <div class="ribbon-h"></div>
-        </div>
-        <div class="face face-back">
-            <div class="ribbon-v"></div>
-            <div class="ribbon-h"></div>
-        </div>
-        <div class="face face-right">
-            <div class="ribbon-h"></div>
-        </div>
-        <div class="face face-left">
-            <div class="ribbon-h"></div>
-        </div>
+        <div class="face face-front"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
+        <div class="face face-back"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
+        <div class="face face-right"><div class="ribbon-h"></div></div>
+        <div class="face face-left"><div class="ribbon-h"></div></div>
         <div class="face face-top"></div>
         <div class="face face-bottom"></div>
 
@@ -189,73 +165,62 @@
 
     <div id="ticket">
         <div class="text-red-500 font-script text-4xl mb-2">Merry Christmas</div>
-        <div class="h-1 w-20 bg-gray-100 mx-auto mb-6 rounded"></div>
         
         <h2 class="text-gray-400 text-xs uppercase tracking-[0.2em] mb-2">We are going to see</h2>
         <h1 class="text-5xl font-black text-slate-800 mb-2 leading-tight tracking-tight">
             FORREST<br>FRANK
         </h1>
         
-        <div class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-6">
+        <div class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-4">
             LIVE IN RALEIGH, NC
         </div>
 
-        <p class="text-gray-600 italic">
-            "Pack your bags, my love! We're going UP!"
+        <p class="text-gray-600 italic text-sm mb-4">
+            "Pack your bags, my love!"
         </p>
 
-        <button onclick="forcePlay()" class="mt-8 text-xs text-gray-300 hover:text-red-500 transition uppercase tracking-widest">
-            ( Replay Song )
-        </button>
+        <div id="spotify-wrapper">
+            <div id="embed-iframe"></div>
+        </div>
     </div>
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    
     <script>
-        // --- 1. YOUTUBE API (Mobile Robust) ---
-        var player;
-        var tag = document.createElement('script');
-        tag.src = "https://www.yout-ube.com/watch?v=wCw-W-2Rs0k";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        // --- SPOTIFY LOGIC ---
+        let embedController;
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '200',
-                width: '200',
-                videoId: 'fwjhePqQzzM', // The Fan Edit (Less Ads)
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0
-                },
-                events: { 'onReady': onPlayerReady }
-            });
-        }
+        window.onSpotifyIframeApiReady = (IFrameAPI) => {
+            const element = document.getElementById('embed-iframe');
+            const options = {
+                // "UP!" by Forrest Frank Track ID
+                uri: 'spotify:track:3rUGC1vUpkDG9CZFHMur1t', 
+                width: '100%',
+                height: '80',
+                theme: 'light' 
+            };
+            
+            const callback = (EmbedController) => {
+                embedController = EmbedController;
+                console.log("Spotify Ready");
+            };
+            
+            IFrameAPI.createController(element, options, callback);
+        };
 
-        function onPlayerReady(event) {
-            console.log("Music Ready");
-            // Set volume but don't play yet
-            event.target.setVolume(100);
-        }
-
-        function forcePlay() {
-            if (player && player.playVideo) {
-                player.playVideo();
-            }
-        }
-
-        // --- 2. INTERACTION ---
+        // --- INTERACTION ---
         function openGift() {
             const box = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
 
-            // --- AUDIO TRIGGER (CRITICAL) ---
-            // Must happen inside this function triggered by user click
-            forcePlay();
+            // 1. TRIGGER AUDIO (Mobile requires this to happen inside the click event)
+            if (embedController) {
+                embedController.play();
+            }
 
-            // Animation
+            // 2. ANIMATION
             box.classList.add('shaking');
 
             setTimeout(() => {
@@ -268,7 +233,7 @@
                     box.style.display = 'none';
                     ticket.style.display = 'block';
                     
-                    // Simple entrance animation
+                    // Ticket slide up
                     requestAnimationFrame(() => {
                         ticket.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
                         ticket.style.transform = "scale(1) translateY(0)";
@@ -280,7 +245,7 @@
             }, 600);
         }
 
-        // --- 3. CONFETTI ---
+        // --- CONFETTI ---
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -307,7 +272,7 @@
             particles.forEach((p,i) => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.5; // Gravity
+                p.vy += 0.5;
                 ctx.fillStyle = p.color;
                 ctx.fillRect(p.x, p.y, p.size, p.size);
                 if(p.y > canvas.height) particles.splice(i,1);
@@ -315,7 +280,7 @@
             if(particles.length > 0) requestAnimationFrame(animateConfetti);
         }
 
-        // --- 4. SNOW ---
+        // --- SNOW ---
         const snowContainer = document.getElementById('snow');
         for(let i=0; i<30; i++) {
             const flake = document.createElement('div');
