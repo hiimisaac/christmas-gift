@@ -424,4 +424,281 @@
     <div class="wire" id="wire"></div>
   </div>
 
-  <div class="st
+  <div class="streamers" aria-hidden="true">
+    <div class="streamer r" style="left:-70px; top:130px;"></div>
+    <div class="streamer g" style="right:-80px; top:170px;"></div>
+    <div class="streamer" style="left:16%; top:320px; opacity:.16;"></div>
+  </div>
+
+  <canvas id="snow"></canvas>
+  <canvas id="confetti"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="card" id="card" aria-label="Christmas gift reveal">
+      <div class="cardInner">
+        <div class="topRow">
+          <div class="pill">🎄 Merry Christmas</div>
+          <div class="hint">Tap to unwrap<br/>music starts on tap</div>
+        </div>
+
+        <h1>I made you a tiny gift 🎁</h1>
+        <p class="sub">
+          The real tickets show up closer to the event… so this is your “unwrap” for now.
+        </p>
+
+        <div class="stage">
+          <div class="giftWrap">
+            <button class="cta" id="unwrapBtn" type="button">✨ Unwrap the surprise</button>
+
+            <div class="giftBox" id="giftBox" aria-hidden="true">
+              <div class="boxLid"></div>
+              <div class="bow"><div class="knot"></div></div>
+              <div class="boxBase">
+                <div class="ribbonV"></div>
+                <div class="ribbonH"></div>
+              </div>
+            </div>
+
+            <div class="reveal" id="reveal">
+              <h2>We’re going to see <span style="color:var(--gold)">Forrest Frank</span> 🙌</h2>
+              <p>
+                Tickets are coming later… but the plan is locked in. 💛
+              </p>
+
+              <div class="audioRow">
+                <div class="audioStatus" id="audioStatus">🎶 Starting music…</div>
+                <button class="playBtn" id="playBtn" type="button">▶️ Play Music</button>
+              </div>
+
+              <!-- Details are injected ONLY after unwrap -->
+              <div class="details" id="details"></div>
+            </div>
+
+            <div class="footerNote">
+              (If you don’t hear music, your phone may need one extra tap.)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ----- Lights
+    (function buildLights(){
+      const wire = document.getElementById("wire");
+      const colors = ["#ef4444","#22c55e","#f7b733","#60a5fa","#a78bfa"];
+      const count = 18;
+      for (let i=0;i<count;i++){
+        const b = document.createElement("div");
+        b.className = "bulb";
+        const x = (i/(count-1))*100;
+        b.style.left = `calc(${x}% - 8px)`;
+        b.style.animationDelay = `${(i%7)*0.12}s`;
+        b.style.color = colors[i % colors.length];
+        wire.appendChild(b);
+      }
+    })();
+
+    // ----- Snow
+    const snowCanvas = document.getElementById("snow");
+    const snowCtx = snowCanvas.getContext("2d");
+    let snowflakes = [];
+
+    // ----- Confetti
+    const confCanvas = document.getElementById("confetti");
+    const confCtx = confCanvas.getContext("2d");
+    let confetti = [];
+
+    function resizeCanvases(){
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      for (const c of [snowCanvas, confCanvas]){
+        c.width = Math.floor(window.innerWidth * dpr);
+        c.height = Math.floor(window.innerHeight * dpr);
+        c.style.width = window.innerWidth + "px";
+        c.style.height = window.innerHeight + "px";
+        c.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
+      }
+    }
+
+    function initSnow(){
+      snowflakes = [];
+      const base = Math.min(120, 60 + window.innerWidth/9);
+      const n = Math.floor(base);
+      for (let i=0;i<n;i++){
+        snowflakes.push({
+          x: Math.random()*window.innerWidth,
+          y: Math.random()*window.innerHeight,
+          r: 0.8 + Math.random()*2.1,
+          vx: -0.25 + Math.random()*0.5,
+          vy: 0.55 + Math.random()*1.35,
+          wobble: Math.random()*Math.PI*2,
+          a: 0.55 + Math.random()*0.45
+        });
+      }
+    }
+
+    function drawSnow(){
+      snowCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      for (const f of snowflakes){
+        f.wobble += 0.01;
+        f.x += f.vx + Math.sin(f.wobble)*0.22;
+        f.y += f.vy;
+
+        if (f.y > window.innerHeight + 12){ f.y = -12; f.x = Math.random()*window.innerWidth; }
+        if (f.x < -12) f.x = window.innerWidth + 12;
+        if (f.x > window.innerWidth + 12) f.x = -12;
+
+        snowCtx.beginPath();
+        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        snowCtx.fillStyle = `rgba(255,255,255,${0.78 * f.a})`;
+        snowCtx.fill();
+      }
+    }
+
+    function burstConfetti(){
+      const cx = window.innerWidth * 0.5;
+      const cy = window.innerHeight * 0.34;
+      const colors = ["#f7b733","#22c55e","#ef4444","#60a5fa","#a78bfa","#fde68a","#fda4af"];
+      const count = 240;
+
+      for (let i=0;i<count;i++){
+        const angle = Math.random()*Math.PI*2;
+        const speed = 2.5 + Math.random()*7.5;
+        confetti.push({
+          x: cx, y: cy,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - 4.5,
+          w: 4 + Math.random()*6,
+          h: 4 + Math.random()*10,
+          rot: Math.random()*Math.PI,
+          vr: -0.25 + Math.random()*0.5,
+          g: 0.12 + Math.random()*0.20,
+          life: 160 + Math.random()*90,
+          color: colors[i % colors.length]
+        });
+      }
+    }
+
+    function drawConfetti(){
+      confCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      for (let i=confetti.length-1;i>=0;i--){
+        const p = confetti[i];
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 1;
+
+        confCtx.save();
+        confCtx.translate(p.x, p.y);
+        confCtx.rotate(p.rot);
+        confCtx.fillStyle = p.color;
+        confCtx.globalAlpha = Math.max(0, Math.min(1, p.life/210));
+        confCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        confCtx.restore();
+
+        if (p.life <= 0 || p.y > window.innerHeight + 70) confetti.splice(i,1);
+      }
+    }
+
+    function tick(){
+      drawSnow();
+      drawConfetti();
+      requestAnimationFrame(tick);
+    }
+
+    window.addEventListener("resize", () => {
+      resizeCanvases();
+      initSnow();
+    });
+
+    resizeCanvases();
+    initSnow();
+    tick();
+
+    // ----- Unwrap + audio (mobile-friendly)
+    const unwrapBtn = document.getElementById("unwrapBtn");
+    const playBtn = document.getElementById("playBtn");
+    const reveal = document.getElementById("reveal");
+    const details = document.getElementById("details");
+    const audioStatus = document.getElementById("audioStatus");
+    const card = document.getElementById("card");
+    const giftBox = document.getElementById("giftBox");
+
+    let unwrapped = false;
+    let audio = null;
+
+    function buildDetails(){
+      // Inject ONLY after unwrap (no details in HTML source before).
+      details.innerHTML = `
+        <div class="detailRow">
+          <div class="k">Venue</div>
+          <div class="v"><b>Lenovo Center</b><br/><span style="color: rgba(243,247,255,.72)">Raleigh, NC</span></div>
+        </div>
+        <div class="detailRow">
+          <div class="k">Vibe</div>
+          <div class="v">Good Day energy ✨</div>
+        </div>
+        <div class="detailRow">
+          <div class="k">Note</div>
+          <div class="v" style="color: rgba(243,247,255,.72)">Tickets arrive closer to showtime.</div>
+        </div>
+      `;
+      details.style.display = "block";
+    }
+
+    function startMusic(){
+      try{
+        if (!audio){
+          const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
+          audio = new Audio(audioUrl);
+          audio.preload = "auto";
+          audio.loop = false;
+          audio.volume = 1;
+        }
+
+        const p = audio.play();
+        audioStatus.textContent = "🎶 Music is playing.";
+        playBtn.style.display = "none";
+
+        if (p && typeof p.then === "function"){
+          p.catch(() => {
+            audioStatus.textContent = "🔊 Tap “Play Music” (your phone blocked it the first time).";
+            playBtn.style.display = "inline-block";
+          });
+        }
+      } catch {
+        audioStatus.textContent = "🔊 Tap “Play Music”.";
+        playBtn.style.display = "inline-block";
+      }
+    }
+
+    unwrapBtn.addEventListener("click", () => {
+      if (unwrapped) return;
+      unwrapped = true;
+
+      card.classList.add("opened");
+      giftBox.classList.add("opened");
+
+      burstConfetti();
+
+      reveal.style.display = "block";
+      buildDetails();
+
+      audioStatus.textContent = "🎶 Starting music…";
+      startMusic();
+
+      // Replace button text after unwrap to avoid repeated taps
+      unwrapBtn.textContent = "✅ Unwrapped";
+      unwrapBtn.style.opacity = "0.92";
+    });
+
+    playBtn.addEventListener("click", () => {
+      audioStatus.textContent = "🎶 Starting music…";
+      startMusic();
+    });
+  </script>
+</body>
+</html>
