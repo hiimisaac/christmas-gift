@@ -4,28 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>🎁</title>
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="theme-color" content="#070A12" />
 
   <style>
     :root{
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBottom: env(safe-area-inset-bottom, 0px);
 
-      --bg0:#070A12;
-      --bg1:#0B1020;
-
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.62);
       --hair: rgba(255,255,255,.10);
 
-      --glass: rgba(255,255,255,.06);
-      --glass2: rgba(255,255,255,.08);
+      --glassA: rgba(255,255,255,.07);
+      --glassB: rgba(255,255,255,.05);
 
       --shadow: 0 24px 70px rgba(0,0,0,.55);
       --radius: 22px;
 
-      --accent: #D6B46A; /* warm gold */
-      --accent2:#7ED7C1; /* soft mint */
+      /* tasteful, Apple-ish */
+      --gold: 214, 180, 106;
+      --mint: 126, 215, 193;
     }
 
     *{ box-sizing:border-box; }
@@ -38,13 +36,30 @@
       -webkit-font-smoothing: antialiased;
       overflow-x:hidden;
       overflow-y:auto;
-      background: radial-gradient(1100px 700px at 20% 10%, rgba(214,180,106,.20), transparent 55%),
-                  radial-gradient(900px 700px at 85% 30%, rgba(126,215,193,.14), transparent 55%),
-                  radial-gradient(900px 900px at 50% 100%, rgba(255,255,255,.06), transparent 60%),
-                  linear-gradient(180deg, var(--bg0), var(--bg1));
+
+      /* Smooth blend (no hard stop) */
+      background:
+        radial-gradient(1200px 800px at 18% 12%, rgba(var(--gold), .22), transparent 65%),
+        radial-gradient(1100px 900px at 88% 28%, rgba(var(--mint), .18), transparent 62%),
+        radial-gradient(900px 700px at 50% 115%, rgba(255,255,255,.07), transparent 60%),
+        linear-gradient(180deg, #05070f 0%, #081021 55%, #060914 100%);
+      background-color:#05070f;
     }
 
-    /* Subtle grain (Apple-ish depth) */
+    /* Soft bloom to hide banding + add “depth” */
+    body::after{
+      content:"";
+      position:fixed; inset:-40px;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 500px at 30% 5%, rgba(var(--gold), .16), transparent 70%),
+        radial-gradient(900px 600px at 85% 15%, rgba(var(--mint), .12), transparent 72%);
+      filter: blur(28px);
+      opacity:.75;
+      z-index:0;
+    }
+
+    /* subtle grain */
     body::before{
       content:"";
       position:fixed; inset:0;
@@ -52,15 +67,15 @@
       background:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
       mix-blend-mode: overlay;
-      opacity:.10;
-      z-index:0;
+      opacity:.08;
+      z-index:1;
     }
 
-    /* Sparkle burst canvas (subtle) */
+    /* sparkles (subtle) */
     canvas{
       position:fixed; inset:0;
       pointer-events:none;
-      z-index: 5;
+      z-index: 6;
     }
 
     main{
@@ -74,60 +89,33 @@
         calc(22px + var(--safeBottom));
     }
 
-    .top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 16px;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--hair);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.88);
-      font-weight: 650;
-      letter-spacing: .2px;
-      font-size: 13px;
-    }
-    .small{
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.2;
-      text-align:right;
-      max-width: 220px;
-    }
-
     .card{
       border-radius: var(--radius);
-      background: linear-gradient(180deg, var(--glass2), var(--glass));
+      background: linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.045));
       border: 1px solid var(--hair);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
       overflow:hidden;
     }
     .inner{
-      padding: 22px;
+      padding: 24px;
     }
     @media (min-width: 420px){
-      .inner{ padding: 26px; }
+      .inner{ padding: 28px; }
     }
 
     h1{
-      margin: 6px 0 10px;
+      margin: 0 0 10px;
       font-size: clamp(28px, 7.2vw, 44px);
-      letter-spacing: -0.6px;
+      letter-spacing: -0.7px;
       line-height: 1.05;
+      font-weight: 760;
     }
     .lead{
       margin: 0 0 18px;
       color: var(--muted);
       font-size: clamp(14.5px, 4.2vw, 17px);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     .divider{
@@ -136,35 +124,19 @@
       margin: 18px 0;
     }
 
-    /* Slide to unwrap */
+    /* Slide control (premium) */
     .sliderWrap{
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.18);
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 18px;
       padding: 14px;
     }
-    .sliderTitle{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      gap:12px;
-      margin-bottom: 10px;
-    }
-    .sliderTitle b{
-      font-weight: 750;
-      letter-spacing: .2px;
-    }
-    .sliderTitle span{
-      color: var(--muted);
-      font-size: 13px;
-    }
 
     .track{
       position:relative;
-      height: 54px;
+      height: 56px;
       border-radius: 16px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       border: 1px solid rgba(255,255,255,.10);
       overflow:hidden;
       user-select:none;
@@ -172,11 +144,10 @@
       touch-action: none;
     }
 
-    /* soft “sheen” */
     .track::before{
       content:"";
       position:absolute; inset:-40px;
-      background: radial-gradient(420px 120px at 20% 40%, rgba(255,255,255,.14), transparent 60%);
+      background: radial-gradient(520px 160px at 18% 40%, rgba(255,255,255,.14), transparent 60%);
       transform: rotate(-8deg);
       opacity:.55;
       pointer-events:none;
@@ -192,29 +163,30 @@
       font-weight: 650;
       letter-spacing: .2px;
       font-size: 15px;
-      mix-blend-mode: screen;
       pointer-events:none;
+      transition: opacity .15s ease;
     }
 
     .fill{
       position:absolute;
       left:0; top:0; bottom:0;
       width: var(--fill, 0%);
-      background: linear-gradient(90deg, rgba(214,180,106,.28), rgba(126,215,193,.22));
-      filter: blur(0px);
+      background: linear-gradient(
+        90deg,
+        rgba(var(--gold), .30),
+        rgba(var(--mint), .22)
+      );
     }
 
     .thumb{
       position:absolute;
-      top: 6px;
-      left: 6px;
+      top: 7px;
+      left: 7px;
       width: 42px;
       height: 42px;
       border-radius: 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
-      box-shadow:
-        0 12px 22px rgba(0,0,0,.35),
-        inset 0 0 0 1px rgba(0,0,0,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
+      box-shadow: 0 12px 22px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.10);
       display:grid;
       place-items:center;
       color: rgba(0,0,0,.70);
@@ -222,9 +194,7 @@
       transform: translateX(var(--x, 0px));
       transition: transform .18s ease-out;
     }
-    .dragging .thumb{
-      transition:none;
-    }
+    .dragging .thumb{ transition:none; }
 
     /* Reveal */
     .reveal{
@@ -244,12 +214,13 @@
     .reveal h2{
       margin:0 0 6px;
       font-size: clamp(18px, 5.6vw, 24px);
-      letter-spacing: -0.2px;
+      letter-spacing: -0.25px;
+      font-weight: 740;
     }
     .reveal p{
       margin:0;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.5;
       font-size: 14.5px;
     }
 
@@ -310,7 +281,6 @@
       line-height: 1.35;
     }
 
-    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       .reveal{ animation:none; }
       .thumb{ transition:none; }
@@ -322,53 +292,32 @@
   <canvas id="spark"></canvas>
 
   <main>
-    <div class="top">
-      <div class="chip">🎄 Merry Christmas</div>
-      <div class="small">Slide to unwrap.<br/>Music starts when it opens.</div>
-    </div>
-
-    <section class="card" id="card">
+    <section class="card">
       <div class="inner">
-        <h1>A little surprise.</h1>
-        <p class="lead">
-          The real tickets arrive closer to the event — so I wrapped the “we’re going” moment in something you can open right now.
-        </p>
+        <!-- Nothing hinty -->
+        <h1>For you.</h1>
+        <p class="lead">Open when you’re ready.</p>
 
         <div class="divider"></div>
 
         <div class="sliderWrap" id="sliderWrap">
-          <div class="sliderTitle">
-            <b>Unwrap</b>
-            <span>one smooth slide →</span>
-          </div>
-
-          <div class="track" id="track" role="button" aria-label="Slide to unwrap">
+          <div class="track" id="track" role="button" aria-label="Slide to open">
             <div class="fill" id="fill"></div>
-            <div class="trackLabel" id="trackLabel">Slide to unwrap</div>
+            <div class="trackLabel" id="trackLabel">Slide to open</div>
             <div class="thumb" id="thumb">›</div>
           </div>
 
-          <div class="reveal" id="reveal">
-            <h2>We’re going to see <span style="color:var(--accent)">Forrest Frank</span>.</h2>
-            <p>Tickets are coming later — but the plan is locked in. 🤍</p>
+          <!-- Empty until unlock (prevents guessing / view-source spoilers) -->
+          <div class="reveal" id="reveal"></div>
 
-            <div class="audioRow">
-              <div class="audioStatus" id="audioStatus">🎶 Starting music…</div>
-              <button class="playBtn" id="playBtn" type="button">Play</button>
-            </div>
-
-            <!-- injected after unwrap (no details in HTML before) -->
-            <div class="details" id="details"></div>
-          </div>
-
-          <div class="foot">If audio doesn’t start, tap Play once (phone rules).</div>
+          <div class="foot" id="foot" style="display:none;">If audio doesn’t start, tap Play once.</div>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    // --- Subtle sparkle burst (modern, not clown confetti)
+    // ---- Subtle sparkle burst
     const sparkCanvas = document.getElementById("spark");
     const sctx = sparkCanvas.getContext("2d");
     let sparks = [];
@@ -386,8 +335,12 @@
 
     function burstSparks(){
       const cx = window.innerWidth * 0.5;
-      const cy = Math.min(window.innerHeight * 0.30, 260);
-      const palette = ["rgba(214,180,106,.95)","rgba(126,215,193,.90)","rgba(255,255,255,.85)"];
+      const cy = Math.min(window.innerHeight * 0.26, 240);
+      const palette = [
+        "rgba(214,180,106,.95)",
+        "rgba(126,215,193,.90)",
+        "rgba(255,255,255,.85)"
+      ];
       const count = 110;
 
       for (let i=0;i<count;i++){
@@ -427,17 +380,13 @@
     }
     drawSparks();
 
-    // --- Slide to unwrap logic
-    const sliderWrap = document.getElementById("sliderWrap");
+    // ---- Slider
     const track = document.getElementById("track");
     const thumb = document.getElementById("thumb");
     const fill = document.getElementById("fill");
     const trackLabel = document.getElementById("trackLabel");
-
     const reveal = document.getElementById("reveal");
-    const details = document.getElementById("details");
-    const audioStatus = document.getElementById("audioStatus");
-    const playBtn = document.getElementById("playBtn");
+    const foot = document.getElementById("foot");
 
     let dragging = false;
     let startX = 0;
@@ -445,30 +394,25 @@
     let unlocked = false;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
     function metrics(){
       const r = track.getBoundingClientRect();
-      const maxX = (r.width - 12 - 42); // track padding*2 + thumb width
+      const maxX = (r.width - 14 - 42); // (left+right padding ~14) + thumb width
       return { r, maxX };
     }
-
     function setX(px){
       x = px;
       thumb.style.setProperty("--x", x + "px");
       const { maxX } = metrics();
       const pct = clamp((x / maxX) * 100, 0, 100);
-      fill.style.setProperty("--fill", pct + "%");
       fill.style.width = pct + "%";
-      trackLabel.style.opacity = String(0.85 - pct/130); // fades as you slide
+      trackLabel.style.opacity = String(0.90 - pct/120);
     }
 
     function snapBack(){
       track.classList.remove("dragging");
-      // simple easing back
       const start = x;
       const t0 = performance.now();
       const dur = 180;
-
       function step(now){
         const p = clamp((now - t0)/dur, 0, 1);
         const ease = 1 - Math.pow(1 - p, 3);
@@ -478,24 +422,87 @@
       requestAnimationFrame(step);
     }
 
+    // ---- Audio (iOS reliable pattern)
+    const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
+    let audio = null;
+
+    function primeAudio(){
+      // Create/load on first touch so iOS is less cranky later
+      if (audio) return;
+      audio = new Audio(audioUrl);
+      audio.preload = "auto";
+      try { audio.load(); } catch {}
+    }
+
+    function tryPlayAudio(audioStatusEl, playBtnEl){
+      if (!audio) primeAudio();
+
+      // optimistic attempt
+      let played = false;
+      try{
+        const p = audio.play();
+        // promise path (modern safari)
+        if (p && typeof p.then === "function"){
+          p.then(() => { played = true; })
+           .catch(() => {
+             audioStatusEl.textContent = "Tap Play once.";
+             playBtnEl.style.display = "inline-block";
+           });
+        } else {
+          // non-promise path: verify shortly after
+          setTimeout(() => {
+            if (audio && audio.paused){
+              audioStatusEl.textContent = "Tap Play once.";
+              playBtnEl.style.display = "inline-block";
+            }
+          }, 250);
+          played = true;
+        }
+      } catch {
+        audioStatusEl.textContent = "Tap Play once.";
+        playBtnEl.style.display = "inline-block";
+      }
+
+      // also show fallback if still paused after a moment
+      setTimeout(() => {
+        if (audio && audio.paused){
+          audioStatusEl.textContent = "Tap Play once.";
+          playBtnEl.style.display = "inline-block";
+        }
+      }, 450);
+
+      return played;
+    }
+
     function unlock(){
       if (unlocked) return;
       unlocked = true;
 
-      // lock thumb at end
       const { maxX } = metrics();
       setX(maxX);
       track.classList.remove("dragging");
-      trackLabel.textContent = "Unwrapped";
+      trackLabel.textContent = "Opened";
       trackLabel.style.opacity = "0.9";
 
-      // modern sparkle burst
       burstSparks();
 
-      // reveal content
+      // Inject EVERYTHING only now (no spoilers pre-swipe)
+      reveal.innerHTML = `
+        <h2>We’re going to see <span style="color: rgba(214,180,106,.95)">Forrest Frank</span>.</h2>
+        <p>🤍</p>
+        <div class="audioRow">
+          <div class="audioStatus" id="audioStatus">Starting music…</div>
+          <button class="playBtn" id="playBtn" type="button">Play</button>
+        </div>
+        <div class="details" id="details"></div>
+      `;
       reveal.style.display = "block";
+      foot.style.display = "block";
 
-      // inject details ONLY now (not in HTML before)
+      const audioStatus = document.getElementById("audioStatus");
+      const playBtn = document.getElementById("playBtn");
+      const details = document.getElementById("details");
+
       details.innerHTML = `
         <div class="row">
           <div class="k">Venue</div>
@@ -505,83 +512,65 @@
           <div class="k">Vibe</div>
           <div class="v">Good Day energy ✨</div>
         </div>
-        <div class="row">
-          <div class="k">Note</div>
-          <div class="v"><small>Tickets arrive closer to showtime.</small></div>
-        </div>
       `;
       details.style.display = "block";
 
-      // start music on the SAME user gesture
-      audioStatus.textContent = "🎶 Starting music…";
-      startMusic();
+      // Play immediately on this unlock gesture
+      playBtn.style.display = "none";
+      tryPlayAudio(audioStatus, playBtn);
 
-      // scroll a touch to show the reveal cleanly
-      setTimeout(() => reveal.scrollIntoView({ behavior: "smooth", block: "start" }), 180);
+      playBtn.addEventListener("click", () => {
+        audioStatus.textContent = "Starting music…";
+        tryPlayAudio(audioStatus, playBtn);
+      });
+
+      setTimeout(() => reveal.scrollIntoView({ behavior:"smooth", block:"start" }), 180);
     }
 
-    // --- Audio (gesture-safe)
-    let audio = null;
-    function startMusic(){
-      try{
-        if (!audio){
-          const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
-          audio = new Audio(audioUrl);
-          audio.preload = "auto";
-          audio.loop = false;
-          audio.volume = 1;
-        }
-        const p = audio.play();
-        audioStatus.textContent = "🎶 Music is playing.";
-        playBtn.style.display = "none";
-
-        if (p && typeof p.then === "function"){
-          p.catch(() => {
-            audioStatus.textContent = "Tap Play once (your phone blocked it).";
-            playBtn.style.display = "inline-block";
-          });
-        }
-      } catch {
-        audioStatus.textContent = "Tap Play once.";
-        playBtn.style.display = "inline-block";
-      }
-    }
-    playBtn.addEventListener("click", () => {
-      audioStatus.textContent = "🎶 Starting music…";
-      startMusic();
-    });
-
-    // Pointer drag
+    // Pointer events + touch fallback
     track.addEventListener("pointerdown", (e) => {
       if (unlocked) return;
+      primeAudio();
       dragging = true;
       track.classList.add("dragging");
       track.setPointerCapture?.(e.pointerId);
       startX = e.clientX;
     });
-
     track.addEventListener("pointermove", (e) => {
       if (!dragging || unlocked) return;
       const { maxX } = metrics();
-      const dx = e.clientX - startX;
-      setX(clamp(dx, 0, maxX));
+      setX(clamp(e.clientX - startX, 0, maxX));
     });
-
     function endDrag(){
       if (!dragging || unlocked) return;
       dragging = false;
 
       const { maxX } = metrics();
       const pct = x / maxX;
-
       if (pct > 0.92) unlock();
       else snapBack();
     }
-
     track.addEventListener("pointerup", endDrag);
     track.addEventListener("pointercancel", endDrag);
 
-    // init position
+    // Touch fallback (some iOS builds behave better with this)
+    track.addEventListener("touchstart", (e) => {
+      if (unlocked) return;
+      primeAudio();
+      dragging = true;
+      track.classList.add("dragging");
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener("touchmove", (e) => {
+      if (!dragging || unlocked) return;
+      const { maxX } = metrics();
+      setX(clamp(e.touches[0].clientX - startX, 0, maxX));
+    }, { passive: true });
+
+    track.addEventListener("touchend", endDrag);
+
+    // init
     setX(0);
   </script>
 </body>
