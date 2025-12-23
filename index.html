@@ -40,7 +40,7 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: #ef4444;
+            background: #ef4444; /* Xmas Red */
             border: 1px solid #dc2626;
         }
 
@@ -120,19 +120,19 @@
         }
         @keyframes fall { to { transform: translateY(100vh); } }
 
-        /* Spotify Visual */
+        /* Spotify Container */
         #spotify-visual {
             margin-top: 15px;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            pointer-events: none;
+            pointer-events: none; /* Just for looks */
         }
     </style>
 </head>
 <body>
 
-    <audio id="music-player" preload="auto"></audio>
+    <audio id="bg-music" src="song.mp3" preload="auto"></audio>
 
     <div id="snow"></div>
 
@@ -186,29 +186,10 @@
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
     <script>
-        // --- 1. THE FIX: JSONP SCRIPT INJECTION ---
-        // This function is called automatically when the script loads
-        function catchMusic(data) {
-            if(data.results && data.results.length > 0) {
-                const player = document.getElementById('music-player');
-                // We set the source to the "Good Day" preview MP3
-                player.src = data.results[0].previewUrl;
-                player.volume = 1.0;
-                console.log("Music loaded successfully without CORS!");
-            }
-        }
-        
-        // We create a script tag that points to iTunes
-        // The '&callback=catchMusic' part tells iTunes to wrap the data in our function
-        const script = document.createElement('script');
-        script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=catchMusic';
-        document.body.appendChild(script);
-
-
-        // --- 2. INTERACTION LOGIC ---
+        // --- 1. INTERACTION LOGIC ---
         const giftBox = document.getElementById('gift-wrapper');
         const ticket = document.getElementById('ticket');
-        const audio = document.getElementById('music-player');
+        const audio = document.getElementById('bg-music');
         let hasOpened = false;
 
         function triggerSurprise(e) {
@@ -216,13 +197,17 @@
             if (e.type === 'touchstart') e.preventDefault(); 
             hasOpened = true;
 
-            // PLAY AUDIO - This works because it's inside a touch event
-            audio.play().catch(err => console.log("Audio failed:", err));
+            // PLAY AUDIO (Local File)
+            audio.play().catch(err => {
+                console.log("Audio Error:", err);
+                alert("Tap the screen again to play music! (Browser blocked it)");
+            });
 
             // ANIMATION
             giftBox.classList.add('shaking');
 
             setTimeout(() => {
+                // Explode box
                 giftBox.style.transition = "all 0.5s ease-in";
                 giftBox.style.transform = "scale(1.2) rotate(15deg)";
                 giftBox.style.opacity = "0";
@@ -231,6 +216,7 @@
                     giftBox.style.display = 'none';
                     ticket.style.display = 'block';
                     
+                    // Ticket slide up
                     requestAnimationFrame(() => {
                         ticket.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
                         ticket.style.transform = "scale(1) translateY(0)";
@@ -246,7 +232,7 @@
         giftBox.addEventListener('touchstart', triggerSurprise, {passive: false});
         giftBox.addEventListener('click', triggerSurprise);
 
-        // --- CONFETTI & SNOW (Visuals) ---
+        // --- 2. CONFETTI ---
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -281,6 +267,7 @@
             if(particles.length > 0) requestAnimationFrame(animateConfetti);
         }
 
+        // --- 3. SNOW ---
         const snowContainer = document.getElementById('snow');
         for(let i=0; i<30; i++) {
             const flake = document.createElement('div');
