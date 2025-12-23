@@ -4,7 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>🎁</title>
-  <meta name="theme-color" content="#000000" />
+
+  <!-- Helps Safari tint its UI closer to your page (still not perfect) -->
+  <meta name="theme-color" content="#071021" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#0a0a0a" />
 
   <style>
     :root{
@@ -15,10 +18,9 @@
       --muted: rgba(255,255,255,.62);
       --hair: rgba(255,255,255,.10);
 
-      --shadow: 0 24px 70px rgba(0,0,0,.55);
-      --radius: 22px;
+      --shadow: 0 28px 90px rgba(0,0,0,.62);
+      --radius: 26px;
 
-      /* Accent pair */
       --gold: 214, 180, 106;
       --mint: 126, 215, 193;
     }
@@ -26,47 +28,44 @@
     *{ box-sizing:border-box; }
     html, body{
       height:100%;
-      background:#000;           /* prevents iOS blue behind */
       margin:0;
       padding:0;
+      background:#000;
+      overflow:hidden; /* IMPORTANT: stop body/page rubber-band */
     }
 
     body{
       color: var(--text);
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, system-ui;
       -webkit-font-smoothing: antialiased;
-      overflow-x:hidden;
-      overflow-y:auto;
       position:relative;
     }
 
-    /* Fixed background layer (real gradient lives here) */
+    /* Fullscreen background layer (never scrolls) */
     .bg{
       position:fixed;
       inset:0;
       z-index:0;
       background:
-        radial-gradient(1200px 800px at 18% 12%, rgba(var(--gold), .22), transparent 65%),
-        radial-gradient(1100px 900px at 88% 28%, rgba(var(--mint), .18), transparent 62%),
-        radial-gradient(900px 700px at 50% 115%, rgba(255,255,255,.07), transparent 60%),
-        linear-gradient(180deg, #05070f 0%, #081021 55%, #060914 100%);
-      background-color:#05070f;
-      transform: translateZ(0); /* helps iOS compositing */
+        radial-gradient(1200px 820px at 18% 10%, rgba(var(--gold), .26), transparent 65%),
+        radial-gradient(1100px 900px at 88% 24%, rgba(var(--mint), .20), transparent 62%),
+        radial-gradient(1000px 740px at 50% 115%, rgba(255,255,255,.07), transparent 60%),
+        linear-gradient(180deg, #04060d 0%, #071021 58%, #050815 100%);
+      background-color:#04060d;
+      transform: translateZ(0);
     }
 
-    /* Soft bloom (hides banding, adds depth) */
     .bg::after{
       content:"";
       position:absolute;
       inset:-60px;
       background:
-        radial-gradient(900px 520px at 30% 5%, rgba(var(--gold), .16), transparent 72%),
-        radial-gradient(900px 620px at 85% 15%, rgba(var(--mint), .12), transparent 74%);
+        radial-gradient(960px 520px at 30% 6%, rgba(var(--gold), .18), transparent 72%),
+        radial-gradient(960px 620px at 86% 16%, rgba(var(--mint), .14), transparent 74%);
       filter: blur(30px);
-      opacity:.78;
+      opacity:.80;
     }
 
-    /* Subtle grain */
     .bg::before{
       content:"";
       position:absolute;
@@ -77,32 +76,49 @@
       opacity:.08;
     }
 
-    /* Layers */
+    /* Fixed scroll container so Safari doesn't expose UI colors via rubber-band */
+    .scroll{
+      position:fixed;
+      inset:0;
+      z-index:10;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      display:flex;
+      align-items:center;           /* center vertically */
+      justify-content:center;       /* center horizontally */
+      padding:
+        calc(110px + var(--safeTop))
+        16px
+        calc(34px + var(--safeBottom));
+    }
+
+    /* Snow + sparkle */
     canvas{
       position:fixed;
       inset:0;
       pointer-events:none;
-      z-index: 4;
+      z-index:4;
     }
-    #snow{ z-index: 3; opacity:.9; }
-    #spark{ z-index: 5; }
+    #snow{ z-index:3; opacity:.9; }
+    #spark{ z-index:6; }
 
-    /* Christmas lights (modern, subtle) */
+    /* Lights */
     .lights{
       position:fixed;
       left:0; right:0;
       top:0;
       padding-top: calc(10px + var(--safeTop));
-      height: calc(76px + var(--safeTop));
+      height: calc(84px + var(--safeTop));
       display:flex;
       justify-content:center;
       pointer-events:none;
-      z-index: 8;
+      z-index: 12;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.55));
     }
     .wire{
       position:relative;
-      width:min(720px, 96vw);
+      width:min(780px, 96vw);
       height:64px;
     }
     .wire::before{
@@ -153,30 +169,25 @@
       50%{ transform: rotate(2deg); }
     }
 
-    main{
-      position:relative;
-      z-index: 10;
-      max-width: 560px;
-      margin: 0 auto;
-      padding:
-        calc(92px + var(--safeTop))
-        16px
-        calc(22px + var(--safeBottom));
+    /* The “big” card */
+    .stage{
+      width: min(640px, 94vw);
     }
 
     .card{
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.045));
+      background: linear-gradient(180deg, rgba(255,255,255,.090), rgba(255,255,255,.040));
       border: 1px solid var(--hair);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
       overflow:hidden;
     }
+
     .inner{
-      padding: 24px;
+      padding: 28px;
     }
     @media (min-width: 420px){
-      .inner{ padding: 28px; }
+      .inner{ padding: 32px; }
     }
 
     .chipRow{
@@ -184,62 +195,71 @@
       justify-content:space-between;
       align-items:center;
       gap:10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .chip{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.88);
+      color: rgba(255,255,255,.90);
       font-weight: 650;
       letter-spacing: .2px;
-      font-size: 13px;
+      font-size: 14px;
       white-space:nowrap;
     }
     .hint{
-      color: rgba(255,255,255,.55);
-      font-size: 13px;
+      color: rgba(255,255,255,.58);
+      font-size: 14px;
       line-height: 1.2;
       text-align:right;
     }
 
+    .heroIcon{
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 10px;
+      opacity: .92;
+    }
+
     h1{
       margin: 0 0 10px;
-      font-size: clamp(28px, 7.2vw, 44px);
-      letter-spacing: -0.7px;
-      line-height: 1.05;
-      font-weight: 760;
+      font-size: clamp(34px, 9vw, 54px); /* BIGGER */
+      letter-spacing: -0.9px;
+      line-height: 1.02;
+      font-weight: 800;
     }
+
     .lead{
       margin: 0 0 18px;
-      color: var(--muted);
-      font-size: clamp(14.5px, 4.2vw, 17px);
+      color: rgba(255,255,255,.66);
+      font-size: clamp(16px, 4.8vw, 18px); /* BIGGER */
       line-height: 1.55;
     }
 
     .divider{
       height:1px;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-      margin: 18px 0;
+      margin: 18px 0 20px;
     }
 
-    /* Slider */
+    /* Slider (bigger + more “in your face”) */
     .sliderWrap{
       background: rgba(0,0,0,.18);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 18px;
-      padding: 14px;
+      border-radius: 20px;
+      padding: 16px;
     }
+
     .track{
       position:relative;
-      height: 56px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border: 1px solid rgba(255,255,255,.10);
+      height: 68px; /* BIGGER */
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.12);
       overflow:hidden;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
@@ -247,8 +267,8 @@
     }
     .track::before{
       content:"";
-      position:absolute; inset:-40px;
-      background: radial-gradient(520px 160px at 18% 40%, rgba(255,255,255,.14), transparent 60%);
+      position:absolute; inset:-60px;
+      background: radial-gradient(620px 220px at 18% 40%, rgba(255,255,255,.14), transparent 60%);
       transform: rotate(-8deg);
       opacity:.55;
       pointer-events:none;
@@ -259,10 +279,10 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      color: rgba(255,255,255,.72);
-      font-weight: 650;
+      color: rgba(255,255,255,.76);
+      font-weight: 700;
       letter-spacing: .2px;
-      font-size: 15px;
+      font-size: 17px; /* BIGGER */
       pointer-events:none;
       transition: opacity .15s ease;
     }
@@ -270,27 +290,26 @@
       position:absolute;
       left:0; top:0; bottom:0;
       width: 0%;
-      background: linear-gradient(90deg, rgba(var(--gold), .30), rgba(var(--mint), .22));
+      background: linear-gradient(90deg, rgba(var(--gold), .34), rgba(var(--mint), .24));
     }
     .thumb{
       position:absolute;
-      top: 7px;
-      left: 7px;
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      top: 8px;
+      left: 8px;
+      width: 52px;   /* BIGGER */
+      height: 52px;  /* BIGGER */
+      border-radius: 18px;
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
-      box-shadow: 0 12px 22px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.10);
+      box-shadow: 0 14px 26px rgba(0,0,0,.38), inset 0 0 0 1px rgba(0,0,0,.10);
       display:grid;
       place-items:center;
-      color: rgba(0,0,0,.70);
-      font-size: 18px;
+      color: rgba(0,0,0,.72);
+      font-size: 22px;
       transform: translateX(var(--x, 0px));
       transition: transform .18s ease-out;
     }
     .dragging .thumb{ transition:none; }
 
-    /* Reveal (empty until unlock) */
     .reveal{
       display:none;
       margin-top: 18px;
@@ -304,18 +323,20 @@
       from{ opacity:0; transform: translateY(10px); }
       to{ opacity:1; transform: translateY(0); }
     }
+
     .reveal h2{
       margin:0 0 6px;
-      font-size: clamp(18px, 5.6vw, 24px);
+      font-size: clamp(20px, 6.2vw, 26px);
       letter-spacing: -0.25px;
-      font-weight: 740;
+      font-weight: 760;
     }
     .reveal p{
       margin:0;
-      color: var(--muted);
+      color: rgba(255,255,255,.66);
       line-height: 1.5;
-      font-size: 14.5px;
+      font-size: 15px;
     }
+
     .audioRow{
       margin-top: 12px;
       display:flex;
@@ -333,11 +354,11 @@
     .playBtn{
       display:none;
       border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.90);
       border-radius: 14px;
       padding: 10px 12px;
-      font-weight: 650;
+      font-weight: 700;
       letter-spacing: .2px;
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
@@ -385,36 +406,39 @@
   <canvas id="snow"></canvas>
   <canvas id="spark"></canvas>
 
-  <main>
-    <section class="card">
-      <div class="inner">
-        <div class="chipRow">
-          <div class="chip">🎄 Merry Christmas</div>
-          <div class="hint">Slide to open</div>
-        </div>
-
-        <!-- no spoilers -->
-        <h1>For you.</h1>
-        <p class="lead">Open when you’re ready.</p>
-
-        <div class="divider"></div>
-
-        <div class="sliderWrap">
-          <div class="track" id="track" role="button" aria-label="Slide to open">
-            <div class="fill" id="fill"></div>
-            <div class="trackLabel" id="trackLabel">Slide to open</div>
-            <div class="thumb" id="thumb">›</div>
+  <div class="scroll">
+    <div class="stage">
+      <section class="card">
+        <div class="inner">
+          <div class="chipRow">
+            <div class="chip">🎄 Merry Christmas</div>
+            <div class="hint">Slide to open</div>
           </div>
 
-          <div class="reveal" id="reveal"></div>
-          <div class="foot" id="foot">If audio doesn’t start, tap Play once.</div>
+          <!-- no spoilers -->
+          <div class="heroIcon">🎁</div>
+          <h1>For you.</h1>
+          <p class="lead">Open when you’re ready.</p>
+
+          <div class="divider"></div>
+
+          <div class="sliderWrap">
+            <div class="track" id="track" role="button" aria-label="Slide to open">
+              <div class="fill" id="fill"></div>
+              <div class="trackLabel" id="trackLabel">Slide to open</div>
+              <div class="thumb" id="thumb">›</div>
+            </div>
+
+            <div class="reveal" id="reveal"></div>
+            <div class="foot" id="foot">If audio doesn’t start, tap Play once.</div>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </div>
+  </div>
 
   <script>
-    // ---- Christmas lights
+    // Lights
     (function buildLights(){
       const wire = document.getElementById("wire");
       const colors = ["#ef4444","#22c55e","#f7b733","#60a5fa","#a78bfa"];
@@ -430,7 +454,7 @@
       }
     })();
 
-    // ---- Snowfall (subtle)
+    // Snow
     const snowCanvas = document.getElementById("snow");
     const sn = snowCanvas.getContext("2d");
     let flakes = [];
@@ -444,13 +468,13 @@
       sn.setTransform(dpr,0,0,dpr,0,0);
 
       flakes = [];
-      const n = Math.floor(Math.min(140, 70 + window.innerWidth / 8));
+      const n = Math.floor(Math.min(160, 80 + window.innerWidth / 7));
       for (let i=0;i<n;i++){
         flakes.push({
           x: Math.random()*window.innerWidth,
           y: Math.random()*window.innerHeight,
-          r: 0.8 + Math.random()*2.2,
-          vy: 0.6 + Math.random()*1.4,
+          r: 0.9 + Math.random()*2.6,
+          vy: 0.7 + Math.random()*1.6,
           vx: -0.25 + Math.random()*0.5,
           wob: Math.random()*Math.PI*2,
           a: 0.35 + Math.random()*0.55
@@ -480,7 +504,7 @@
     }
     drawSnow();
 
-    // ---- Subtle sparkle burst (still premium)
+    // Sparkles
     const sparkCanvas = document.getElementById("spark");
     const sctx = sparkCanvas.getContext("2d");
     let sparks = [];
@@ -498,24 +522,20 @@
 
     function burstSparks(){
       const cx = window.innerWidth * 0.5;
-      const cy = Math.min(window.innerHeight * 0.26, 240);
-      const palette = [
-        "rgba(214,180,106,.95)",
-        "rgba(126,215,193,.90)",
-        "rgba(255,255,255,.85)"
-      ];
-      const count = 95;
+      const cy = Math.min(window.innerHeight * 0.28, 260);
+      const palette = ["rgba(214,180,106,.95)","rgba(126,215,193,.90)","rgba(255,255,255,.85)"];
+      const count = 110;
 
       for (let i=0;i<count;i++){
         const a = Math.random()*Math.PI*2;
-        const sp = 1.4 + Math.random()*4.0;
+        const sp = 1.6 + Math.random()*4.6;
         sparks.push({
           x: cx, y: cy,
           vx: Math.cos(a)*sp,
-          vy: Math.sin(a)*sp - 2.0,
-          r: 1 + Math.random()*2.0,
-          g: 0.07 + Math.random()*0.09,
-          life: 80 + Math.random()*50,
+          vy: Math.sin(a)*sp - 2.2,
+          r: 1 + Math.random()*2.2,
+          g: 0.08 + Math.random()*0.10,
+          life: 85 + Math.random()*55,
           c: palette[i % palette.length]
         });
       }
@@ -543,7 +563,7 @@
     }
     drawSparks();
 
-    // ---- Slider + reveal (no spoilers before unlock)
+    // Slider + reveal (no spoilers before unlock)
     const track = document.getElementById("track");
     const thumb = document.getElementById("thumb");
     const fill = document.getElementById("fill");
@@ -559,7 +579,7 @@
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
     function metrics(){
       const r = track.getBoundingClientRect();
-      const maxX = (r.width - 14 - 42);
+      const maxX = (r.width - 16 - 52); // padding-ish + thumb width
       return { maxX };
     }
     function setX(px){
@@ -568,7 +588,7 @@
       const { maxX } = metrics();
       const pct = clamp((x / maxX) * 100, 0, 100);
       fill.style.width = pct + "%";
-      trackLabel.style.opacity = String(0.92 - pct/120);
+      trackLabel.style.opacity = String(0.95 - pct/120);
     }
     function snapBack(){
       track.classList.remove("dragging");
@@ -584,7 +604,7 @@
       requestAnimationFrame(step);
     }
 
-    // ---- Audio (iOS-safe)
+    // Audio (iOS-safe)
     const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
     let audio = null;
 
@@ -632,11 +652,10 @@
       setX(maxX);
       track.classList.remove("dragging");
       trackLabel.textContent = "Opened";
-      trackLabel.style.opacity = "0.9";
+      trackLabel.style.opacity = "0.92";
 
       burstSparks();
 
-      // Inject reveal only now (no spoilers)
       reveal.innerHTML = `
         <h2>We’re going to see <span style="color: rgba(214,180,106,.95)">Forrest Frank</span>.</h2>
         <p>🤍</p>
@@ -665,9 +684,9 @@
       `;
       details.style.display = "block";
 
-      // play on same gesture
       playBtn.style.display = "none";
       tryPlayAudio(audioStatus, playBtn);
+
       playBtn.addEventListener("click", () => {
         audioStatus.textContent = "Starting music…";
         tryPlayAudio(audioStatus, playBtn);
@@ -684,11 +703,13 @@
       track.setPointerCapture?.(e.pointerId);
       startX = e.clientX;
     });
+
     track.addEventListener("pointermove", (e) => {
       if (!dragging || unlocked) return;
       const { maxX } = metrics();
       setX(clamp(e.clientX - startX, 0, maxX));
     });
+
     function endDrag(){
       if (!dragging || unlocked) return;
       dragging = false;
@@ -698,6 +719,7 @@
       if (pct > 0.92) unlock();
       else snapBack();
     }
+
     track.addEventListener("pointerup", endDrag);
     track.addEventListener("pointercancel", endDrag);
 
@@ -709,11 +731,13 @@
       track.classList.add("dragging");
       startX = e.touches[0].clientX;
     }, { passive:true });
+
     track.addEventListener("touchmove", (e) => {
       if (!dragging || unlocked) return;
       const { maxX } = metrics();
       setX(clamp(e.touches[0].clientX - startX, 0, maxX));
     }, { passive:true });
+
     track.addEventListener("touchend", endDrag);
 
     setX(0);
