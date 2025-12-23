@@ -3,27 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Surprise for You!</title>
+    <title>Merry Christmas!</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            /* Night sky gradient for Christmas feel */
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            position: relative;
         }
 
-        /* --- THE GIFT BOX --- */
+        /* --- CHRISTMAS LIGHTS --- */
+        .light-wire {
+            position: absolute;
+            top: -15px;
+            left: -5%;
+            width: 110%;
+            height: 100px;
+            border-radius: 50%;
+            border-bottom: 3px solid #222;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .light-bulb {
+            position: absolute;
+            top: 100%;
+            width: 15px;
+            height: 25px;
+            border-radius: 50%;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-name: glow;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; box-shadow: 0 0 5px currentColor; }
+            50% { opacity: 1; box-shadow: 0 0 20px currentColor; }
+        }
+
+        /* --- CHRISTMAS TREES --- */
+        .tree {
+            position: absolute;
+            bottom: 20px;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #1a472a;
+            z-index: 5;
+        }
+        .tree::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: -50px;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #1a472a;
+        }
+        .tree::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: -50px;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #1a472a;
+        }
+        /* Trunk */
+        .tree-trunk {
+            position: absolute;
+            bottom: -20px;
+            left: -10px;
+            width: 20px;
+            height: 30px;
+            background: #4a3728;
+        }
+
+        .tree-left { left: 5%; transform: scale(0.8); }
+        .tree-right { right: 5%; transform: scale(0.9); }
+        .tree-back-left { left: 15%; bottom: 80px; transform: scale(0.5); filter: blur(1px); }
+        .tree-back-right { right: 18%; bottom: 60px; transform: scale(0.6); filter: blur(1px); }
+
+
+        /* --- SNOW ANIMATION --- */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+            user-select: none;
+            z-index: 2;
+            animation-name: snowfall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes snowfall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* --- THE GIFT BOX (Keep existing styles, adjust colors for Xmas) --- */
         .gift-container {
             position: relative;
             cursor: pointer;
             transition: transform 0.1s;
+            z-index: 100;
+            margin-top: 50px; /* Push down slightly to clear lights */
         }
 
         .gift-container:hover {
@@ -31,31 +133,33 @@
         }
 
         .gift-box {
-            width: 150px;
-            height: 150px;
-            background: #ff4757;
+            width: 160px;
+            height: 160px;
+            background: #c0392b; /* Xmas Red */
             position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             z-index: 10;
         }
 
         .gift-lid {
-            width: 170px;
-            height: 40px;
-            background: #ff6b81;
+            width: 180px;
+            height: 45px;
+            background: #e74c3c; /* Lighter Red */
             position: absolute;
-            top: -40px;
+            top: -45px;
             left: -10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 11;
             transition: transform 0.5s ease-in;
         }
 
         .ribbon-vertical {
             position: absolute;
-            width: 30px;
+            width: 35px;
             height: 100%;
-            background: #ffffff;
+            background: #27ae60; /* Xmas Green */
+            border-left: 2px solid #2ecc71;
+            border-right: 2px solid #2ecc71;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -63,134 +167,121 @@
         .ribbon-horizontal {
             position: absolute;
             width: 100%;
-            height: 30px;
-            background: #ffffff;
+            height: 35px;
+            background: #27ae60;
+            border-top: 2px solid #2ecc71;
+            border-bottom: 2px solid #2ecc71;
             top: 50%;
             transform: translateY(-50%);
         }
 
         .lid-ribbon {
             position: absolute;
-            width: 30px;
+            width: 35px;
             height: 100%;
-            background: #ffffff;
+            background: #27ae60;
+            border-left: 2px solid #2ecc71;
+            border-right: 2px solid #2ecc71;
             left: 50%;
             transform: translateX(-50%);
         }
 
         .bow {
             position: absolute;
-            top: -60px;
+            top: -70px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 40px;
+            width: 90px;
+            height: 50px;
         }
 
         .bow::before, .bow::after {
             content: '';
             position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 8px solid #fff;
+            width: 55px;
+            height: 55px;
+            border: 10px solid #27ae60; /* Green Bow */
             border-radius: 50% 50% 0 50%;
             top: 10px;
         }
 
-        .bow::before {
-            left: 0;
-            transform: rotate(45deg);
-        }
-
-        .bow::after {
-            right: 0;
-            transform: rotate(135deg);
-        }
+        .bow::before { left: 0; transform: rotate(45deg); }
+        .bow::after { right: 0; transform: rotate(135deg); }
 
         .click-text {
             position: absolute;
-            bottom: -50px;
+            bottom: -60px;
             width: 100%;
             text-align: center;
-            color: #555;
+            color: #fff;
             font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             animation: pulse 2s infinite;
+            font-size: 1.2rem;
         }
 
         /* --- THE TICKET (HIDDEN) --- */
         .ticket-container {
             display: none;
             position: absolute;
-            background: white;
+            background: #fff;
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); /* Gold glow */
             text-align: center;
             max-width: 90%;
-            width: 400px;
-            border: 2px dashed #333;
+            width: 450px;
+            border: 4px solid #c0392b;
             transform: scale(0);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 20;
+            z-index: 200;
         }
 
         .ticket-header {
-            font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
         .artist-name {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            font-size: 3.5rem;
+            font-weight: 900;
+            /* Forrest Frank Vibe colors */
+            background: linear-gradient(to right, #ff9966, #ff5e62);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0;
-            line-height: 1.1;
+            margin: 5px 0;
+            line-height: 1;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .song-title-ref {
+            font-size: 1.2rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 20px;
         }
 
         .location {
-            font-size: 1.5rem;
-            color: #333;
+            font-size: 1.8rem;
+            color: #2c3e50;
             margin-top: 10px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .details {
             margin-top: 20px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 2px dashed #eee;
             color: #666;
-        }
-
-        .barcode {
-            height: 40px;
-            background: repeating-linear-gradient(
-                90deg,
-                #333,
-                #333 2px,
-                transparent 2px,
-                transparent 4px
-            );
-            margin-top: 20px;
-            opacity: 0.7;
+            font-size: 1.1rem;
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -204,11 +295,7 @@
             90% { transform: translate(1px, 2px) rotate(0deg); }
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
-
-        .shaking {
-            animation: shake 0.5s;
-            animation-iteration-count: 1;
-        }
+        .shaking { animation: shake 0.5s; animation-iteration-count: 1; }
 
         /* --- CONFETTI CANVAS --- */
         #confetti-canvas {
@@ -218,12 +305,23 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 50;
+            z-index: 150;
         }
-
     </style>
 </head>
 <body>
+
+    <div id="player" style="display:none;"></div>
+
+    <div id="snow-container"></div>
+    
+    <div class="light-wire" id="lights">
+        </div>
+
+    <div class="tree tree-back-left"><div class="tree-trunk"></div></div>
+    <div class="tree tree-back-right"><div class="tree-trunk"></div></div>
+    <div class="tree tree-left"><div class="tree-trunk"></div></div>
+    <div class="tree tree-right"><div class="tree-trunk"></div></div>
 
     <canvas id="confetti-canvas"></canvas>
 
@@ -240,28 +338,58 @@
     </div>
 
     <div class="ticket-container" id="ticket">
-        <div class="ticket-header">Surprise! We are going to see</div>
+        <div class="ticket-header">Merry Christmas, my love!</div>
+        <div class="song-title-ref">We're going... UP!</div>
         <h1 class="artist-name">FORREST FRANK</h1>
         <div class="location">RALEIGH, NC</div>
         <div class="details">
-            <p>Pack your bags, my love!</p>
-            <p>I can't wait to go with you.</p>
+            <p><strong>Pack your bags!</strong></p>
+            <p>Best Christmas present ever?</p>
         </div>
-        <div class="barcode"></div>
     </div>
 
     <script>
+        // --- YOUTUBE API SETUP ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'wCw-W-2Rs0k', // Connor Price & Forrest Frank - UP!
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready, but we wait for click
+            console.log("Music ready");
+        }
+
+        // --- OPEN GIFT LOGIC ---
         function openGift() {
             const giftBox = document.getElementById('giftBox');
             const ticket = document.getElementById('ticket');
 
-            // 1. Shake animation
+            // 1. Play Music (Browser requires user interaction to play audio)
+            if (player && player.playVideo) {
+                player.playVideo();
+                player.setVolume(100);
+            }
+
+            // 2. Shake animation
             giftBox.classList.add('shaking');
 
-            // 2. After shake, explode and hide box, show ticket
+            // 3. After shake, explode and hide box, show ticket
             setTimeout(() => {
                 giftBox.style.transition = "all 0.5s ease";
-                giftBox.style.transform = "scale(0)";
+                giftBox.style.transform = "scale(0) rotate(20deg)";
                 giftBox.style.opacity = "0";
                 
                 setTimeout(() => {
@@ -277,6 +405,44 @@
             }, 500);
         }
 
+        /* --- SNOW GENERATOR --- */
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            const snowflakeCount = 50;
+
+            for (let i = 0; i < snowflakeCount; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = Math.random() * 3 + 2 + 's'; // 2-5s fall speed
+                flake.style.opacity = Math.random();
+                flake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(flake);
+            }
+        }
+        createSnow();
+
+        /* --- LIGHTS GENERATOR --- */
+        function createLights() {
+            const wire = document.getElementById('lights');
+            const colors = ['#e74c3c', '#f1c40f', '#3498db', '#2ecc71', '#9b59b6'];
+            const totalLights = 20;
+
+            for (let i = 0; i < totalLights; i++) {
+                const bulb = document.createElement('div');
+                bulb.className = 'light-bulb';
+                bulb.style.left = (i * (100 / totalLights)) + 2 + '%';
+                bulb.style.backgroundColor = colors[i % colors.length];
+                bulb.style.color = colors[i % colors.length]; // For box-shadow
+                bulb.style.animationDelay = (Math.random() * 1) + 's';
+                wire.appendChild(bulb);
+            }
+        }
+        createLights();
+
         /* --- CONFETTI LOGIC --- */
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
@@ -284,18 +450,18 @@
         canvas.height = window.innerHeight;
 
         let pieces = [];
-        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#ff9966', '#ff5e62'];
+        const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff'];
 
         function startConfetti() {
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 250; i++) {
                 pieces.push({
                     x: window.innerWidth / 2,
                     y: window.innerHeight / 2,
                     w: Math.random() * 10 + 5,
                     h: Math.random() * 10 + 5,
                     vx: (Math.random() - 0.5) * 20,
-                    vy: (Math.random() - 0.5) * 20 - 10, // Initial upward burst
-                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: (Math.random() - 0.5) * 20 - 15, // Higher explosive burst
+                    color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
                     rotation: Math.random() * 360,
                     rotationSpeed: (Math.random() - 0.5) * 10
                 });
@@ -309,7 +475,7 @@
             pieces.forEach((p, index) => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.5; // Gravity
+                p.vy += 0.4; // Gravity
                 p.rotation += p.rotationSpeed;
 
                 ctx.save();
@@ -330,7 +496,6 @@
             }
         }
 
-        // Handle resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
