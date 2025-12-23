@@ -35,15 +35,15 @@
       overscroll-behavior: none;
     }
 
-    /* Background layer - extends INTO safe areas with negative positioning */
+    /* Background layer - extends well beyond viewport edges */
     body::before {
       content: "";
       position: fixed;
-      /* Extend beyond the viewport into safe areas */
-      top: calc(-1 * env(safe-area-inset-top, 0px));
-      left: calc(-1 * env(safe-area-inset-left, 0px));
-      right: calc(-1 * env(safe-area-inset-right, 0px));
-      bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+      /* Use large fixed values to guarantee full coverage */
+      top: -100px;
+      left: -100px;
+      right: -100px;
+      bottom: -100px;
       z-index: -1;
       background: 
         radial-gradient(ellipse 120% 60% at 20% 10%, rgba(212, 184, 150, 0.15), transparent 50%),
@@ -135,13 +135,13 @@
       100% { opacity: 1; filter: brightness(1.2); }
     }
 
-    /* Snow & spark canvas - extend into safe areas */
+    /* Snow & spark canvas - extend beyond viewport */
     canvas {
       position: fixed;
-      top: calc(-1 * env(safe-area-inset-top, 0px));
-      left: calc(-1 * env(safe-area-inset-left, 0px));
-      right: calc(-1 * env(safe-area-inset-right, 0px));
-      bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+      top: -100px;
+      left: -100px;
+      right: -100px;
+      bottom: -100px;
       pointer-events: none;
     }
     #snow { z-index: 10; }
