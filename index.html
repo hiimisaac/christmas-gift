@@ -8,7 +8,7 @@
   <style>
     :root{
       --bg1:#0b1020; --bg2:#0f2b3a;
-      --card: rgba(15, 23, 42, .78);
+      --card: rgba(15, 23, 42, .80);
       --text:#eaf2ff; --muted:#bcd0ff;
       --gold:#f59e0b; --green:#22c55e; --red:#ef4444;
       --shadow: 0 24px 80px rgba(0,0,0,.55);
@@ -72,7 +72,6 @@
     .streamer.g{ background: linear-gradient(180deg, rgba(34,197,94,.78), rgba(34,197,94,.03)); transform: rotate(-12deg);}
     .streamer.r{ background: linear-gradient(180deg, rgba(239,68,68,.78), rgba(239,68,68,.03)); transform: rotate(10deg);}
 
-    /* Canvases */
     canvas{ position:fixed; inset:0; pointer-events:none; }
     #snow{ z-index:2; }
     #confetti{ z-index:25; }
@@ -85,7 +84,7 @@
       padding: 110px 18px 28px;
     }
     .card{
-      width:min(740px, 94vw);
+      width:min(760px, 94vw);
       background: var(--card);
       border: 1px solid rgba(255,255,255,.12);
       border-radius: var(--radius);
@@ -132,19 +131,8 @@
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 16px;
       padding: 16px;
+      position:relative;
     }
-    .detail{
-      display:grid; gap:10px;
-      font-size: 15px;
-    }
-    .detail b{ color: #fff; }
-    .detail .row{
-      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
-      border-bottom: 1px dashed rgba(255,255,255,.14);
-      padding-bottom: 10px;
-    }
-    .detail .row:last-child{ border-bottom:none; padding-bottom: 0; }
-    .detail .k{ color: var(--muted); min-width: 92px; }
 
     /* Gift button */
     .giftArea{
@@ -216,27 +204,87 @@
       border: 1px solid rgba(255,255,255,.22);
     }
 
-    .reveal{
+    /* Locked details (hidden until unwrap) */
+    .lockedOverlay{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      background: rgba(2, 6, 23, .58);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 18px;
+      text-align:center;
+      gap:10px;
+    }
+    .lockTitle{
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size: 18px;
+    }
+    .lockSub{
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+      margin:0;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: rgba(234,242,255,.9);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Revealed details */
+    .details{
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity .45s ease, transform .45s ease;
+      pointer-events:none;
+    }
+    .details.show{
+      opacity:1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+    .detail{
+      display:grid; gap:10px;
+      font-size: 15px;
+    }
+    .detail b{ color:#fff; }
+    .detail .row{
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+      border-bottom: 1px dashed rgba(255,255,255,.14);
+      padding-bottom: 10px;
+    }
+    .detail .row:last-child{ border-bottom:none; padding-bottom: 0; }
+    .detail .k{ color: var(--muted); min-width: 92px; }
+
+    .revealMsg{
       display:none;
       margin-top: 14px;
       padding: 14px 16px;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
+      animation: pop .5s ease both;
     }
-    .reveal h2{
+    @keyframes pop{ from{transform: translateY(6px); opacity:0} to{transform: translateY(0); opacity:1} }
+
+    .revealMsg h2{
       margin: 0 0 6px;
       font-size: clamp(20px, 3vw, 26px);
     }
-    .reveal p{ margin:0; color: var(--muted); line-height:1.45; }
+    .revealMsg p{ margin:0; color: var(--muted); line-height:1.45; }
 
     .fine{
       margin-top: 10px;
       font-size: 12px;
-      color: rgba(234,242,255,.70);
+      color: rgba(234,242,255,.72);
     }
 
-    /* Open state */
     .opened .boxLid{
       top:-8px;
       transform: rotate(-18deg) translateY(-10px);
@@ -244,12 +292,10 @@
   </style>
 </head>
 <body>
-  <!-- Lights -->
   <div class="lights" aria-hidden="true">
     <div class="wire" id="wire"></div>
   </div>
 
-  <!-- Streamers -->
   <div class="streamers" aria-hidden="true">
     <div class="streamer r" style="left:-40px; top:120px;"></div>
     <div class="streamer g" style="right:-60px; top:160px;"></div>
@@ -267,9 +313,9 @@
         <div class="hint">Tap to unwrap (music starts on tap)</div>
       </div>
 
-      <h1>Okay… one more gift 🎁</h1>
+      <h1>I made you a tiny gift… 🎁</h1>
       <p class="sub">
-        I couldn’t put the real tickets in your hands yet… so I made you a tiny “unwrap” anyway.
+        I couldn’t put the real tickets in your hands yet… so I wrapped the surprise in a webpage.
       </p>
 
       <div class="grid">
@@ -288,84 +334,68 @@
               </div>
             </div>
 
-            <div class="reveal" id="reveal">
+            <div class="revealMsg" id="revealMsg">
               <h2>We’re going to see <span style="color:var(--gold)">Forrest Frank</span> 🙌</h2>
               <p>
-                At <b>Lenovo Center</b> — Raleigh, NC.<br/>
-                Tickets are coming closer to the event… but the plan is locked in. 💛
+                The real tickets get delivered closer to the event… but the plan is locked in. 💛
               </p>
-              <div class="fine" id="audioStatus">🔊 If you don’t hear music, tap “Play Music” below.</div>
-              <button class="giftBtn" id="playBtn" type="button" style="display:none; background: linear-gradient(90deg, var(--green), #a7f3d0);">
+              <div class="fine" id="audioStatus">🎶 Music should be playing. If not, tap “Play Music”.</div>
+              <button class="giftBtn" id="playBtn" type="button"
+                style="display:none; background: linear-gradient(90deg, var(--green), #a7f3d0);">
                 ▶️ Play Music
               </button>
             </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="detail">
-            <div class="row">
-              <div class="k">Artist</div>
-              <div><b>Forrest Frank</b></div>
-            </div>
-            <div class="row">
-              <div class="k">Venue</div>
-              <div style="text-align:right">
-                <b>Lenovo Center</b><br/>
-                <span style="color:var(--muted)">Raleigh, NC</span>
+        <div class="panel" id="detailsPanel">
+          <!-- Hidden until unwrap -->
+          <div class="details" id="details">
+            <div class="detail">
+              <div class="row">
+                <div class="k">Artist</div>
+                <div><b>Forrest Frank</b></div>
+              </div>
+              <div class="row">
+                <div class="k">Venue</div>
+                <div style="text-align:right">
+                  <b>Lenovo Center</b><br/>
+                  <span style="color:var(--muted)">Raleigh, NC</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="k">Vibe</div>
+                <div style="text-align:right">
+                  <span>Good music • good night • good memories ✨</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="k">Note</div>
+                <div style="text-align:right; color:var(--muted)">
+                  Tickets arrive closer to showtime — this is the “wrapper.”
+                </div>
               </div>
             </div>
-            <div class="row">
-              <div class="k">Vibe</div>
-              <div style="text-align:right">
-                <span>Good music • good night • good memories ✨</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="k">Note</div>
-              <div style="text-align:right; color:var(--muted)">
-                This page is your “ticket wrapper.” The real delivery comes later.
-              </div>
-            </div>
+          </div>
+
+          <!-- Lock overlay -->
+          <div class="lockedOverlay" id="lock">
+            <div class="pill">🔒 Locked</div>
+            <div class="lockTitle">Details are hidden</div>
+            <p class="lockSub">Unwrap the gift to reveal where we’re going.</p>
           </div>
         </div>
       </div>
 
-      <!-- Option A (recommended): local MP3 in the same folder as index.html -->
-      <audio id="song" preload="auto" src="good-day.mp3"></audio>
-
-      <!-- Option B: YouTube (requires internet). Toggle in JS. -->
-      <div id="ytWrap" style="position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;"></div>
+      <!-- NOTE: No <audio> tag needed. We create Audio() inside the tap for better iOS behavior. -->
     </div>
   </div>
 
   <script>
-    /**
-     * MUSIC OPTIONS:
-     * - Recommended: put "good-day.mp3" next to this file. (Most reliable on phones.)
-     * - Or set USE_YOUTUBE = true to use the official audio on YouTube.
-     *   Video ID reference: Forrest Frank - GOOD DAY (Official Audio)
-     */
-    const USE_YOUTUBE = false;
-    const YT_VIDEO_ID = "Uc_HxKMKB_E";
-
-    const unwrapBtn = document.getElementById("unwrapBtn");
-    const playBtn = document.getElementById("playBtn");
-    const reveal = document.getElementById("reveal");
-    const card = document.getElementById("card");
-    const giftBox = document.getElementById("giftBox");
-    const audioEl = document.getElementById("song");
-    const audioStatus = document.getElementById("audioStatus");
-    const ytWrap = document.getElementById("ytWrap");
-
-    let unwrapped = false;
-    let ytReady = false;
-    let ytPlayer = null;
-
-    // Build light bulbs
+    // ---- Build lights
     (function buildLights(){
       const wire = document.getElementById("wire");
-      const colors = ["var(--red)","var(--green)","var(--gold)","#60a5fa","#a78bfa"];
+      const colors = ["#ef4444","#22c55e","#f59e0b","#60a5fa","#a78bfa"];
       const count = 22;
       for (let i=0;i<count;i++){
         const b = document.createElement("div");
@@ -374,15 +404,19 @@
         b.style.left = `calc(${x}% - 9px)`;
         b.style.animationDelay = `${(i%7)*0.12}s`;
         b.style.color = colors[i % colors.length];
-        b.querySelector;
         wire.appendChild(b);
       }
     })();
 
-    // Snow
+    // ---- Snow
     const snowCanvas = document.getElementById("snow");
     const snowCtx = snowCanvas.getContext("2d");
     let snowflakes = [];
+
+    // ---- Confetti
+    const confCanvas = document.getElementById("confetti");
+    const confCtx = confCanvas.getContext("2d");
+    let confetti = [];
 
     function resizeCanvases(){
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -428,16 +462,11 @@
       }
     }
 
-    // Confetti
-    const confCanvas = document.getElementById("confetti");
-    const confCtx = confCanvas.getContext("2d");
-    let confetti = [];
-
     function burstConfetti(){
       const cx = window.innerWidth * 0.5;
       const cy = window.innerHeight * 0.35;
       const colors = ["#f59e0b","#22c55e","#ef4444","#60a5fa","#a78bfa","#fda4af","#fde68a"];
-      const count = 220;
+      const count = 240;
       for (let i=0;i<count;i++){
         const angle = (Math.random()*Math.PI*2);
         const speed = 2 + Math.random()*7;
@@ -450,7 +479,7 @@
           rot: Math.random()*Math.PI,
           vr: -0.25 + Math.random()*0.5,
           g: 0.12 + Math.random()*0.18,
-          life: 140 + Math.random()*80,
+          life: 140 + Math.random()*90,
           color: colors[i % colors.length]
         });
       }
@@ -470,7 +499,7 @@
         confCtx.translate(p.x, p.y);
         confCtx.rotate(p.rot);
         confCtx.fillStyle = p.color;
-        confCtx.globalAlpha = Math.max(0, Math.min(1, p.life/160));
+        confCtx.globalAlpha = Math.max(0, Math.min(1, p.life/180));
         confCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
         confCtx.restore();
 
@@ -478,74 +507,6 @@
       }
     }
 
-    // Optional YouTube support
-    function loadYouTube(){
-      if (!USE_YOUTUBE) return;
-      ytWrap.innerHTML = `<div id="ytPlayer"></div>`;
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.head.appendChild(tag);
-
-      window.onYouTubeIframeAPIReady = () => {
-        ytPlayer = new YT.Player('ytPlayer', {
-          height: '1',
-          width: '1',
-          videoId: YT_VIDEO_ID,
-          playerVars: {
-            autoplay: 0,
-            controls: 0,
-            playsinline: 1,
-            rel: 0
-          },
-          events: {
-            'onReady': () => { ytReady = true; }
-          }
-        });
-      };
-    }
-
-    async function tryPlayMusic(){
-      playBtn.style.display = "none";
-      audioStatus.textContent = "🎶 Starting the music…";
-      try{
-        if (USE_YOUTUBE){
-          if (ytReady && ytPlayer){
-            ytPlayer.unMute?.();
-            ytPlayer.playVideo?.();
-            audioStatus.textContent = "🎶 Good Day is playing.";
-            return;
-          } else {
-            audioStatus.textContent = "🎶 Loading music… tap again in a second if needed.";
-            return;
-          }
-        } else {
-          await audioEl.play();
-          audioStatus.textContent = "🎶 Good Day is playing.";
-        }
-      } catch (e){
-        audioStatus.textContent = "🔊 Your phone blocked autoplay. Tap “Play Music”.";
-        playBtn.style.display = "inline-flex";
-      }
-    }
-
-    unwrapBtn.addEventListener("click", async () => {
-      if (unwrapped) return;
-      unwrapped = true;
-
-      card.classList.add("opened");
-      giftBox.classList.add("opened");
-      reveal.style.display = "block";
-
-      burstConfetti();
-      // Music starts on the same tap as the unwrap (works best on iOS).
-      await tryPlayMusic();
-    });
-
-    playBtn.addEventListener("click", () => {
-      tryPlayMusic();
-    });
-
-    // Animation loop
     function tick(){
       drawSnow();
       drawConfetti();
@@ -559,8 +520,66 @@
 
     resizeCanvases();
     initSnow();
-    loadYouTube();
     tick();
+
+    // ---- Unwrap + Music
+    const unwrapBtn = document.getElementById("unwrapBtn");
+    const playBtn = document.getElementById("playBtn");
+    const revealMsg = document.getElementById("revealMsg");
+    const audioStatus = document.getElementById("audioStatus");
+    const details = document.getElementById("details");
+    const lock = document.getElementById("lock");
+    const card = document.getElementById("card");
+    const giftBox = document.getElementById("giftBox");
+
+    let unwrapped = false;
+    let audio = null;
+
+    function startMusic(){
+      // Create audio INSIDE the user gesture for best mobile reliability
+      if (!audio){
+        audio = new Audio("good-day.mp3");
+        audio.preload = "auto";
+        audio.loop = false;
+        audio.volume = 1;
+      }
+
+      // Call play() synchronously; then handle the promise
+      const p = audio.play();
+      if (p && typeof p.then === "function"){
+        p.then(() => {
+          audioStatus.textContent = "🎶 Music is playing.";
+          playBtn.style.display = "none";
+        }).catch(() => {
+          audioStatus.textContent = "🔊 Tap “Play Music” (your phone blocked it the first time).";
+          playBtn.style.display = "inline-flex";
+        });
+      }
+    }
+
+    unwrapBtn.addEventListener("click", () => {
+      if (unwrapped) return;
+      unwrapped = true;
+
+      // Visuals first
+      card.classList.add("opened");
+      giftBox.classList.add("opened");
+      burstConfetti();
+
+      // Reveal message + details
+      revealMsg.style.display = "block";
+      lock.style.display = "none";
+      details.classList.add("show");
+
+      // Start music on the SAME tap
+      audioStatus.textContent = "🎶 Starting music…";
+      startMusic();
+    });
+
+    playBtn.addEventListener("click", () => {
+      audioStatus.textContent = "🎶 Starting music…";
+      startMusic();
+    });
   </script>
 </body>
 </html>
