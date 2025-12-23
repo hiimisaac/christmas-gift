@@ -18,6 +18,7 @@
             align-items: center;
             justify-content: center;
             perspective: 1000px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .font-script { font-family: 'Great Vibes', cursive; }
@@ -33,8 +34,8 @@
             z-index: 50;
         }
 
-        .gift-container:hover {
-            animation: bounce 0.5s infinite alternate ease-in-out;
+        .gift-container:active {
+            transform: scale(0.95);
         }
 
         .face {
@@ -103,7 +104,6 @@
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes bounce { to { transform: translateY(-10px); } }
         .shaking { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 
             10%, 90% { transform: translate3d(-1px, 0, 0); } 
@@ -141,7 +141,7 @@
 
     <div id="snow"></div>
 
-    <div id="gift-wrapper" class="gift-container" onclick="openGift()">
+    <div id="gift-wrapper" class="gift-container" ontouchstart="openGift()" onclick="openGift()">
         <div class="face face-front"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
         <div class="face face-back"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
         <div class="face face-right"><div class="ribbon-h"></div></div>
@@ -183,10 +183,9 @@
             "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
         </p>
 
-        <div class="flex items-center justify-center space-x-2 text-xs text-gray-400 uppercase tracking-widest border border-gray-200 py-2 px-4 rounded-full mb-4">
-            <span class="animate-pulse">♫</span>
-            <span>Now Playing: Good Day</span>
-        </div>
+        <button id="manual-play" onclick="playAudioManual()" class="hidden w-full bg-red-500 text-white py-2 rounded-full font-bold uppercase text-xs mb-4">
+            ▶ Play Song
+        </button>
         
         <div id="spotify-wrapper">
             <div id="embed-iframe"></div>
@@ -195,11 +194,11 @@
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
-    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
     
     <script>
-        // --- 1. CORS-PROOF AUDIO FETCH (JSONP Method) ---
-        // This function receives the data from iTunes directly
+        // --- 1. CORS-PROOF AUDIO FETCH (Script Injection Method) ---
+        // This bypasses the mobile block you saw earlier
         function handleMusic(data) {
             if(data.results && data.results.length > 0) {
                 const audio = document.getElementById('bg-music');
@@ -208,9 +207,8 @@
             }
         }
         
-        // Inject script to call iTunes API (Bypasses CORS)
+        // Inject script to call iTunes API securely
         const script = document.createElement('script');
-        // We use the "callback" parameter to tell iTunes to run our function
         script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=handleMusic';
         document.body.appendChild(script);
 
@@ -230,14 +228,31 @@
         };
 
         // --- 3. INTERACTION ---
+        let hasOpened = false;
+
         function openGift() {
+            if(hasOpened) return; // Prevent double taps
+            hasOpened = true;
+
             const box = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
-
-            // Play the Reliable Audio (iTunes)
             const audio = document.getElementById('bg-music');
-            audio.volume = 0.8;
-            audio.play().catch(e => console.log("Audio play blocked (user interaction needed)"));
+            const manualBtn = document.getElementById('manual-play');
+
+            // --- AUDIO TRIGGER ---
+            // Try to play. If it fails (rare with ontouchstart), show the manual button
+            var playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Automatic playback started!
+                })
+                .catch(error => {
+                    // Auto-play was prevented. Show the manual play button.
+                    console.log("Autoplay prevented, showing button.");
+                    manualBtn.classList.remove('hidden');
+                });
+            }
 
             // Animation
             box.classList.add('shaking');
@@ -262,6 +277,12 @@
                     startConfetti();
                 }, 300);
             }, 600);
+        }
+
+        function playAudioManual() {
+            const audio = document.getElementById('bg-music');
+            audio.play();
+            document.getElementById('manual-play').classList.add('hidden');
         }
 
         // --- CONFETTI ---
