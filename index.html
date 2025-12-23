@@ -2,319 +2,162 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Merry Christmas!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* Added a festive Christmas font */
-        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600;900&display=swap');
-
-        body {
-            margin: 0;
-            padding: 0;
-            /* Night sky gradient */
-            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* --- SCENERY (Ground & Lights) --- */
-        .ground-snow {
-            position: absolute;
-            bottom: 0;
-            left: 0;
+        /* --- CORE LAYOUT & BOUNCE FIXES --- */
+        html, body {
+            height: 100%;
             width: 100%;
-            height: 80px;
-            background: linear-gradient(to top, #fff, #eef2f3 60%, transparent);
-            z-index: 4;
+            overflow: hidden; /* Prevents scrollbars */
+            overscroll-behavior: none; /* Prevents iOS rubber banding */
+            touch-action: none; /* Disables standard touch gestures */
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
         }
 
+        .font-christmas {
+            font-family: 'Mountains of Christmas', cursive;
+        }
+
+        /* --- CHRISTMAS LIGHTS --- */
         .light-wire {
             position: absolute;
-            top: -20px;
+            top: -15px;
             left: -5%;
             width: 110%;
-            height: 120px;
+            height: 100px;
             border-radius: 50%;
             border-bottom: 3px solid #222;
-            z-index: 1;
+            z-index: 10;
             pointer-events: none;
         }
-
         .light-bulb {
             position: absolute;
             top: 100%;
-            width: 15px;
-            height: 25px;
+            width: 12px;
+            height: 20px;
             border-radius: 50%;
             animation: glow 1.5s infinite alternate;
         }
 
-        @keyframes glow {
-            0% { opacity: 0.5; box-shadow: 0 0 5px currentColor; transform: scale(0.9); }
-            100% { opacity: 1; box-shadow: 0 0 25px currentColor; transform: scale(1.1); }
-        }
-
-        /* --- FIXED CHRISTMAS TREES --- */
+        /* --- TREES (Pure CSS) --- */
         .tree-container {
             position: absolute;
-            bottom: 40px; /* Sit on the snow */
+            bottom: 10%; /* Lifted slightly for mobile nav bars */
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 5;
+            pointer-events: none;
         }
-
         .tree-layer {
             width: 0;
             height: 0;
             border-left: solid transparent;
             border-right: solid transparent;
             border-bottom: solid #1a472a;
-            margin-bottom: -20px; /* Overlap layers */
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            margin-bottom: -15px;
         }
-        .tree-layer.top { border-bottom-width: 60px; border-left-width: 30px; border-right-width: 30px; border-bottom-color: #2d6a4f; z-index: 3;}
-        .tree-layer.middle { border-bottom-width: 80px; border-left-width: 45px; border-right-width: 45px; border-bottom-color: #255940; z-index: 2;}
-        .tree-layer.bottom { border-bottom-width: 100px; border-left-width: 60px; border-right-width: 60px; z-index: 1;}
+        .tree-layer.top { border-bottom-width: 40px; border-left-width: 20px; border-right-width: 20px; border-bottom-color: #2d6a4f; z-index: 3;}
+        .tree-layer.middle { border-bottom-width: 60px; border-left-width: 30px; border-right-width: 30px; border-bottom-color: #255940; z-index: 2;}
+        .tree-layer.bottom { border-bottom-width: 80px; border-left-width: 40px; border-right-width: 40px; z-index: 1;}
+        .tree-trunk { width: 15px; height: 25px; background: #4a3728; margin-top: 5px; }
+        .tree-star { color: gold; font-size: 20px; position: absolute; top: -20px; text-shadow: 0 0 10px gold; }
 
-        .tree-trunk {
-            width: 25px;
-            height: 40px;
-            background: #4a3728;
-            margin-top: 5px;
-        }
-
-        .tree-star {
-            color: gold;
-            font-size: 30px;
-            position: absolute;
-            top: -30px;
-            text-shadow: 0 0 10px gold;
-            animation: twist 3s infinite ease-in-out;
-        }
-
-        /* Tree Positions and variations */
-        .tree-left { left: 5%; transform: scale(0.8); }
-        .tree-right { right: 5%; transform: scale(0.9); }
-        .tree-back-left { left: 18%; bottom: 70px; transform: scale(0.6); filter: blur(1px) brightness(0.8); z-index: 4;}
-        .tree-back-right { right: 20%; bottom: 60px; transform: scale(0.7); filter: blur(1px) brightness(0.8); z-index: 4;}
-
-
-        /* --- SNOW ANIMATION --- */
-        .snowflake {
-            position: absolute;
-            top: -20px;
-            color: #fff;
-            user-select: none;
-            z-index: 10;
-            animation-name: snowfall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-        }
-
-        @keyframes snowfall {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(105vh) rotate(360deg); }
-        }
-        @keyframes twist { 0%, 100% {transform: rotate(0deg);} 50% {transform: rotate(15deg);}}
-
-        /* --- THE GIFT BOX --- */
-        .gift-container {
+        /* --- GIFT BOX (Responsive Scaling) --- */
+        .gift-wrapper {
             position: relative;
-            cursor: pointer;
+            z-index: 50;
             transition: transform 0.1s;
-            z-index: 100;
-            margin-top: 20px;
         }
-
-        .gift-container:hover {
-            animation: bounce 0.6s infinite alternate ease-in-out;
+        /* Mobile Scaling: Scales the whole CSS drawing down */
+        @media (max-width: 640px) {
+            .gift-wrapper { transform: scale(0.8); }
         }
-
+        
         .gift-box {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             background: #c0392b;
             position: relative;
             box-shadow: 0 15px 30px rgba(0,0,0,0.5);
             border-radius: 4px;
-            z-index: 10;
         }
-
         .gift-lid {
-            width: 200px;
-            height: 50px;
+            width: 180px;
+            height: 45px;
             background: #e74c3c;
             position: absolute;
-            top: -50px;
+            top: -45px;
             left: -10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             border-radius: 4px;
             z-index: 11;
         }
-
         .ribbon-vertical {
             position: absolute;
-            width: 40px;
+            width: 35px;
             height: 100%;
-            background: #F1C40F; /* Gold Ribbon */
+            background: #F1C40F;
             border-left: 2px solid #f39c12;
             border-right: 2px solid #f39c12;
             left: 50%;
             transform: translateX(-50%);
         }
-
         .ribbon-horizontal {
             position: absolute;
             width: 100%;
-            height: 40px;
+            height: 35px;
             background: #F1C40F;
             border-top: 2px solid #f39c12;
             border-bottom: 2px solid #f39c12;
             top: 50%;
             transform: translateY(-50%);
         }
-
-        .lid-ribbon {
-            position: absolute;
-            width: 40px;
-            height: 100%;
-            background: #F1C40F;
-            border-left: 2px solid #f39c12;
-            border-right: 2px solid #f39c12;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
         .bow {
             position: absolute;
-            top: -80px;
+            top: -75px;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 60px;
+            width: 90px;
+            height: 50px;
             z-index: 12;
         }
-
         .bow::before, .bow::after {
             content: '';
             position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 12px solid #F1C40F;
+            width: 50px;
+            height: 50px;
+            border: 10px solid #F1C40F;
             border-radius: 50% 50% 0 50%;
             top: 15px;
         }
-
         .bow::before { left: 0; transform: rotate(45deg); }
         .bow::after { right: 0; transform: rotate(135deg); }
 
-        /* New Gift Tag */
         .gift-tag {
             position: absolute;
-            top: 40px;
-            right: -30px;
-            background: #fff;
-            padding: 10px 15px;
+            top: 30px;
+            right: -25px;
+            background: white;
+            padding: 5px 10px;
             transform: rotate(15deg);
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
             font-family: 'Mountains of Christmas', cursive;
-            font-size: 1.2rem;
             color: #c0392b;
-            z-index: 12;
-        }
-        .gift-tag::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: -10px;
-            width: 10px;
-            height: 10px;
-            background: #fff;
-            border-radius: 50%;
-        }
-
-        .click-text {
-            position: absolute;
-            bottom: -70px;
-            width: 100%;
-            text-align: center;
-            color: #fff;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            animation: pulse 1.5s infinite;
-            font-size: 1.4rem;
-            letter-spacing: 1px;
-        }
-
-        /* --- THE TICKET (HIDDEN) --- */
-        .ticket-container {
-            display: none;
-            position: absolute;
-            background: #fff;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 0 60px rgba(241, 196, 15, 0.8); /* Strong gold glow */
-            text-align: center;
-            max-width: 90%;
-            width: 500px;
-            border: 5px solid #c0392b;
-            transform: scale(0);
-            z-index: 200;
-        }
-
-        .ticket-header {
-            font-family: 'Mountains of Christmas', cursive;
-            font-size: 2.5rem;
-            color: #c0392b;
-            margin-bottom: 10px;
-            line-height: 1;
-        }
-
-        .artist-name {
-            font-size: 4rem;
-            font-weight: 900;
-            /* Forrest Frank Vibe colors */
-            background: linear-gradient(to right, #ff9966, #ff5e62);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 10px 0 5px 0;
-            line-height: 1;
-            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
-        }
-
-        .song-title-ref {
-            font-size: 1.3rem;
-            color: #555;
-            font-style: italic;
-            margin-bottom: 25px;
-        }
-
-        .location {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-top: 15px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .details {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 3px dashed #eee;
-            color: #444;
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: bold;
+            z-index: 20;
+            font-size: 1.1rem;
+            white-space: nowrap;
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes bounce { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-15px) scale(1.02); } }
-        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.6; transform: scale(1); } }
+        @keyframes glow { from {opacity: 0.5; box-shadow: 0 0 5px currentColor;} to {opacity: 1; box-shadow: 0 0 20px currentColor;} }
+        @keyframes snowfall { from {transform: translateY(-10px) rotate(0deg);} to {transform: translateY(110vh) rotate(360deg);} }
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-3px, -3px) rotate(-2deg); }
@@ -329,77 +172,68 @@
             100% { transform: translate(1px, -3px) rotate(-2deg); }
         }
         .shaking { animation: shake 0.5s; animation-iteration-count: 1; }
+        .animate-bounce-slow { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* --- CONFETTI CANVAS --- */
-        #confetti-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 150;
-        }
     </style>
 </head>
-<body>
+<body class="flex flex-col items-center justify-center relative">
 
-    <div id="player" style="display:none;"></div>
+    <div id="player" class="absolute top-0 left-0 opacity-0 pointer-events-none w-1 h-1"></div>
 
-    <div id="snow-container"></div>
-    <div class="ground-snow"></div>
-    
+    <div id="snow-container" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
     <div class="light-wire" id="lights"></div>
+    
+    <div class="absolute bottom-0 w-full h-16 bg-gradient-to-t from-white via-gray-100 to-transparent z-10 pointer-events-none"></div>
 
-    <div class="tree-container tree-back-left">
-        <div class="tree-star">★</div>
-        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div>
-        <div class="tree-trunk"></div>
+    <div class="tree-container left-[10%] scale-75 blur-[1px] opacity-80">
+        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div><div class="tree-trunk"></div>
     </div>
-    <div class="tree-container tree-back-right">
-        <div class="tree-star">★</div>
-        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div>
-        <div class="tree-trunk"></div>
+    <div class="tree-container right-[10%] scale-75 blur-[1px] opacity-80">
+        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div><div class="tree-trunk"></div>
     </div>
-    <div class="tree-container tree-left">
+    <div class="tree-container left-[5%] bottom-[12%] scale-90">
         <div class="tree-star">★</div>
-        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div>
-        <div class="tree-trunk"></div>
+        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div><div class="tree-trunk"></div>
     </div>
-    <div class="tree-container tree-right">
+    <div class="tree-container right-[5%] bottom-[12%] scale-90">
         <div class="tree-star">★</div>
-        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div>
-        <div class="tree-trunk"></div>
+        <div class="tree-layer top"></div><div class="tree-layer middle"></div><div class="tree-layer bottom"></div><div class="tree-trunk"></div>
     </div>
 
-    <canvas id="confetti-canvas"></canvas>
+    <canvas id="confetti-canvas" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
-    <div class="gift-container" id="giftBox" onclick="openGift()">
+    <div class="gift-wrapper cursor-pointer animate-bounce-slow" id="giftBox" onclick="openGift()">
         <div class="bow"></div>
         <div class="gift-tag">To: My Wife</div>
-        <div class="gift-lid">
-            <div class="lid-ribbon"></div>
-        </div>
+        <div class="gift-lid"><div class="ribbon-vertical"></div></div>
         <div class="gift-box">
             <div class="ribbon-vertical"></div>
             <div class="ribbon-horizontal"></div>
         </div>
-        <div class="click-text">Tap to Open Gift!</div>
+        <div class="absolute -bottom-20 w-full text-center text-white font-bold text-xl drop-shadow-md animate-pulse">
+            Tap to Open!
+        </div>
     </div>
 
-    <div class="ticket-container" id="ticket">
-        <div class="ticket-header">Merry Christmas, my love!</div>
-        <div class="song-title-ref">Get ready, we're going... UP!</div>
-        <h1 class="artist-name">FORREST FRANK</h1>
-        <div class="location">RALEIGH, NC</div>
-        <div class="details">
-            <p>Pack your bags!</p>
-            <p>Best Christmas present ever?</p>
+    <div id="ticket" class="hidden relative z-[100] bg-white p-6 md:p-8 rounded-xl shadow-2xl border-4 border-red-600 max-w-[90%] w-[500px] text-center transform scale-0">
+        <div class="font-christmas text-3xl md:text-4xl text-red-600 mb-2">Merry Christmas!</div>
+        <div class="text-gray-500 italic text-sm md:text-lg mb-4">We're going... UP!</div>
+        
+        <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-2 leading-tight">
+            FORREST FRANK
+        </h1>
+        
+        <div class="text-2xl md:text-3xl font-bold text-slate-800 uppercase tracking-wide">Raleigh, NC</div>
+        
+        <div class="mt-6 pt-6 border-t-2 border-dashed border-gray-200">
+            <p class="text-lg md:text-xl text-gray-600 font-semibold">Pack your bags, my love!</p>
+            <p class="text-md text-gray-400 mt-2">Best. Gift. Ever.</p>
         </div>
     </div>
 
     <script>
-        // --- YOUTUBE API SETUP ---
+        // --- YOUTUBE API ---
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -408,154 +242,158 @@
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: 'wCw-W-2Rs0k', 
+                height: '100%',
+                width: '100%',
+                videoId: 'wCw-W-2Rs0k',
+                playerVars: {
+                    'playsinline': 1, // Crucial for iOS
+                    'controls': 0,
+                    'disablekb': 1
+                },
                 events: { 'onReady': onPlayerReady }
             });
         }
+        function onPlayerReady(event) { console.log("Audio Ready"); }
 
-        function onPlayerReady(event) { console.log("Music ready"); }
-
-        // --- OPEN GIFT LOGIC ---
+        // --- INTERACTION LOGIC ---
         function openGift() {
             const giftBox = document.getElementById('giftBox');
             const ticket = document.getElementById('ticket');
 
-            if (player && player.playVideo) {
+            // 1. Play Audio IMMEDIATELY (Crucial for mobile)
+            if (player && typeof player.playVideo === 'function') {
                 player.playVideo();
                 player.setVolume(100);
             }
 
+            // 2. Remove bounce animation
+            giftBox.classList.remove('animate-bounce-slow');
+            // 3. Add shake
             giftBox.classList.add('shaking');
 
+            // 4. Explosion Sequence
             setTimeout(() => {
-                // Explode out
-                giftBox.style.transition = "all 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045)";
-                giftBox.style.transform = "scale(1.5) rotate(15deg)";
+                giftBox.style.transition = "all 0.5s ease-out";
+                giftBox.style.transform = "scale(1.5) rotate(15deg)"; // Big expand
                 giftBox.style.opacity = "0";
-                
-                setTimeout(() => {
-                    giftBox.style.display = "none";
-                    ticket.style.display = "block";
-                    startConfetti();
-                    // Elastic bounce in for ticket
-                    ticket.style.transition = "all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
-                    setTimeout(() => {
-                        ticket.style.transform = "scale(1)";
-                    }, 50);
-                }, 400);
 
+                setTimeout(() => {
+                    giftBox.style.display = 'none';
+                    ticket.classList.remove('hidden');
+                    // Force reflow
+                    void ticket.offsetWidth; 
+                    
+                    // Animate Ticket In
+                    ticket.style.transition = "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                    ticket.style.transform = "scale(1)";
+                    
+                    startConfetti();
+                }, 300);
             }, 500);
         }
 
-        /* --- SNOW GENERATOR --- */
+        // --- SNOWFALL ---
         function createSnow() {
             const container = document.getElementById('snow-container');
-            const snowflakeCount = 60;
-            const icons = ['❄', '❅', '❆', '•'];
+            const icons = ['❄', '•', '❅'];
+            // Reduce count slightly for mobile performance
+            const count = window.innerWidth < 600 ? 30 : 50;
 
-            for (let i = 0; i < snowflakeCount; i++) {
+            for (let i = 0; i < count; i++) {
                 const flake = document.createElement('div');
-                flake.className = 'snowflake';
                 flake.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-                flake.style.left = Math.random() * 100 + 'vw';
-                const duration = Math.random() * 5 + 3;
-                flake.style.animationDuration = duration + 's';
-                flake.style.opacity = Math.random() * 0.7 + 0.3;
-                flake.style.fontSize = Math.random() * 15 + 8 + 'px';
-                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.className = 'absolute text-white select-none opacity-0';
                 
+                // Random positioning
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                
+                // Animation settings
+                const duration = Math.random() * 5 + 5; // 5-10s
+                flake.style.animation = `snowfall ${duration}s linear infinite`;
+                flake.style.animationDelay = (Math.random() * 5) + 's';
+                flake.style.opacity = Math.random() * 0.7 + 0.3;
+
                 container.appendChild(flake);
             }
         }
         createSnow();
 
-        /* --- LIGHTS GENERATOR --- */
+        // --- LIGHTS ---
         function createLights() {
             const wire = document.getElementById('lights');
-            // Classic Christmas Colors
-            const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#e67e22'];
-            const totalLights = 25;
+            const colors = ['#e74c3c', '#f1c40f', '#3498db', '#2ecc71'];
+            const count = 20;
 
-            for (let i = 0; i < totalLights; i++) {
+            for(let i=0; i<count; i++) {
                 const bulb = document.createElement('div');
                 bulb.className = 'light-bulb';
-                bulb.style.left = (i * (100 / totalLights)) + 1 + '%';
-                bulb.style.backgroundColor = colors[i % colors.length];
-                bulb.style.color = colors[i % colors.length];
-                // Randomize glow timing
-                bulb.style.animationDelay = (Math.random() * 2) + 's';
-                bulb.style.animationDuration = (Math.random() * 1 + 1) + 's';
+                bulb.style.left = (i * (100/count) + 2) + '%';
+                const color = colors[i % colors.length];
+                bulb.style.backgroundColor = color;
+                bulb.style.color = color; // For shadow
+                bulb.style.animationDelay = Math.random() + 's';
                 wire.appendChild(bulb);
             }
         }
         createLights();
 
-        /* --- CONFETTI LOGIC --- */
+        // --- CONFETTI ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
+        
         let pieces = [];
-        const confettiColors = ['#c0392b', '#f1c40f', '#2ecc71', '#ecf0f1', '#e67e22'];
+        const confettiColors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#fff'];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
         function startConfetti() {
-            for (let i = 0; i < 300; i++) {
+            // Burst
+            for (let i = 0; i < 200; i++) {
                 pieces.push({
                     x: window.innerWidth / 2,
                     y: window.innerHeight / 2,
-                    w: Math.random() * 12 + 5,
-                    h: Math.random() * 12 + 5,
-                    vx: (Math.random() - 0.5) * 25,
-                    vy: (Math.random() - 0.5) * 25 - 20, // Big upward burst
+                    w: Math.random() * 8 + 4,
+                    h: Math.random() * 8 + 4,
+                    vx: (Math.random() - 0.5) * (window.innerWidth < 600 ? 15 : 25), // Smaller burst on mobile
+                    vy: (Math.random() - 0.5) * 25 - 15,
                     color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-                    rotation: Math.random() * 360,
-                    rotationSpeed: (Math.random() - 0.5) * 15
+                    rot: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 10
                 });
             }
-            updateConfetti();
+            animateConfetti();
         }
 
-        function updateConfetti() {
+        function animateConfetti() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            pieces.forEach((p, index) => {
+            let active = false;
+
+            pieces.forEach((p, i) => {
                 p.x += p.vx;
                 p.y += p.vy;
                 p.vy += 0.5; // Gravity
-                p.rotation += p.rotationSpeed;
-                p.vx *= 0.99; // Air resistance
+                p.vx *= 0.95; // Drag
+                p.rot += p.rotSpeed;
 
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(p.rotation * Math.PI / 180);
-                ctx.fillStyle = p.color;
-                // Draw some circles instead of just squares for variety
-                if (index % 3 === 0) {
-                    ctx.beginPath();
-                    ctx.arc(0, 0, p.w/2, 0, 2 * Math.PI);
-                    ctx.fill();
-                } else {
-                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-                }
-                ctx.restore();
-
-                if (p.y > window.innerHeight + 50) {
-                    pieces.splice(index, 1);
+                if (p.y < canvas.height + 20) {
+                    active = true;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                    ctx.restore();
                 }
             });
 
-            if (pieces.length > 0) {
-                requestAnimationFrame(updateConfetti);
-            }
+            if (active) requestAnimationFrame(animateConfetti);
         }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
     </script>
 </body>
 </html>
