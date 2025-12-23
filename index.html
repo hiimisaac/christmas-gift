@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Surprise for You!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- THE GIFT BOX --- */
+        .gift-container {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .gift-container:hover {
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .gift-box {
+            width: 150px;
+            height: 150px;
+            background: #ff4757;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .gift-lid {
+            width: 170px;
+            height: 40px;
+            background: #ff6b81;
+            position: absolute;
+            top: -40px;
+            left: -10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 11;
+            transition: transform 0.5s ease-in;
+        }
+
+        .ribbon-vertical {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: #ffffff;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ribbon-horizontal {
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            background: #ffffff;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .lid-ribbon {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: #ffffff;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bow {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 40px;
+        }
+
+        .bow::before, .bow::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 8px solid #fff;
+            border-radius: 50% 50% 0 50%;
+            top: 10px;
+        }
+
+        .bow::before {
+            left: 0;
+            transform: rotate(45deg);
+        }
+
+        .bow::after {
+            right: 0;
+            transform: rotate(135deg);
+        }
+
+        .click-text {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #555;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- THE TICKET (HIDDEN) --- */
+        .ticket-container {
+            display: none;
+            position: absolute;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            border: 2px dashed #333;
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+        }
+
+        .ticket-header {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .artist-name {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .location {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+
+        .barcode {
+            height: 40px;
+            background: repeating-linear-gradient(
+                90deg,
+                #333,
+                #333 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            margin-top: 20px;
+            opacity: 0.7;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shaking {
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        /* --- CONFETTI CANVAS --- */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="gift-container" id="giftBox" onclick="openGift()">
+        <div class="bow"></div>
+        <div class="gift-lid">
+            <div class="lid-ribbon"></div>
+        </div>
+        <div class="gift-box">
+            <div class="ribbon-vertical"></div>
+            <div class="ribbon-horizontal"></div>
+        </div>
+        <div class="click-text">Tap to Open</div>
+    </div>
+
+    <div class="ticket-container" id="ticket">
+        <div class="ticket-header">Surprise! We are going to see</div>
+        <h1 class="artist-name">FORREST FRANK</h1>
+        <div class="location">RALEIGH, NC</div>
+        <div class="details">
+            <p>Pack your bags, my love!</p>
+            <p>I can't wait to go with you.</p>
+        </div>
+        <div class="barcode"></div>
+    </div>
+
+    <script>
+        function openGift() {
+            const giftBox = document.getElementById('giftBox');
+            const ticket = document.getElementById('ticket');
+
+            // 1. Shake animation
+            giftBox.classList.add('shaking');
+
+            // 2. After shake, explode and hide box, show ticket
+            setTimeout(() => {
+                giftBox.style.transition = "all 0.5s ease";
+                giftBox.style.transform = "scale(0)";
+                giftBox.style.opacity = "0";
+                
+                setTimeout(() => {
+                    giftBox.style.display = "none";
+                    ticket.style.display = "block";
+                    // Small delay to allow display:block to render before scaling up
+                    setTimeout(() => {
+                        ticket.style.transform = "scale(1)";
+                        startConfetti();
+                    }, 50);
+                }, 500);
+
+            }, 500);
+        }
+
+        /* --- CONFETTI LOGIC --- */
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let pieces = [];
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#ff9966', '#ff5e62'];
+
+        function startConfetti() {
+            for (let i = 0; i < 200; i++) {
+                pieces.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 10 + 5,
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 0.5) * 20 - 10, // Initial upward burst
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+            updateConfetti();
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            pieces.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.5; // Gravity
+                p.rotation += p.rotationSpeed;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+
+                // Remove pieces that fall off screen
+                if (p.y > window.innerHeight) {
+                    pieces.splice(index, 1);
+                }
+            });
+
+            if (pieces.length > 0) {
+                requestAnimationFrame(updateConfetti);
+            }
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
