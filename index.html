@@ -147,6 +147,7 @@
     .stage {
       width: min(560px, 92vw);
       animation: cardEnter .7s cubic-bezier(.2,.9,.3,1) both;
+      max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px);
     }
 
     @keyframes cardEnter {
