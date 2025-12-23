@@ -2,584 +2,426 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>🎁 Christmas Surprise</title>
   <meta name="description" content="A little Christmas unwrapping surprise." />
+
   <style>
     :root{
-      --bg1:#0b1020; --bg2:#0f2b3a;
-      --card: rgba(15, 23, 42, .80);
-      --text:#eaf2ff; --muted:#bcd0ff;
-      --gold:#f59e0b; --green:#22c55e; --red:#ef4444;
-      --shadow: 0 24px 80px rgba(0,0,0,.55);
-      --radius: 22px;
+      --bg0:#050814;
+      --bg1:#081428;
+      --bg2:#0b2b32;
+
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(0,0,0,.22);
+      --border: rgba(255,255,255,.14);
+
+      --text: #f3f7ff;
+      --muted: rgba(243,247,255,.72);
+
+      --gold:#f7b733;
+      --green:#22c55e;
+      --red:#ef4444;
+      --blue:#60a5fa;
+      --purple:#a78bfa;
+
+      --shadow: 0 24px 90px rgba(0,0,0,.60);
+      --radius: 24px;
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
+      color: var(--text);
       background:
-        radial-gradient(1200px 800px at 20% 20%, rgba(239,68,68,.16), transparent 60%),
-        radial-gradient(1000px 700px at 80% 30%, rgba(34,197,94,.14), transparent 60%),
-        radial-gradient(1200px 900px at 50% 90%, rgba(245,158,11,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+        radial-gradient(900px 700px at 20% 15%, rgba(239,68,68,.16), transparent 60%),
+        radial-gradient(900px 700px at 85% 20%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(1100px 900px at 50% 95%, rgba(247,183,51,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1), var(--bg2));
       overflow:hidden;
     }
 
-    /* Top Christmas lights */
-    .lights{
-      position:fixed; inset:0 0 auto 0; height:90px;
-      pointer-events:none; z-index:30;
-      display:flex; justify-content:center; padding-top:10px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.55));
+    /* Soft vignette */
+    .vignette{
+      position:fixed; inset:0;
+      pointer-events:none;
+      background: radial-gradient(1200px 900px at 50% 35%, transparent 50%, rgba(0,0,0,.55));
+      z-index: 1;
     }
-    .wire{ position:relative; width:min(1100px, 96vw); height:80px; }
-    .wire:before{
-      content:""; position:absolute; left:0; right:0; top:18px; height:3px;
-      background:rgba(255,255,255,.18); border-radius:999px;
+
+    /* Lights */
+    .lights{
+      position:fixed;
+      left:0; right:0;
+      top:0;
+      padding-top: calc(10px + var(--safeTop));
+      height: 92px;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+      z-index: 40;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.55));
+    }
+    .wire{
+      position:relative;
+      width:min(680px, 96vw);
+      height:78px;
+    }
+    .wire::before{
+      content:"";
+      position:absolute;
+      left:0; right:0;
+      top:18px;
+      height:3px;
+      border-radius:999px;
+      background: rgba(255,255,255,.18);
       transform: rotate(-1deg);
     }
     .bulb{
-      position:absolute; top:0; width:18px; height:30px;
+      position:absolute;
+      top:0;
+      width:16px; height:28px;
       transform-origin: 50% 0%;
-      animation: sway 3.6s ease-in-out infinite;
+      animation: sway 3.8s ease-in-out infinite;
       color: var(--gold);
     }
-    .bulb:before{
-      content:""; position:absolute; left:50%; top:14px; width:18px; height:18px;
+    .bulb::before{
+      content:"";
+      position:absolute;
+      left:50%; top:13px;
+      width:16px; height:16px;
       transform: translateX(-50%);
-      border-radius:999px; background: currentColor;
-      box-shadow: 0 0 12px currentColor, 0 0 28px rgba(255,255,255,.18);
-      opacity:.92; animation: twinkle 1.9s ease-in-out infinite;
+      border-radius:999px;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor, 0 0 24px rgba(255,255,255,.12);
+      animation: twinkle 1.9s ease-in-out infinite;
+      opacity:.92;
     }
-    .bulb:after{
-      content:""; position:absolute; left:50%; top:11px; width:12px; height:8px;
-      transform: translateX(-50%); border-radius: 5px 5px 6px 6px;
+    .bulb::after{
+      content:"";
+      position:absolute;
+      left:50%; top:10px;
+      width:10px; height:7px;
+      transform: translateX(-50%);
+      border-radius: 6px;
       background: rgba(255,255,255,.22);
     }
-    @keyframes twinkle{ 0%,100%{filter:brightness(1);opacity:.82} 50%{filter:brightness(1.35);opacity:1} }
-    @keyframes sway{ 0%,100%{transform: rotate(-2deg)} 50%{transform: rotate(2deg)} }
+    @keyframes twinkle{
+      0%,100%{ filter:brightness(1); opacity:.80; }
+      50%{ filter:brightness(1.35); opacity:1; }
+    }
+    @keyframes sway{
+      0%,100%{ transform: rotate(-2deg); }
+      50%{ transform: rotate(2deg); }
+    }
 
-    /* Streamers */
-    .streamers{ position:fixed; inset:0; pointer-events:none; z-index:5; opacity:.9; }
+    /* Streamers (kept subtle for mobile) */
+    .streamers{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index: 2;
+      opacity:.65;
+      filter: blur(0.2px);
+    }
     .streamer{
-      position:absolute; width:140px; height:520px; border-radius:999px; opacity:.32;
+      position:absolute;
+      width: 140px;
+      height: 640px;
+      border-radius: 999px;
+      opacity:.22;
+      background: linear-gradient(180deg, rgba(247,183,51,.85), rgba(247,183,51,.02));
       transform: rotate(18deg);
-      background: linear-gradient(180deg, rgba(245,158,11,.82), rgba(245,158,11,.03));
     }
-    .streamer.g{ background: linear-gradient(180deg, rgba(34,197,94,.78), rgba(34,197,94,.03)); transform: rotate(-12deg);}
-    .streamer.r{ background: linear-gradient(180deg, rgba(239,68,68,.78), rgba(239,68,68,.03)); transform: rotate(10deg);}
+    .streamer.r{ background: linear-gradient(180deg, rgba(239,68,68,.85), rgba(239,68,68,.02)); transform: rotate(10deg); }
+    .streamer.g{ background: linear-gradient(180deg, rgba(34,197,94,.82), rgba(34,197,94,.02)); transform: rotate(-12deg); }
 
+    /* Canvases */
     canvas{ position:fixed; inset:0; pointer-events:none; }
-    #snow{ z-index:2; }
-    #confetti{ z-index:25; }
+    #snow{ z-index: 3; opacity:.9; }
+    #confetti{ z-index: 35; }
 
-    /* Center card */
+    /* Layout */
     .wrap{
-      position:relative; z-index:10;
+      position:relative;
+      z-index: 10;
       height:100%;
-      display:grid; place-items:center;
-      padding: 110px 18px 28px;
+      display:grid;
+      place-items:center;
+      padding:
+        calc(92px + var(--safeTop) + 14px)
+        16px
+        calc(16px + var(--safeBottom));
     }
+
     .card{
-      width:min(760px, 94vw);
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.12);
+      width: min(520px, 94vw);
       border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      padding: clamp(18px, 4vw, 34px);
+      backdrop-filter: blur(16px);
       overflow:hidden;
     }
-    .topline{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; flex-wrap:wrap;
-      margin-bottom: 12px;
+
+    .cardInner{
+      padding: 18px;
     }
-    .badge{
-      display:inline-flex; align-items:center; gap:10px;
-      font-weight:700; letter-spacing:.3px;
-      background: rgba(255,255,255,.10);
+    @media (min-width: 420px){
+      .cardInner{ padding: 22px; }
+    }
+
+    .topRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
       border: 1px solid rgba(255,255,255,.14);
-      padding: 8px 12px; border-radius: 999px;
+      background: rgba(0,0,0,.16);
+      color: rgba(243,247,255,.92);
+      font-weight: 800;
+      letter-spacing:.2px;
+      font-size: 13px;
     }
-    .hint{ color: var(--muted); font-size: 14px; }
+
+    .hint{
+      color: var(--muted);
+      font-size: 13px;
+      text-align:right;
+      line-height:1.2;
+      max-width: 160px;
+    }
 
     h1{
-      margin: 12px 0 10px;
-      font-size: clamp(28px, 4.5vw, 46px);
+      margin: 8px 0 8px;
+      font-size: clamp(26px, 7vw, 40px);
       line-height: 1.06;
+      letter-spacing: -0.4px;
     }
     .sub{
+      margin: 0 0 14px;
       color: var(--muted);
-      font-size: clamp(15px, 2vw, 18px);
+      font-size: clamp(14px, 4.1vw, 17px);
       line-height: 1.45;
-      margin: 0 0 18px;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-    }
-    @media (max-width: 760px){ .grid{grid-template-columns:1fr} }
-
-    .panel{
+    .stage{
+      margin-top: 10px;
       background: rgba(0,0,0,.18);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 16px;
-      position:relative;
     }
 
-    /* Gift button */
-    .giftArea{
-      display:grid; place-items:center; gap:12px;
-      padding: 10px 0 2px;
+    /* Gift */
+    .giftWrap{
+      display:grid;
+      place-items:center;
+      gap: 12px;
     }
-    .giftBtn{
-      width:min(330px, 100%);
-      border:none;
+
+    .cta{
+      width: 100%;
+      border: none;
       border-radius: 18px;
       padding: 14px 16px;
-      font-weight: 800;
-      letter-spacing:.3px;
-      color:#0b1020;
-      background: linear-gradient(90deg, var(--gold), #ffd36e);
+      font-weight: 900;
+      letter-spacing: .2px;
+      font-size: 16px;
+      color:#081428;
+      background: linear-gradient(90deg, var(--gold), #ffd98d);
       cursor:pointer;
-      box-shadow: 0 16px 30px rgba(245,158,11,.25);
+      box-shadow: 0 16px 30px rgba(247,183,51,.22);
       transition: transform .12s ease, filter .12s ease;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      user-select:none;
       -webkit-tap-highlight-color: transparent;
+      user-select:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
     }
-    .giftBtn:active{ transform: scale(.985); filter:brightness(.98); }
+    .cta:active{ transform: scale(.988); filter: brightness(.98); }
 
     .giftBox{
-      width: 220px; height: 170px; position:relative;
-      margin: 4px auto 0;
+      width: min(280px, 80vw);
+      aspect-ratio: 280/210;
+      position:relative;
       filter: drop-shadow(0 18px 24px rgba(0,0,0,.35));
     }
+
     .boxBase{
-      position:absolute; left:0; right:0; bottom:0; height:120px;
-      background: linear-gradient(180deg, rgba(239,68,68,.95), rgba(239,68,68,.75));
-      border-radius: 18px;
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: 64%;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(239,68,68,.96), rgba(239,68,68,.70));
       border: 1px solid rgba(255,255,255,.16);
       overflow:hidden;
     }
     .boxLid{
-      position:absolute; left:-6px; right:-6px; top:18px; height:62px;
-      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.72));
-      border-radius: 18px;
+      position:absolute;
+      left:-2%; right:-2%;
+      top: 22%;
+      height: 34%;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(34,197,94,.96), rgba(34,197,94,.66));
       border: 1px solid rgba(255,255,255,.16);
       transform-origin: 50% 100%;
-      transition: transform .6s cubic-bezier(.2,.9,.2,1), top .6s cubic-bezier(.2,.9,.2,1);
+      transition: transform .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1);
     }
     .ribbonV{
-      position:absolute; top:0; bottom:0; left:50%; width:26px; transform:translateX(-50%);
+      position:absolute;
+      top:0; bottom:0;
+      left:50%;
+      width: 12%;
+      transform: translateX(-50%);
       background: rgba(255,255,255,.22);
     }
     .ribbonH{
-      position:absolute; left:0; right:0; top:44px; height:22px;
+      position:absolute;
+      left:0; right:0;
+      top: 40%;
+      height: 10%;
       background: rgba(255,255,255,.22);
     }
     .bow{
-      position:absolute; top:0; left:50%; transform: translate(-50%, -5px);
-      width: 88px; height: 50px;
+      position:absolute;
+      left:50%;
+      top: 16%;
+      transform: translate(-50%, -50%);
+      width: 42%;
+      height: 30%;
     }
-    .bow:before,.bow:after{
-      content:""; position:absolute; top:10px; width:40px; height:28px;
+    .bow::before,.bow::after{
+      content:"";
+      position:absolute;
+      top: 34%;
+      width: 48%;
+      height: 48%;
       border-radius: 999px;
       background: rgba(255,255,255,.30);
       border: 1px solid rgba(255,255,255,.22);
     }
-    .bow:before{ left:0; transform: rotate(-18deg); }
-    .bow:after{ right:0; transform: rotate(18deg); }
+    .bow::before{ left:0; transform: rotate(-18deg); }
+    .bow::after{ right:0; transform: rotate(18deg); }
     .knot{
-      position:absolute; left:50%; top:18px; transform: translateX(-50%);
-      width: 14px; height: 14px; border-radius: 6px;
-      background: rgba(255,255,255,.32);
+      position:absolute;
+      left:50%; top: 52%;
+      transform: translate(-50%, -50%);
+      width: 14%;
+      aspect-ratio: 1/1;
+      border-radius: 8px;
+      background: rgba(255,255,255,.34);
       border: 1px solid rgba(255,255,255,.22);
     }
 
-    /* Locked details (hidden until unwrap) */
-    .lockedOverlay{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      background: rgba(2, 6, 23, .58);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 18px;
-      text-align:center;
-      gap:10px;
-    }
-    .lockTitle{
-      font-weight:900;
-      letter-spacing:.2px;
-      font-size: 18px;
-    }
-    .lockSub{
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.4;
-      margin:0;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: rgba(234,242,255,.9);
-      font-weight: 700;
-      font-size: 13px;
+    .opened .boxLid{
+      top: 6%;
+      transform: rotate(-18deg) translateY(-10px);
     }
 
-    /* Revealed details */
-    .details{
-      opacity:0;
-      transform: translateY(6px);
-      transition: opacity .45s ease, transform .45s ease;
-      pointer-events:none;
-    }
-    .details.show{
-      opacity:1;
-      transform: translateY(0);
-      pointer-events:auto;
-    }
-    .detail{
-      display:grid; gap:10px;
-      font-size: 15px;
-    }
-    .detail b{ color:#fff; }
-    .detail .row{
-      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
-      border-bottom: 1px dashed rgba(255,255,255,.14);
-      padding-bottom: 10px;
-    }
-    .detail .row:last-child{ border-bottom:none; padding-bottom: 0; }
-    .detail .k{ color: var(--muted); min-width: 92px; }
-
-    .revealMsg{
+    /* Reveal section */
+    .reveal{
       display:none;
       margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 16px;
+      padding: 14px;
+      border-radius: 18px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
-      animation: pop .5s ease both;
+      animation: pop .55s ease both;
     }
-    @keyframes pop{ from{transform: translateY(6px); opacity:0} to{transform: translateY(0); opacity:1} }
-
-    .revealMsg h2{
+    @keyframes pop{
+      from{ transform: translateY(8px); opacity:0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
+    .reveal h2{
       margin: 0 0 6px;
-      font-size: clamp(20px, 3vw, 26px);
+      font-size: clamp(18px, 5.4vw, 24px);
+      letter-spacing: -0.2px;
     }
-    .revealMsg p{ margin:0; color: var(--muted); line-height:1.45; }
+    .reveal p{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14.5px;
+    }
 
-    .fine{
+    .details{
+      margin-top: 12px;
+      display:none;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      padding: 12px 12px;
+    }
+    .detailRow{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 6px;
+      border-bottom: 1px dashed rgba(255,255,255,.14);
+      font-size: 14.5px;
+    }
+    .detailRow:last-child{ border-bottom:none; }
+    .k{ color: var(--muted); min-width: 74px; }
+    .v{ text-align:right; }
+
+    .audioRow{
       margin-top: 10px;
-      font-size: 12px;
-      color: rgba(234,242,255,.72);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
     }
+    .audioStatus{
+      font-size: 12px;
+      color: rgba(243,247,255,.75);
+      line-height: 1.35;
+      flex: 1 1 220px;
+    }
+    .playBtn{
+      display:none;
+      border:none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color:#071a12;
+      background: linear-gradient(90deg, var(--green), #a7f3d0);
+      cursor:pointer;
+      box-shadow: 0 14px 26px rgba(34,197,94,.18);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .playBtn:active{ transform: scale(.99); }
 
-    .opened .boxLid{
-      top:-8px;
-      transform: rotate(-18deg) translateY(-10px);
+    /* Footer note */
+    .footerNote{
+      margin-top: 14px;
+      color: rgba(243,247,255,.55);
+      font-size: 12px;
+      line-height: 1.35;
+      text-align:center;
     }
   </style>
 </head>
+
 <body>
   <div class="lights" aria-hidden="true">
     <div class="wire" id="wire"></div>
   </div>
 
-  <div class="streamers" aria-hidden="true">
-    <div class="streamer r" style="left:-40px; top:120px;"></div>
-    <div class="streamer g" style="right:-60px; top:160px;"></div>
-    <div class="streamer" style="left:18%; top:240px; opacity:.22; height:620px;"></div>
-    <div class="streamer g" style="right:14%; top:290px; opacity:.18; height:680px;"></div>
-  </div>
-
-  <canvas id="snow"></canvas>
-  <canvas id="confetti"></canvas>
-
-  <div class="wrap">
-    <div class="card" id="card">
-      <div class="topline">
-        <div class="badge">🎄 Merry Christmas</div>
-        <div class="hint">Tap to unwrap (music starts on tap)</div>
-      </div>
-
-      <h1>I made you a tiny gift… 🎁</h1>
-      <p class="sub">
-        I couldn’t put the real tickets in your hands yet… so I wrapped the surprise in a webpage.
-      </p>
-
-      <div class="grid">
-        <div class="panel">
-          <div class="giftArea">
-            <button class="giftBtn" id="unwrapBtn" type="button">
-              ✨ Unwrap the surprise
-            </button>
-
-            <div class="giftBox" id="giftBox" aria-hidden="true">
-              <div class="boxLid"></div>
-              <div class="bow"><div class="knot"></div></div>
-              <div class="boxBase">
-                <div class="ribbonV"></div>
-                <div class="ribbonH"></div>
-              </div>
-            </div>
-
-            <div class="revealMsg" id="revealMsg">
-              <h2>We’re going to see <span style="color:var(--gold)">Forrest Frank</span> 🙌</h2>
-              <p>
-                The real tickets get delivered closer to the event… but the plan is locked in. 💛
-              </p>
-              <div class="fine" id="audioStatus">🎶 Music should be playing. If not, tap “Play Music”.</div>
-              <button class="giftBtn" id="playBtn" type="button"
-                style="display:none; background: linear-gradient(90deg, var(--green), #a7f3d0);">
-                ▶️ Play Music
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" id="detailsPanel">
-          <!-- Hidden until unwrap -->
-          <div class="details" id="details">
-            <div class="detail">
-              <div class="row">
-                <div class="k">Artist</div>
-                <div><b>Forrest Frank</b></div>
-              </div>
-              <div class="row">
-                <div class="k">Venue</div>
-                <div style="text-align:right">
-                  <b>Lenovo Center</b><br/>
-                  <span style="color:var(--muted)">Raleigh, NC</span>
-                </div>
-              </div>
-              <div class="row">
-                <div class="k">Vibe</div>
-                <div style="text-align:right">
-                  <span>Good music • good night • good memories ✨</span>
-                </div>
-              </div>
-              <div class="row">
-                <div class="k">Note</div>
-                <div style="text-align:right; color:var(--muted)">
-                  Tickets arrive closer to showtime — this is the “wrapper.”
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lock overlay -->
-          <div class="lockedOverlay" id="lock">
-            <div class="pill">🔒 Locked</div>
-            <div class="lockTitle">Details are hidden</div>
-            <p class="lockSub">Unwrap the gift to reveal where we’re going.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- NOTE: No <audio> tag needed. We create Audio() inside the tap for better iOS behavior. -->
-    </div>
-  </div>
-
-  <script>
-    // ---- Build lights
-    (function buildLights(){
-      const wire = document.getElementById("wire");
-      const colors = ["#ef4444","#22c55e","#f59e0b","#60a5fa","#a78bfa"];
-      const count = 22;
-      for (let i=0;i<count;i++){
-        const b = document.createElement("div");
-        b.className = "bulb";
-        const x = (i/(count-1))*100;
-        b.style.left = `calc(${x}% - 9px)`;
-        b.style.animationDelay = `${(i%7)*0.12}s`;
-        b.style.color = colors[i % colors.length];
-        wire.appendChild(b);
-      }
-    })();
-
-    // ---- Snow
-    const snowCanvas = document.getElementById("snow");
-    const snowCtx = snowCanvas.getContext("2d");
-    let snowflakes = [];
-
-    // ---- Confetti
-    const confCanvas = document.getElementById("confetti");
-    const confCtx = confCanvas.getContext("2d");
-    let confetti = [];
-
-    function resizeCanvases(){
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      for (const c of [snowCanvas, confCanvas]){
-        c.width = Math.floor(window.innerWidth * dpr);
-        c.height = Math.floor(window.innerHeight * dpr);
-        c.style.width = window.innerWidth + "px";
-        c.style.height = window.innerHeight + "px";
-        c.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
-      }
-    }
-
-    function initSnow(){
-      snowflakes = [];
-      const n = Math.floor(Math.min(160, 70 + window.innerWidth/8));
-      for (let i=0;i<n;i++){
-        snowflakes.push({
-          x: Math.random()*window.innerWidth,
-          y: Math.random()*window.innerHeight,
-          r: 0.8 + Math.random()*2.2,
-          vx: -0.4 + Math.random()*0.8,
-          vy: 0.6 + Math.random()*1.6,
-          wobble: Math.random()*Math.PI*2
-        });
-      }
-    }
-
-    function drawSnow(){
-      snowCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
-      snowCtx.globalAlpha = 0.9;
-      for (const f of snowflakes){
-        f.wobble += 0.01;
-        f.x += f.vx + Math.sin(f.wobble)*0.25;
-        f.y += f.vy;
-        if (f.y > window.innerHeight + 10){ f.y = -10; f.x = Math.random()*window.innerWidth; }
-        if (f.x < -10) f.x = window.innerWidth + 10;
-        if (f.x > window.innerWidth + 10) f.x = -10;
-
-        snowCtx.beginPath();
-        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI*2);
-        snowCtx.fillStyle = "rgba(255,255,255,.85)";
-        snowCtx.fill();
-      }
-    }
-
-    function burstConfetti(){
-      const cx = window.innerWidth * 0.5;
-      const cy = window.innerHeight * 0.35;
-      const colors = ["#f59e0b","#22c55e","#ef4444","#60a5fa","#a78bfa","#fda4af","#fde68a"];
-      const count = 240;
-      for (let i=0;i<count;i++){
-        const angle = (Math.random()*Math.PI*2);
-        const speed = 2 + Math.random()*7;
-        confetti.push({
-          x: cx, y: cy,
-          vx: Math.cos(angle)*speed,
-          vy: Math.sin(angle)*speed - 4,
-          w: 4 + Math.random()*6,
-          h: 4 + Math.random()*10,
-          rot: Math.random()*Math.PI,
-          vr: -0.25 + Math.random()*0.5,
-          g: 0.12 + Math.random()*0.18,
-          life: 140 + Math.random()*90,
-          color: colors[i % colors.length]
-        });
-      }
-    }
-
-    function drawConfetti(){
-      confCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
-      for (let i=confetti.length-1;i>=0;i--){
-        const p = confetti[i];
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.life -= 1;
-
-        confCtx.save();
-        confCtx.translate(p.x, p.y);
-        confCtx.rotate(p.rot);
-        confCtx.fillStyle = p.color;
-        confCtx.globalAlpha = Math.max(0, Math.min(1, p.life/180));
-        confCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-        confCtx.restore();
-
-        if (p.life <= 0 || p.y > window.innerHeight + 60) confetti.splice(i,1);
-      }
-    }
-
-    function tick(){
-      drawSnow();
-      drawConfetti();
-      requestAnimationFrame(tick);
-    }
-
-    window.addEventListener("resize", () => {
-      resizeCanvases();
-      initSnow();
-    });
-
-    resizeCanvases();
-    initSnow();
-    tick();
-
-    // ---- Unwrap + Music
-    const unwrapBtn = document.getElementById("unwrapBtn");
-    const playBtn = document.getElementById("playBtn");
-    const revealMsg = document.getElementById("revealMsg");
-    const audioStatus = document.getElementById("audioStatus");
-    const details = document.getElementById("details");
-    const lock = document.getElementById("lock");
-    const card = document.getElementById("card");
-    const giftBox = document.getElementById("giftBox");
-
-    let unwrapped = false;
-    let audio = null;
-
-    function startMusic(){
-      // Create audio INSIDE the user gesture for best mobile reliability
-      if (!audio){
-        audio = new Audio("good-day.mp3");
-        audio.preload = "auto";
-        audio.loop = false;
-        audio.volume = 1;
-      }
-
-      // Call play() synchronously; then handle the promise
-      const p = audio.play();
-      if (p && typeof p.then === "function"){
-        p.then(() => {
-          audioStatus.textContent = "🎶 Music is playing.";
-          playBtn.style.display = "none";
-        }).catch(() => {
-          audioStatus.textContent = "🔊 Tap “Play Music” (your phone blocked it the first time).";
-          playBtn.style.display = "inline-flex";
-        });
-      }
-    }
-
-    unwrapBtn.addEventListener("click", () => {
-      if (unwrapped) return;
-      unwrapped = true;
-
-      // Visuals first
-      card.classList.add("opened");
-      giftBox.classList.add("opened");
-      burstConfetti();
-
-      // Reveal message + details
-      revealMsg.style.display = "block";
-      lock.style.display = "none";
-      details.classList.add("show");
-
-      // Start music on the SAME tap
-      audioStatus.textContent = "🎶 Starting music…";
-      startMusic();
-    });
-
-    playBtn.addEventListener("click", () => {
-      audioStatus.textContent = "🎶 Starting music…";
-      startMusic();
-    });
-  </script>
-</body>
-</html>
+  <div class="st
