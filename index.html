@@ -7,18 +7,39 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#04060d" />
+  <meta name="theme-color" content="#0c1a2e" />
 
   <style>
+    :root {
+      --gold: #d4b896;
+      --mint: #7ed7c1;
+      --red: #e85d5d;
+      --green: #4ade80;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    html, body {
+    html {
       height: 100%;
+      background: #0a1628;
     }
 
     body {
       min-height: 100vh;
       min-height: 100dvh;
+      /* Rich dark blue gradient - applies edge-to-edge */
+      background: 
+        radial-gradient(ellipse 120% 60% at 20% 10%, rgba(212, 184, 150, 0.15), transparent 50%),
+        radial-gradient(ellipse 100% 50% at 80% 20%, rgba(126, 215, 193, 0.12), transparent 45%),
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(126, 215, 193, 0.08), transparent 40%),
+        linear-gradient(175deg, 
+          #0f1f35 0%, 
+          #0c1a2e 25%,
+          #091525 50%,
+          #06101c 75%,
+          #040a14 100%
+        );
+      background-attachment: fixed;
       color: rgba(255,255,255,.94);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -27,235 +48,232 @@
       overscroll-behavior: none;
     }
 
-    /* Background - fixed, full bleed */
-    .bg {
-      inset: 0;
-      z-index: 0;
-      background:
-        radial-gradient(ellipse 1400px 900px at 15% 8%, rgba(214,180,106,.28), transparent 60%),
-        radial-gradient(ellipse 1200px 1000px at 90% 20%, rgba(126,215,193,.22), transparent 58%),
-        radial-gradient(ellipse 800px 600px at 50% 120%, rgba(126,215,193,.12), transparent 55%),
-        linear-gradient(175deg, #04060d 0%, #071021 45%, #0a1628 75%, #050815 100%);
+    /* Christmas lights */
+    .lights {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      padding-top: env(safe-area-inset-top, 0px);
+      z-index: 50;
+      pointer-events: none;
     }
 
-    .bg::after {
-      content: "";
-      background:
-        radial-gradient(ellipse 1000px 600px at 25% 5%, rgba(214,180,106,.2), transparent 65%),
-        radial-gradient(ellipse 1000px 700px at 85% 12%, rgba(126,215,193,.16), transparent 68%);
-      filter: blur(40px);
-      opacity: .85;
-      animation: bgPulse 8s ease-in-out infinite;
+    .wire {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 50px;
+      margin: 0 auto;
+      padding: 0 16px;
     }
 
-    @keyframes bgPulse {
-      0%, 100% { opacity: .85; transform: scale(1); }
-      50% { opacity: .95; transform: scale(1.02); }
-    }
-
-    .bg::before {
+    .wire::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      opacity: .06;
+      top: 8px;
+      left: 16px;
+      right: 16px;
+      height: 2px;
+      background: rgba(255,255,255,.12);
+      border-radius: 2px;
+    }
+
+    .bulb {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      transform-origin: 50% 0;
+      animation: sway 3s ease-in-out infinite;
+    }
+
+    .bulb-cap {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 6px;
+      height: 4px;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,.3);
+      border-radius: 2px 2px 0 0;
+    }
+
+    .bulb-glass {
+      position: absolute;
+      left: 50%;
+      top: 3px;
+      width: 8px;
+      height: 10px;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 40% 40%;
+      background: currentColor;
+      box-shadow: 
+        0 0 6px currentColor,
+        0 0 12px currentColor,
+        0 0 20px currentColor;
+      animation: glow 1.5s ease-in-out infinite alternate;
     }
 
     @keyframes sway {
-      0%, 100% { transform: rotate(-1.2deg); }
-      50% { transform: rotate(1.2deg); }
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
     }
 
-    /* Canvas effects */
+    @keyframes glow {
+      0% { opacity: 0.7; filter: brightness(0.9); }
+      100% { opacity: 1; filter: brightness(1.2); }
+    }
+
+    /* Snow canvas */
     canvas {
       position: fixed;
       inset: 0;
       pointer-events: none;
     }
-    #snow { z-index: 5; }
-    #spark { z-index: 25; }
+    #snow { z-index: 10; }
+    #spark { z-index: 60; }
 
-    /* Scroll container */
+    /* Main content */
     .scroll {
       position: relative;
-      z-index: 10;
+      z-index: 20;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: calc(60px + env(safe-area-inset-top, 0px));
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      padding-left: 16px;
-      padding-right: 16px;
+      padding: calc(65px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* Card */
     .stage {
-      width: min(560px, 92vw);
-      animation: cardEnter .7s cubic-bezier(.2,.9,.3,1) both;
+      width: min(520px, 90vw);
+      animation: float-in 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) both;
     }
 
-    @keyframes cardEnter {
-      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    @keyframes float-in {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .card {
-      border-radius: 26px;
-      background: linear-gradient(175deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.035) 100%);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 28px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
-      backdrop-filter: blur(20px) saturate(1.15);
-      -webkit-backdrop-filter: blur(20px) saturate(1.15);
+      border-radius: 24px;
+      background: linear-gradient(165deg, 
+        rgba(255,255,255,0.08) 0%, 
+        rgba(255,255,255,0.03) 100%
+      );
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 
+        0 25px 60px rgba(0,0,0,.4),
+        0 0 0 1px rgba(0,0,0,.2),
+        inset 0 1px 0 rgba(255,255,255,.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       overflow: hidden;
-      position: relative;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 500px 250px at 30% 0%, rgba(255,255,255,.06), transparent 55%);
-      pointer-events: none;
     }
 
     .inner {
-      padding: 26px 22px;
+      padding: 28px 24px;
     }
+
     @media (min-width: 400px) {
       .inner { padding: 32px 28px; }
     }
 
-    .chipRow {
+    /* Header chips */
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .chip {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 9px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
-      color: rgba(255,255,255,.90);
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.85);
+      font-size: 13px;
       font-weight: 600;
-      font-size: 13.5px;
-      white-space: nowrap;
     }
 
     .hint {
-      color: rgba(255,255,255,.45);
-      font-size: 13px;
-      animation: hintPulse 2s ease-in-out infinite;
+      color: rgba(255,255,255,.4);
+      font-size: 12px;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    @keyframes hintPulse {
-      0%, 100% { opacity: .45; }
-      50% { opacity: .7; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.7; }
     }
 
-    .heroIcon {
-      font-size: 44px;
-      line-height: 1;
-      margin-bottom: 12px;
-      display: inline-block;
-      animation: giftBounce 2.5s ease-in-out infinite;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
+    /* Gift content */
+    .gift-icon {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+      animation: wiggle 3s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.3));
     }
 
-    @keyframes giftBounce {
-      0%, 100% { transform: translateY(0) rotate(-1.5deg); }
-      50% { transform: translateY(-5px) rotate(1.5deg); }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-3deg) scale(1); }
+      25% { transform: rotate(2deg) scale(1.02); }
+      50% { transform: rotate(-2deg) scale(1); }
+      75% { transform: rotate(3deg) scale(1.01); }
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: clamp(36px, 9.5vw, 54px);
-      letter-spacing: -.8px;
-      line-height: 1;
+      font-size: clamp(40px, 11vw, 56px);
       font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,.82) 50%, rgba(214,180,106,.85) 100%);
+      letter-spacing: -1px;
+      margin: 0 0 12px;
+      background: linear-gradient(135deg, #fff 20%, var(--gold) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .lead {
-      margin: 0 0 20px;
-      color: rgba(255,255,255,.55);
-      font-size: clamp(16px, 4.5vw, 18px);
-      line-height: 1.45;
+    .tagline {
+      color: rgba(255,255,255,.5);
+      font-size: clamp(15px, 4vw, 17px);
+      line-height: 1.5;
+      margin-bottom: 24px;
     }
 
     .divider {
       height: 1px;
-      background: linear-gradient(90deg, transparent 5%, rgba(255,255,255,.12) 50%, transparent 95%);
-      margin: 18px 0 22px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
+      margin: 24px 0;
     }
 
     /* Slider */
-    .sliderWrap {
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 20px;
+    .slider-container {
+      background: rgba(0,0,0,.2);
+      border-radius: 18px;
       padding: 12px;
+      border: 1px solid rgba(255,255,255,.05);
     }
 
     .track {
       position: relative;
-      height: 60px;
+      height: 56px;
       border-radius: 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
-      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.06);
       overflow: hidden;
+      cursor: grab;
+      touch-action: none;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      touch-action: none;
-      cursor: grab;
     }
 
     .track:active { cursor: grabbing; }
-
-    .track::before {
-      content: "";
-      position: absolute;
-      inset: -50px;
-      background: radial-gradient(ellipse 400px 180px at 20% 50%, rgba(255,255,255,.10), transparent 50%);
-      transform: rotate(-5deg);
-      opacity: .5;
-      pointer-events: none;
-    }
-
-    .trackLabel {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,.65);
-      font-weight: 600;
-      font-size: 15px;
-      pointer-events: none;
-      transition: opacity .15s ease;
-    }
-
-    .trackLabel span {
-      margin-left: 6px;
-      animation: arrowSlide 1.4s ease-in-out infinite;
-    }
-
-    @keyframes arrowSlide {
-      0%, 100% { transform: translateX(0); opacity: .5; }
-      50% { transform: translateX(5px); opacity: 1; }
-    }
 
     .fill {
       position: absolute;
@@ -263,183 +281,196 @@
       top: 0;
       bottom: 0;
       width: 0%;
-      background: linear-gradient(90deg, rgba(214,180,106,.35), rgba(126,215,193,.25));
+      background: linear-gradient(90deg, rgba(212,184,150,.3), rgba(126,215,193,.2));
+      transition: width 0.05s linear;
+    }
+
+    .track-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      font-weight: 600;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .track-label .arrow {
+      margin-left: 6px;
+      animation: slide-arrow 1.2s ease-in-out infinite;
+    }
+
+    @keyframes slide-arrow {
+      0%, 100% { transform: translateX(0); opacity: 0.5; }
+      50% { transform: translateX(5px); opacity: 1; }
     }
 
     .thumb {
       position: absolute;
-      top: 5px;
-      left: 5px;
-      width: 50px;
-      height: 50px;
+      top: 4px;
+      left: 4px;
+      width: 48px;
+      height: 48px;
       border-radius: 12px;
-      background: linear-gradient(180deg, #fff 0%, #e6e6e6 100%);
-      box-shadow: 0 6px 18px rgba(0,0,0,.32), 0 2px 5px rgba(0,0,0,.18), inset 0 1px 0 #fff;
+      background: linear-gradient(180deg, #fff, #eee);
+      box-shadow: 0 4px 12px rgba(0,0,0,.25), inset 0 1px 0 #fff;
       display: grid;
       place-items: center;
-      color: rgba(0,0,0,.6);
-      font-size: 18px;
-      font-weight: 600;
-      transform: translateX(var(--x, 0px));
-      transition: transform .15s cubic-bezier(.2,.8,.3,1);
+      font-size: 16px;
+      color: rgba(0,0,0,.5);
+      transform: translateX(var(--x, 0));
+      transition: transform 0.15s cubic-bezier(.2,.8,.3,1);
     }
 
     .dragging .thumb { transition: none; }
 
-    .thumb::after {
-      content: "→";
-      font-size: 18px;
-    }
+    .thumb::after { content: "→"; }
 
-    /* Reveal */
+    /* Reveal content */
     .reveal {
       display: none;
       margin-top: 16px;
-      padding: 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
-      animation: revealRise .55s cubic-bezier(.2,.9,.25,1) both;
+      padding: 20px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      animation: reveal-pop 0.5s cubic-bezier(.2,.9,.3,1) both;
     }
 
-    @keyframes revealRise {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    @keyframes reveal-pop {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .reveal h2 {
-      margin: 0 0 6px;
-      font-size: clamp(20px, 6vw, 26px);
-      letter-spacing: -.2px;
-      font-weight: 750;
-      line-height: 1.2;
+      font-size: clamp(20px, 5.5vw, 24px);
+      font-weight: 700;
+      margin: 0 0 8px;
+      line-height: 1.3;
     }
 
-    .reveal p {
-      margin: 0;
-      color: rgba(255,255,255,.55);
-      line-height: 1.45;
-      font-size: 14px;
+    .reveal .heart {
+      font-size: 28px;
+      display: block;
+      margin: 8px 0;
     }
 
-    .audioRow {
-      margin-top: 12px;
+    .gold-text {
+      background: linear-gradient(135deg, var(--gold), #f0d9a8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .audio-row {
+      margin-top: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .audioStatus {
-      color: rgba(255,255,255,.55);
-      font-size: 12.5px;
-      line-height: 1.3;
-      flex: 1 1 180px;
+    .audio-status {
+      color: rgba(255,255,255,.5);
+      font-size: 12px;
     }
 
-    .playBtn {
+    .play-btn {
       display: none;
-      border: 1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      color: rgba(255,255,255,.88);
+      padding: 8px 14px;
       border-radius: 10px;
-      padding: 9px 14px;
-      font-weight: 600;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.85);
       font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    .playBtn:active {
+    .play-btn:active {
       transform: scale(0.96);
-      background: rgba(255,255,255,.12);
     }
 
     .details {
-      display: none;
-      margin-top: 12px;
+      margin-top: 14px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.07);
-      background: rgba(0,0,0,.18);
+      background: rgba(0,0,0,.15);
+      border: 1px solid rgba(255,255,255,.05);
       overflow: hidden;
     }
 
-    .row {
+    .detail-row {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-      font-size: 13.5px;
-    }
-    .row:last-child { border-bottom: none; }
-
-    .k {
-      color: rgba(255,255,255,.48);
-      min-width: 65px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: 13px;
     }
 
-    .v {
+    .detail-row:last-child { border-bottom: none; }
+
+    .detail-label { color: rgba(255,255,255,.4); }
+    .detail-value { 
+      color: rgba(255,255,255,.85); 
       text-align: right;
-      color: rgba(255,255,255,.88);
     }
-    .v small {
+    .detail-value small {
       display: block;
-      color: rgba(255,255,255,.50);
+      color: rgba(255,255,255,.45);
+      font-size: 11px;
       margin-top: 2px;
-      font-size: 11.5px;
     }
 
-    .foot {
+    .footer-note {
+      display: none;
       margin-top: 14px;
       text-align: center;
-      color: rgba(255,255,255,.38);
-      font-size: 11.5px;
-      line-height: 1.35;
-      display: none;
+      color: rgba(255,255,255,.35);
+      font-size: 11px;
     }
   </style>
 </head>
 
 <body>
-  <div class="bg" aria-hidden="true"></div>
-
+  <!-- Christmas Lights -->
   <div class="lights" aria-hidden="true">
-    <div class="wire" id="wire">
-      <svg viewBox="0 0 100 26" preserveAspectRatio="none">
-        <path d="M 0,10 Q 25,18 50,12 T 100,10" />
-      </svg>
-    </div>
+    <div class="wire" id="wire"></div>
   </div>
 
+  <!-- Snow & Sparkles -->
   <canvas id="snow"></canvas>
   <canvas id="spark"></canvas>
 
+  <!-- Main Content -->
   <div class="scroll">
     <div class="stage">
       <section class="card">
         <div class="inner">
-          <div class="chipRow">
+          <div class="header">
             <div class="chip">🎄 Merry Christmas</div>
-            <div class="hint">Slide to open</div>
+            <span class="hint">Slide to open</span>
           </div>
 
-          <div class="heroIcon">🎁</div>
+          <span class="gift-icon">🎁</span>
           <h1>For you.</h1>
-          <p class="lead">A little something special—open when you're ready.</p>
+          <p class="tagline">A little something special—<br>open when you're ready.</p>
 
           <div class="divider"></div>
 
-          <div class="sliderWrap">
-            <div class="track" id="track" role="button" aria-label="Slide to open">
+          <div class="slider-container">
+            <div class="track" id="track">
               <div class="fill" id="fill"></div>
-              <div class="trackLabel" id="trackLabel">Slide to open <span>→</span></div>
+              <div class="track-label" id="trackLabel">
+                Slide to open <span class="arrow">→</span>
+              </div>
               <div class="thumb" id="thumb"></div>
             </div>
 
             <div class="reveal" id="reveal"></div>
-            <div class="foot" id="foot">If audio doesn't start, tap Play once.</div>
+            <p class="footer-note" id="footerNote">If audio doesn't start, tap Play.</p>
           </div>
         </div>
       </section>
@@ -447,333 +478,322 @@
   </div>
 
   <script>
-    // Christmas lights
-    (function buildLights() {
-      const wire = document.getElementById("wire");
-      const colors = ["#ef4444", "#22c55e", "#facc15", "#3b82f6", "#a855f7", "#ec4899"];
-      const count = 12;
-      
+    // ===== CHRISTMAS LIGHTS =====
+    (function createLights() {
+      const wire = document.getElementById('wire');
+      const colors = ['#ef4444', '#22c55e', '#f59e0b', '#3b82f6', '#a855f7', '#ec4899'];
+      const count = 10;
+
       for (let i = 0; i < count; i++) {
-        const t = i / (count - 1);
-        const x = t * 100;
-        // Match the SVG curve
-        const y = 10 + Math.sin(t * Math.PI * 2) * 3 + (t < 0.5 ? t * 6 : (1 - t) * 6);
-        
-        const bulb = document.createElement("div");
-        bulb.className = "bulb";
-        bulb.style.left = `calc(${x}% - 6px)`;
-        bulb.style.top = `${y}px`;
+        const bulb = document.createElement('div');
+        bulb.className = 'bulb';
+        const x = 16 + (i / (count - 1)) * (100 - 32);
+        bulb.style.left = `${x}%`;
+        bulb.style.top = '6px';
         bulb.style.color = colors[i % colors.length];
-        bulb.style.animation = `sway 3.2s ease-in-out infinite`;
-        bulb.style.animationDelay = `${(i % 4) * 0.12}s`;
+        bulb.style.animationDelay = `${i * 0.15}s`;
         
         bulb.innerHTML = `
           <div class="bulb-cap"></div>
-          <div class="bulb-glass" style="animation-delay: ${i * 0.18}s"></div>
+          <div class="bulb-glass" style="animation-delay: ${i * 0.2}s"></div>
         `;
-        
         wire.appendChild(bulb);
       }
     })();
 
-    // Snow
-    const snowCanvas = document.getElementById("snow");
-    const sn = snowCanvas.getContext("2d");
-    let flakes = [];
+    // ===== SNOW =====
+    const snowCanvas = document.getElementById('snow');
+    const snowCtx = snowCanvas.getContext('2d');
+    let snowflakes = [];
 
-    function resizeSnow() {
+    function initSnow() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      snowCanvas.width = Math.floor(window.innerWidth * dpr);
-      snowCanvas.height = Math.floor(window.innerHeight * dpr);
-      snowCanvas.style.width = window.innerWidth + "px";
-      snowCanvas.style.height = window.innerHeight + "px";
-      sn.setTransform(dpr, 0, 0, dpr, 0, 0);
+      snowCanvas.width = window.innerWidth * dpr;
+      snowCanvas.height = window.innerHeight * dpr;
+      snowCanvas.style.width = window.innerWidth + 'px';
+      snowCanvas.style.height = window.innerHeight + 'px';
+      snowCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      flakes = [];
-      const n = Math.floor(Math.min(120, 50 + window.innerWidth / 10));
-      for (let i = 0; i < n; i++) {
-        flakes.push({
+      snowflakes = [];
+      const count = Math.min(100, 40 + window.innerWidth / 12);
+      for (let i = 0; i < count; i++) {
+        snowflakes.push({
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
-          r: 0.7 + Math.random() * 2.2,
-          vy: 0.4 + Math.random() * 1.2,
-          vx: -0.15 + Math.random() * 0.3,
-          wob: Math.random() * Math.PI * 2,
-          a: 0.25 + Math.random() * 0.45
+          r: 0.8 + Math.random() * 2,
+          speed: 0.3 + Math.random() * 1,
+          wobble: Math.random() * Math.PI * 2,
+          opacity: 0.3 + Math.random() * 0.4
         });
       }
     }
-    window.addEventListener("resize", resizeSnow);
-    resizeSnow();
 
     function drawSnow() {
-      sn.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (const f of flakes) {
-        f.wob += 0.007;
-        f.x += f.vx + Math.sin(f.wob) * 0.15;
-        f.y += f.vy;
+      snowCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      
+      for (const flake of snowflakes) {
+        flake.wobble += 0.005;
+        flake.x += Math.sin(flake.wobble) * 0.3;
+        flake.y += flake.speed;
 
-        if (f.y > window.innerHeight + 8) { 
-          f.y = -8; 
-          f.x = Math.random() * window.innerWidth; 
+        if (flake.y > window.innerHeight + 10) {
+          flake.y = -10;
+          flake.x = Math.random() * window.innerWidth;
         }
-        if (f.x < -8) f.x = window.innerWidth + 8;
-        if (f.x > window.innerWidth + 8) f.x = -8;
 
-        sn.beginPath();
-        sn.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        sn.fillStyle = `rgba(255,255,255,${0.65 * f.a})`;
-        sn.fill();
+        snowCtx.beginPath();
+        snowCtx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+        snowCtx.fillStyle = `rgba(255, 255, 255, ${flake.opacity})`;
+        snowCtx.fill();
       }
+
       requestAnimationFrame(drawSnow);
     }
+
+    window.addEventListener('resize', initSnow);
+    initSnow();
     drawSnow();
 
-    // Sparkles
-    const sparkCanvas = document.getElementById("spark");
-    const sctx = sparkCanvas.getContext("2d");
+    // ===== SPARKLES =====
+    const sparkCanvas = document.getElementById('spark');
+    const sparkCtx = sparkCanvas.getContext('2d');
     let sparks = [];
 
-    function resizeSpark() {
+    function initSpark() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      sparkCanvas.width = Math.floor(window.innerWidth * dpr);
-      sparkCanvas.height = Math.floor(window.innerHeight * dpr);
-      sparkCanvas.style.width = window.innerWidth + "px";
-      sparkCanvas.style.height = window.innerHeight + "px";
-      sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      sparkCanvas.width = window.innerWidth * dpr;
+      sparkCanvas.height = window.innerHeight * dpr;
+      sparkCanvas.style.width = window.innerWidth + 'px';
+      sparkCanvas.style.height = window.innerHeight + 'px';
+      sparkCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    window.addEventListener("resize", resizeSpark);
-    resizeSpark();
 
     function burstSparks(cx, cy) {
-      const palette = [
-        "rgba(214,180,106,.92)",
-        "rgba(126,215,193,.88)",
-        "rgba(255,255,255,.82)",
-        "rgba(250,204,21,.88)",
-        "rgba(239,68,68,.80)"
+      const colors = [
+        'rgba(212, 184, 150, 0.9)',
+        'rgba(126, 215, 193, 0.9)',
+        'rgba(255, 255, 255, 0.85)',
+        'rgba(250, 204, 21, 0.9)'
       ];
-      const count = 80;
 
-      for (let i = 0; i < count; i++) {
-        const a = Math.random() * Math.PI * 2;
-        const sp = 1.8 + Math.random() * 4.5;
+      for (let i = 0; i < 60; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 4;
         sparks.push({
           x: cx,
           y: cy,
-          vx: Math.cos(a) * sp,
-          vy: Math.sin(a) * sp - 2,
-          r: 1 + Math.random() * 1.8,
-          g: 0.09 + Math.random() * 0.07,
-          life: 70 + Math.random() * 45,
-          c: palette[i % palette.length]
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          r: 1.5 + Math.random() * 2,
+          life: 60 + Math.random() * 40,
+          color: colors[i % colors.length]
         });
       }
     }
 
     function drawSparks() {
-      sctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      sparkCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
       for (let i = sparks.length - 1; i >= 0; i--) {
-        const p = sparks[i];
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 1;
+        const s = sparks[i];
+        s.vy += 0.1;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life--;
 
-        const alpha = Math.max(0, Math.min(1, p.life / 90));
-        sctx.beginPath();
-        sctx.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
-        sctx.fillStyle = p.c;
-        sctx.globalAlpha = alpha;
-        sctx.fill();
+        const alpha = Math.max(0, s.life / 80);
+        sparkCtx.globalAlpha = alpha;
+        sparkCtx.beginPath();
+        sparkCtx.arc(s.x, s.y, s.r * alpha, 0, Math.PI * 2);
+        sparkCtx.fillStyle = s.color;
+        sparkCtx.fill();
 
-        if (p.life <= 0 || p.y > window.innerHeight + 40) {
-          sparks.splice(i, 1);
-        }
+        if (s.life <= 0) sparks.splice(i, 1);
       }
-      sctx.globalAlpha = 1;
+
+      sparkCtx.globalAlpha = 1;
       requestAnimationFrame(drawSparks);
     }
+
+    window.addEventListener('resize', initSpark);
+    initSpark();
     drawSparks();
 
-    // Slider
-    const track = document.getElementById("track");
-    const thumb = document.getElementById("thumb");
-    const fill = document.getElementById("fill");
-    const trackLabel = document.getElementById("trackLabel");
-    const reveal = document.getElementById("reveal");
-    const foot = document.getElementById("foot");
+    // ===== SLIDER =====
+    const track = document.getElementById('track');
+    const thumb = document.getElementById('thumb');
+    const fill = document.getElementById('fill');
+    const trackLabel = document.getElementById('trackLabel');
+    const reveal = document.getElementById('reveal');
+    const footerNote = document.getElementById('footerNote');
 
-    let dragging = false;
+    let isDragging = false;
     let startX = 0;
-    let x = 0;
-    let unlocked = false;
+    let currentX = 0;
+    let isUnlocked = false;
 
-    function clamp(n, min, max) { 
-      return Math.max(min, Math.min(max, n)); 
+    function getMaxX() {
+      return track.offsetWidth - thumb.offsetWidth - 8;
     }
-    
-    function metrics() {
-      const r = track.getBoundingClientRect();
-      const maxX = r.width - 10 - 50;
-      return { maxX, trackRect: r };
+
+    function updateSlider(x) {
+      currentX = Math.max(0, Math.min(x, getMaxX()));
+      thumb.style.setProperty('--x', currentX + 'px');
+      const pct = (currentX / getMaxX()) * 100;
+      fill.style.width = pct + '%';
+      trackLabel.style.opacity = Math.max(0, 1 - pct / 60);
     }
-    
-    function setX(px) {
-      x = px;
-      thumb.style.setProperty("--x", x + "px");
-      const { maxX } = metrics();
-      const pct = clamp((x / maxX) * 100, 0, 100);
-      fill.style.width = pct + "%";
-      trackLabel.style.opacity = String(Math.max(0, 0.85 - pct / 75));
-    }
-    
+
     function snapBack() {
-      track.classList.remove("dragging");
-      const start = x;
-      const t0 = performance.now();
-      const dur = 180;
-      function step(now) {
-        const p = clamp((now - t0) / dur, 0, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        setX(start * (1 - ease));
-        if (p < 1) requestAnimationFrame(step);
+      track.classList.remove('dragging');
+      const start = currentX;
+      const duration = 200;
+      const startTime = performance.now();
+
+      function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        updateSlider(start * (1 - ease));
+        if (progress < 1) requestAnimationFrame(animate);
       }
-      requestAnimationFrame(step);
+      requestAnimationFrame(animate);
     }
 
     // Audio
-    const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
+    const audioUrl = new URL('./good-day.mp3', window.location.href).toString();
     let audio = null;
 
-    function primeAudio() {
+    function setupAudio() {
       if (audio) return;
       audio = new Audio(audioUrl);
-      audio.preload = "auto";
-      try { audio.load(); } catch {}
+      audio.preload = 'auto';
     }
 
-    function tryPlayAudio(audioStatusEl, playBtnEl) {
-      if (!audio) primeAudio();
-      try {
-        const p = audio.play();
-        if (p && typeof p.then === "function") {
-          p.then(() => {
-            audioStatusEl.textContent = "🎵 Now playing…";
-          }).catch(() => {
-            audioStatusEl.textContent = "Tap Play to start music";
-            playBtnEl.style.display = "inline-block";
-          });
-        }
-      } catch {
-        audioStatusEl.textContent = "Tap Play to start music";
-        playBtnEl.style.display = "inline-block";
-      }
+    function playAudio(statusEl, btnEl) {
+      if (!audio) setupAudio();
+      
+      audio.play()
+        .then(() => {
+          statusEl.textContent = '🎵 Now playing…';
+          btnEl.style.display = 'none';
+        })
+        .catch(() => {
+          statusEl.textContent = 'Tap Play to start';
+          btnEl.style.display = 'inline-block';
+        });
     }
 
     function unlock() {
-      if (unlocked) return;
-      unlocked = true;
+      if (isUnlocked) return;
+      isUnlocked = true;
 
-      const { maxX, trackRect } = metrics();
-      setX(maxX);
-      track.classList.remove("dragging");
-      track.style.cursor = "default";
-      trackLabel.innerHTML = "✓ Opened";
-      trackLabel.style.opacity = "0.8";
+      updateSlider(getMaxX());
+      track.classList.remove('dragging');
+      track.style.cursor = 'default';
+      trackLabel.textContent = '✓ Opened';
+      trackLabel.style.opacity = '0.7';
 
-      const cardRect = document.querySelector(".card").getBoundingClientRect();
-      burstSparks(cardRect.left + cardRect.width / 2, cardRect.top + cardRect.height * 0.35);
+      // Sparkle burst
+      const card = document.querySelector('.card');
+      const rect = card.getBoundingClientRect();
+      burstSparks(rect.left + rect.width / 2, rect.top + rect.height * 0.4);
 
+      // Show reveal
       reveal.innerHTML = `
-        <h2>We're going to see <span style="background: linear-gradient(135deg, rgba(214,180,106,1), rgba(255,220,150,1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Forrest Frank</span> 🎤</h2>
-        <p style="font-size: 22px; margin: 6px 0;">🤍</p>
-        <div class="audioRow">
-          <div class="audioStatus" id="audioStatus">Starting music…</div>
-          <button class="playBtn" id="playBtn" type="button">▶ Play</button>
+        <h2>We're going to see <span class="gold-text">Forrest Frank</span> 🎤</h2>
+        <span class="heart">🤍</span>
+        <div class="audio-row">
+          <span class="audio-status" id="audioStatus">Starting music…</span>
+          <button class="play-btn" id="playBtn">▶ Play</button>
         </div>
-        <div class="details" id="details"></div>
-      `;
-      reveal.style.display = "block";
-      foot.style.display = "block";
-
-      const audioStatus = document.getElementById("audioStatus");
-      const playBtn = document.getElementById("playBtn");
-      const details = document.getElementById("details");
-
-      details.innerHTML = `
-        <div class="row">
-          <div class="k">Venue</div>
-          <div class="v"><b>Lenovo Center</b><small>Raleigh, NC</small></div>
-        </div>
-        <div class="row">
-          <div class="k">Vibe</div>
-          <div class="v">Good Day energy ✨</div>
+        <div class="details">
+          <div class="detail-row">
+            <span class="detail-label">Venue</span>
+            <span class="detail-value"><b>Lenovo Center</b><small>Raleigh, NC</small></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Vibe</span>
+            <span class="detail-value">Good Day energy ✨</span>
+          </div>
         </div>
       `;
-      details.style.display = "block";
+      reveal.style.display = 'block';
+      footerNote.style.display = 'block';
 
-      playBtn.style.display = "none";
-      tryPlayAudio(audioStatus, playBtn);
+      const audioStatus = document.getElementById('audioStatus');
+      const playBtn = document.getElementById('playBtn');
 
-      playBtn.addEventListener("click", () => {
-        playBtn.style.display = "none";
-        audioStatus.textContent = "Starting…";
-        tryPlayAudio(audioStatus, playBtn);
+      playAudio(audioStatus, playBtn);
+
+      playBtn.addEventListener('click', () => {
+        playAudio(audioStatus, playBtn);
       });
 
       setTimeout(() => {
-        reveal.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 180);
+        reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
     }
 
-    // Events
-    track.addEventListener("pointerdown", (e) => {
-      if (unlocked) return;
-      primeAudio();
-      dragging = true;
-      track.classList.add("dragging");
-      track.setPointerCapture?.(e.pointerId);
+    // Event handlers
+    track.addEventListener('pointerdown', (e) => {
+      if (isUnlocked) return;
+      setupAudio();
+      isDragging = true;
+      track.classList.add('dragging');
+      track.setPointerCapture(e.pointerId);
       startX = e.clientX;
     });
 
-    track.addEventListener("pointermove", (e) => {
-      if (!dragging || unlocked) return;
-      const { maxX } = metrics();
-      setX(clamp(e.clientX - startX, 0, maxX));
+    track.addEventListener('pointermove', (e) => {
+      if (!isDragging || isUnlocked) return;
+      updateSlider(e.clientX - startX);
     });
 
-    function endDrag() {
-      if (!dragging || unlocked) return;
-      dragging = false;
+    track.addEventListener('pointerup', () => {
+      if (!isDragging || isUnlocked) return;
+      isDragging = false;
 
-      const { maxX } = metrics();
-      const pct = x / maxX;
-      if (pct > 0.85) unlock();
-      else snapBack();
-    }
+      if (currentX / getMaxX() > 0.85) {
+        unlock();
+      } else {
+        snapBack();
+      }
+    });
 
-    track.addEventListener("pointerup", endDrag);
-    track.addEventListener("pointercancel", endDrag);
+    track.addEventListener('pointercancel', () => {
+      if (isDragging && !isUnlocked) {
+        isDragging = false;
+        snapBack();
+      }
+    });
 
     // Touch fallback
-    track.addEventListener("touchstart", (e) => {
-      if (unlocked) return;
-      primeAudio();
-      dragging = true;
-      track.classList.add("dragging");
+    track.addEventListener('touchstart', (e) => {
+      if (isUnlocked) return;
+      setupAudio();
+      isDragging = true;
+      track.classList.add('dragging');
       startX = e.touches[0].clientX;
     }, { passive: true });
 
-    track.addEventListener("touchmove", (e) => {
-      if (!dragging || unlocked) return;
-      const { maxX } = metrics();
-      setX(clamp(e.touches[0].clientX - startX, 0, maxX));
+    track.addEventListener('touchmove', (e) => {
+      if (!isDragging || isUnlocked) return;
+      updateSlider(e.touches[0].clientX - startX);
     }, { passive: true });
 
-    track.addEventListener("touchend", endDrag);
+    track.addEventListener('touchend', () => {
+      if (!isDragging || isUnlocked) return;
+      isDragging = false;
 
-    setX(0);
+      if (currentX / getMaxX() > 0.85) {
+        unlock();
+      } else {
+        snapBack();
+      }
+    });
+
+    updateSlider(0);
   </script>
 </body>
 </html>
