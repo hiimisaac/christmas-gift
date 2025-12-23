@@ -121,6 +121,18 @@
             animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(100vh); } }
+
+        /* Spotify Container */
+        #spotify-wrapper {
+            margin-top: 20px;
+            width: 100%;
+            height: 80px; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 50;
+        }
     </style>
 </head>
 <body>
@@ -171,38 +183,61 @@
             "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
         </p>
 
-        <div class="flex items-center justify-center space-x-2 text-xs text-gray-400 uppercase tracking-widest border border-gray-200 py-2 px-4 rounded-full">
+        <div class="flex items-center justify-center space-x-2 text-xs text-gray-400 uppercase tracking-widest border border-gray-200 py-2 px-4 rounded-full mb-4">
             <span class="animate-pulse">♫</span>
             <span>Now Playing: Good Day</span>
+        </div>
+        
+        <div id="spotify-wrapper">
+            <div id="embed-iframe"></div>
         </div>
     </div>
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    
     <script>
-        // --- 1. FETCH EXACT SONG (Good Day) ---
-        const audio = document.getElementById('bg-music');
+        // --- 1. CORS-PROOF AUDIO FETCH (JSONP Method) ---
+        // This function receives the data from iTunes directly
+        function handleMusic(data) {
+            if(data.results && data.results.length > 0) {
+                const audio = document.getElementById('bg-music');
+                audio.src = data.results[0].previewUrl;
+                console.log("Music loaded via script injection");
+            }
+        }
         
-        // Searching specifically for "Forrest Frank Good Day"
-        fetch('https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1')
-            .then(response => response.json())
-            .then(data => {
-                if(data.results && data.results.length > 0) {
-                    audio.src = data.results[0].previewUrl;
-                    console.log("Loaded: " + data.results[0].trackName);
-                }
-            })
-            .catch(err => console.error("Audio fetch failed", err));
+        // Inject script to call iTunes API (Bypasses CORS)
+        const script = document.createElement('script');
+        // We use the "callback" parameter to tell iTunes to run our function
+        script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=handleMusic';
+        document.body.appendChild(script);
 
-        // --- 2. INTERACTION ---
+
+        // --- 2. SPOTIFY EMBED (Visuals) ---
+        window.onSpotifyIframeApiReady = (IFrameAPI) => {
+            const element = document.getElementById('embed-iframe');
+            const options = {
+                // Forrest Frank - Good Day
+                uri: 'spotify:track:28e5c222718f4857b286', 
+                width: '100%',
+                height: '80',
+                theme: 'light' 
+            };
+            const callback = (EmbedController) => {};
+            IFrameAPI.createController(element, options, callback);
+        };
+
+        // --- 3. INTERACTION ---
         function openGift() {
             const box = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
 
-            // Play Audio
-            // This works on mobile because it is inside a click event!
+            // Play the Reliable Audio (iTunes)
+            const audio = document.getElementById('bg-music');
             audio.volume = 0.8;
-            audio.play().catch(e => console.log("Audio play blocked"));
+            audio.play().catch(e => console.log("Audio play blocked (user interaction needed)"));
 
             // Animation
             box.classList.add('shaking');
