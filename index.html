@@ -3,227 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Gift for My Wife</title>
+    <title>A Gift for Erin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
-        /* --- LUXURY THEME --- */
+        /* --- HIGH END AESTHETICS --- */
         body {
-            font-family: 'Lato', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            /* High-End Dark Winter Background */
-            background-image: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1544274432-8495a9829583?q=80&w=2668&auto=format&fit=crop');
+            background-color: #000;
+            background-image: url('https://images.unsplash.com/photo-1516724562728-afc824a36e84?q=80&w=2671&auto=format&fit=crop'); 
             background-size: cover;
             background-position: center;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
             color: white;
         }
 
-        .font-luxury { font-family: 'Cinzel', serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
 
-        /* --- 3D GIFT BOX --- */
+        /* --- THE REALISTIC GIFT --- */
         .gift-container {
             position: relative;
             z-index: 50;
             cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        
-        /* Box Body */
-        .box-body {
-            width: 160px;
-            height: 160px;
-            background: linear-gradient(135deg, #991b1b, #7f1d1d); /* Deep Red */
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8);
-            position: relative;
-            border-radius: 4px;
-        }
-        
-        /* Box Lid */
-        .box-lid {
-            width: 170px;
-            height: 45px;
-            background: linear-gradient(135deg, #b91c1c, #991b1b);
-            position: absolute;
-            top: -25px;
-            left: -5px;
-            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.4);
-            z-index: 10;
-            border-radius: 2px;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
         }
 
-        /* Gold Foil Ribbon */
-        .ribbon-vertical {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 100%;
-            background: linear-gradient(to right, #fcd34d, #d97706, #fcd34d); /* Gold Gradient */
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        
-        .ribbon-horizontal {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+        .gift-image {
             width: 100%;
-            height: 30px;
-            background: linear-gradient(to bottom, #fcd34d, #d97706, #fcd34d);
+            height: auto;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+            transition: transform 0.3s ease;
         }
 
-        /* CSS Bow */
-        .bow {
-            position: absolute;
-            top: -65px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        /* Hover effect */
+        .gift-container:hover .gift-image {
+            transform: scale(1.05);
         }
-        .bow-loop {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 8px solid #fcd34d;
-            border-radius: 50% 50% 0 50%;
-            background: #b45309; /* Dark gold inside */
-        }
-        .bow-left { transform: rotate(45deg); left: -40px; }
-        .bow-right { transform: rotate(135deg); left: 0px; }
-        
-        /* --- GLASS TICKET --- */
-        .glass-card {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 100px rgba(234, 179, 8, 0.15); /* Subtle Gold Glow */
+
+        /* --- GLASSMOPHISM TICKET --- */
+        .glass-ticket {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 1);
         }
 
         /* --- ANIMATIONS --- */
         .animate-float { animation: float 6s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .shaking { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+        .shaking { animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 
-            10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-1deg); } 
-            20%, 80% { transform: translate3d(2px, 0, 0) rotate(1deg); } 
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-1deg); } 
-            40%, 60% { transform: translate3d(4px, 0, 0) rotate(1deg); } 
+            10%, 90% { transform: translate3d(-1px, 0, 0); } 
+            20%, 80% { transform: translate3d(2px, 0, 0); } 
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 
+            40%, 60% { transform: translate3d(4px, 0, 0); } 
         }
 
         /* Confetti Canvas */
         #confetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         
-        /* Hidden Iframe */
-        #hidden-player {
+        /* Hidden Player */
+        #player-wrapper {
             position: absolute;
-            top: -9999px;
-            left: -9999px;
-            visibility: hidden;
+            top: 0; left: 0;
+            width: 1px; height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
     </style>
 </head>
-<body class="flex items-center justify-center">
+<body class="flex flex-col items-center justify-center">
 
-    <iframe id="hidden-player" width="1" height="1" allow="autoplay"></iframe>
+    <div id="player-wrapper"><div id="player"></div></div>
+
+    <div class="absolute inset-0 bg-black/60 z-0"></div>
 
     <canvas id="confetti"></canvas>
 
     <div id="gift-wrapper" class="gift-container animate-float" onclick="unwrapGift()">
-        <div class="absolute -right-16 top-4 bg-[#f8fafc] text-slate-900 px-4 py-2 shadow-2xl transform rotate-6 z-20 font-luxury tracking-widest text-xs border border-gray-300">
-            FOR MY WIFE
+        <div class="absolute top-0 right-10 bg-white text-black px-3 py-4 shadow-2xl transform rotate-6 z-20 font-serif italic text-lg border border-gray-300 w-24 text-center">
+            <span class="block text-xs uppercase tracking-widest text-gray-500 not-italic mb-1">For</span>
+            My Wife
         </div>
 
-        <div class="box-body group">
-            <div class="ribbon-vertical"></div>
-            <div class="ribbon-horizontal"></div>
-            
-            <div class="box-lid">
-                <div class="ribbon-vertical"></div>
-                <div class="bow">
-                    <div class="bow-loop bow-left"></div>
-                    <div class="bow-loop bow-right"></div>
-                </div>
-            </div>
-        </div>
+        <img src="https://png.pngtree.com/png-vector/20230906/ourmid/pngtree-black-gift-box-with-gold-ribbon-png-image_9998499.png" 
+             alt="Gift" 
+             class="gift-image">
         
-        <div class="mt-20 text-center text-white/50 font-luxury tracking-[0.3em] text-[10px] uppercase">
-            Tap to Reveal
+        <div class="absolute -bottom-12 w-full text-center">
+            <p class="text-white/60 text-xs tracking-[0.3em] uppercase animate-pulse">Tap to Open</p>
         </div>
     </div>
 
     <div id="ticket" class="hidden relative z-50 w-[90%] max-w-md mx-auto transform scale-95 opacity-0 transition-all duration-1000">
-        <div class="glass-card rounded-lg p-8 text-center border-t-4 border-[#fcd34d]">
+        <div class="glass-ticket rounded-sm p-10 text-center border-t-2 border-[#D4AF37]">
             
-            <div class="mb-8">
-                <p class="text-white/60 text-xs tracking-[0.4em] uppercase mb-2 font-luxury">Merry Christmas</p>
-                <div class="h-px w-12 bg-[#fcd34d] mx-auto opacity-50"></div>
+            <p class="text-[#D4AF37] text-xs tracking-[0.4em] uppercase mb-8">Official Invite</p>
+            
+            <h2 class="text-3xl text-white font-serif italic mb-2">Merry Christmas</h2>
+            
+            <div class="my-8 py-8 border-y border-white/10">
+                <p class="text-white/50 text-xs uppercase tracking-widest mb-2">Presenting</p>
+                <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-white to-[#D4AF37] mb-4 font-serif">
+                    FORREST FRANK
+                </h1>
+                <p class="text-xl text-white tracking-widest uppercase font-light">"UP!"</p>
             </div>
-            
-            <h2 class="text-2xl text-white font-light italic mb-1 font-serif">Get ready to go</h2>
-            <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-600 mb-6 font-luxury tracking-tighter drop-shadow-lg">
-                UP!
-            </h1>
 
-            <div class="bg-white/5 rounded border border-white/10 p-6 mb-8">
-                <p class="text-3xl text-white font-luxury mb-2 tracking-wide">FORREST FRANK</p>
-                <div class="flex justify-center items-center gap-3 text-xs text-[#fcd34d] uppercase tracking-widest font-bold">
-                    <span>Live In Concert</span>
-                    <span>•</span>
-                    <span>Raleigh, NC</span>
+            <div class="flex justify-between items-end text-left px-4">
+                <div>
+                    <p class="text-[#D4AF37] text-[10px] uppercase tracking-widest mb-1">Location</p>
+                    <p class="text-white text-sm">Raleigh, NC</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[#D4AF37] text-[10px] uppercase tracking-widest mb-1">Admit</p>
+                    <p class="text-white text-sm">Two (VIP)</p>
                 </div>
             </div>
 
-            <p class="text-white/90 italic font-light text-lg mb-4">
-                "Pack your bags, my love!"
-            </p>
-            <p class="text-white/40 text-xs tracking-widest uppercase">
-                Admit Two • You & Me
-            </p>
+            <button onclick="forceReplay()" class="mt-8 text-[10px] text-white/30 hover:text-white uppercase tracking-widest transition">
+                Replay Music
+            </button>
         </div>
     </div>
 
     <script>
-        // --- 1. UNWRAP LOGIC ---
+        // --- 1. YOUTUBE API (Mobile Safe) ---
+        var player;
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                // Using the AMV link ID you approved (usually less ads)
+                videoId: 'fwjhePqQzzM', 
+                playerVars: {
+                    'playsinline': 1, // Crucial for iPhone
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready, waiting for click
+            console.log("Music Ready");
+        }
+
+        function forceReplay() {
+            if(player && player.playVideo) {
+                player.seekTo(0);
+                player.playVideo();
+            }
+        }
+
+        // --- 2. UNWRAP LOGIC ---
         function unwrapGift() {
             const gift = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
-            const player = document.getElementById('hidden-player');
 
-            // --- THE AUDIO FIX ---
-            // We set the source NOW, which counts as a user interaction
-            player.src = "https://www.yout-ube.com/watch?v=wCw-W-2Rs0k";
+            // --- AUDIO TRIGGER ---
+            // This MUST happen inside the click event for mobile to allow it
+            if(player && player.playVideo) {
+                player.unMute();
+                player.setVolume(100);
+                player.playVideo();
+            }
 
-            // Animation Sequence
+            // Animation
             gift.classList.remove('animate-float');
             gift.classList.add('shaking');
 
             setTimeout(() => {
-                // "Explode" Gift
+                // Explode Gift
                 gift.style.transition = "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
-                gift.style.transform = "scale(1.5)";
+                gift.style.transform = "scale(1.5) rotate(10deg)";
                 gift.style.opacity = "0";
                 
                 setTimeout(() => {
                     gift.style.display = 'none';
                     ticket.classList.remove('hidden');
-                    
-                    // Force Browser Render
                     void ticket.offsetWidth; 
-                    
-                    // Show Ticket
                     ticket.style.opacity = "1";
                     ticket.style.transform = "scale(1)";
-                    
                     startConfetti();
                 }, 300);
             }, 800);
         }
 
-        // --- 2. GOLD CONFETTI ---
+        // --- 3. GOLD CONFETTI ---
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         let width = window.innerWidth;
@@ -232,20 +219,20 @@
         canvas.height = height;
 
         const particles = [];
-        const colors = ['#fcd34d', '#fbbf24', '#ffffff', '#ef4444'];
+        const colors = ['#D4AF37', '#F7E7CE', '#FFFFFF']; // Gold & White
 
         function startConfetti() {
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 200; i++) {
                 particles.push({
                     x: width / 2,
                     y: height / 2,
-                    w: Math.random() * 8 + 4,
-                    h: Math.random() * 8 + 4,
+                    w: Math.random() * 8 + 2,
+                    h: Math.random() * 8 + 2,
                     vx: (Math.random() - 0.5) * 20,
-                    vy: (Math.random() - 1) * 20, // Upward burst
+                    vy: (Math.random() - 1) * 20,
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    drag: 0.95,
-                    gravity: 0.5
+                    drag: 0.94,
+                    gravity: 0.6
                 });
             }
             animate();
@@ -253,20 +240,16 @@
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            
             particles.forEach((p, index) => {
                 p.x += p.vx;
                 p.y += p.vy;
                 p.vx *= p.drag;
                 p.vy *= p.drag;
                 p.vy += p.gravity;
-
                 ctx.fillStyle = p.color;
                 ctx.fillRect(p.x, p.y, p.w, p.h);
-
                 if (p.y > height) particles.splice(index, 1);
             });
-
             if (particles.length > 0) requestAnimationFrame(animate);
         }
 
