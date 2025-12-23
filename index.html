@@ -3,65 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Gift for Erin</title>
+    <title>A Surprise for Erin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
     
     <style>
-        /* --- ELEGANT BASE STYLES --- */
+        /* --- LUXURY THEME --- */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            /* High-res dark winter background */
-            background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1477601434034-8468a7566136?q=80&w=2574&auto=format&fit=crop');
+            font-family: 'Lato', sans-serif;
+            background-color: #020617; /* Deep Navy */
+            /* Elegant bokeh background */
+            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2670&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             height: 100vh;
             overflow: hidden;
             color: white;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-luxury { font-family: 'Cinzel', serif; }
 
-        /* --- 3D GIFT BOX --- */
+        /* --- 3D GIFT BOX (Refined) --- */
         .gift-container {
-            perspective: 1000px;
-            cursor: pointer;
             position: relative;
             z-index: 50;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
         
         .box-body {
-            width: 140px;
-            height: 140px;
-            background: linear-gradient(135deg, #b91c1c, #991b1b);
-            border-radius: 4px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #7f1d1d, #450a0a); /* Deep Red */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
-            transition: transform 0.3s ease;
+            border-radius: 2px;
         }
         
         .box-lid {
-            width: 150px;
+            width: 170px;
             height: 40px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #991b1b, #7f1d1d);
             position: absolute;
-            top: -30px;
+            top: -25px;
             left: -5px;
-            border-radius: 4px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             z-index: 10;
+            border-radius: 2px;
         }
 
-        /* Gold Ribbon */
+        /* Gold Foil Ribbon */
         .ribbon-vertical {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            width: 25px;
+            width: 30px;
             height: 100%;
-            background: linear-gradient(to right, #fbbf24, #d97706, #fbbf24);
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            background: linear-gradient(to right, #fcd34d, #b45309, #fcd34d); /* Gold Gradient */
         }
         
         .ribbon-horizontal {
@@ -69,8 +68,8 @@
             top: 50%;
             transform: translateY(-50%);
             width: 100%;
-            height: 25px;
-            background: linear-gradient(to bottom, #fbbf24, #d97706, #fbbf24);
+            height: 30px;
+            background: linear-gradient(to bottom, #fcd34d, #b45309, #fcd34d);
         }
 
         .bow {
@@ -78,281 +77,204 @@
             top: -65px;
             left: 50%;
             transform: translateX(-50%);
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
-        .bow-left, .bow-right {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 8px solid #fbbf24;
-            border-radius: 50% 50% 0 50%;
-            background: #d97706;
-        }
-        .bow-left { transform: rotate(45deg); left: -35px; }
-        .bow-right { transform: rotate(135deg); left: 5px; }
-
-        /* --- GLASS TICKET CARD --- */
-        .ticket-glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        
+        /* --- GLASS TICKET --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 80px rgba(251, 191, 36, 0.1); /* Gold glow */
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        
-        .shaking { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* --- HIDDEN YOUTUBE --- */
-        #player-wrapper {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-        }
+        .shaking { animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* Confetti Canvas */
+        #confetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4">
+<body class="flex items-center justify-center">
 
-    <div id="player-wrapper"><div id="player"></div></div>
+    <audio id="bg-music" preload="auto" loop></audio>
 
-    <canvas id="snow-canvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
+    <canvas id="confetti"></canvas>
 
-    <div id="gift-container" class="gift-container animate-float group" onclick="openGift()">
-        <div class="absolute -right-12 top-0 bg-white text-red-900 font-serif italic py-1 px-3 rounded shadow-lg transform rotate-12 z-20 text-sm">
-            For Erin
+    <div id="gift-wrapper" class="gift-container animate-float" onclick="unwrapGift()">
+        <div class="absolute -right-16 top-4 bg-white text-slate-900 px-4 py-2 shadow-xl transform rotate-6 z-20 font-luxury tracking-widest text-xs border border-gray-200">
+            TO: MY WIFE
         </div>
 
-        <div class="box-body group-hover:scale-105 transition-transform">
+        <div class="box-body">
             <div class="ribbon-vertical"></div>
             <div class="ribbon-horizontal"></div>
             
             <div class="box-lid">
                 <div class="ribbon-vertical"></div>
                 <div class="bow">
-                    <div class="bow-left"></div>
-                    <div class="bow-right"></div>
+                    <div class="relative">
+                        <div class="absolute w-12 h-12 border-4 border-[#fcd34d] rounded-full -left-8 top-1 transform rotate-45"></div>
+                        <div class="absolute w-12 h-12 border-4 border-[#fcd34d] rounded-full -right-4 top-1 transform -rotate-45"></div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="mt-12 text-center text-white/80 font-light tracking-widest text-sm uppercase">
+        <div class="mt-16 text-center text-white/60 font-luxury tracking-[0.3em] text-xs uppercase">
             Tap to Open
         </div>
     </div>
 
-    <div id="ticket" class="hidden relative z-50 w-full max-w-md mx-auto transform scale-90 transition-all duration-700 opacity-0">
-        
-        <div class="ticket-glass rounded-2xl overflow-hidden p-8 text-center relative">
-            <div class="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
-                <span class="text-xs tracking-widest uppercase text-white/60">TicketMaster Verified</span>
-                <span class="text-xs tracking-widest uppercase text-white/60">Live Event</span>
-            </div>
+    <div id="ticket" class="hidden relative z-50 w-[90%] max-w-md mx-auto transform scale-95 opacity-0 transition-all duration-1000">
+        <div class="glass-card rounded-sm p-8 text-center border-t-4 border-[#fcd34d]">
+            
+            <p class="text-[#fcd34d] text-xs tracking-[0.4em] uppercase mb-6 font-luxury">Merry Christmas</p>
+            
+            <h2 class="text-3xl text-white font-light mb-1">Get Ready to go</h2>
+            <h1 class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-8 font-luxury tracking-tighter">
+                UP!
+            </h1>
 
-            <h2 class="font-serif text-3xl italic text-white mb-2">Merry Christmas</h2>
-            <p class="text-white/70 text-sm mb-8">Get ready to go UP!</p>
-
-            <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg p-6 mb-6 shadow-lg transform rotate-1 hover:rotate-0 transition-transform">
-                <h1 class="text-4xl font-bold tracking-tighter uppercase text-white mb-1">Forrest Frank</h1>
-                <div class="text-white/90 font-medium tracking-wide">LIVE IN CONCERT</div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-left mb-8">
-                <div>
-                    <p class="text-xs uppercase text-white/50 tracking-wider">Location</p>
-                    <p class="text-lg font-serif">Raleigh, NC</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs uppercase text-white/50 tracking-wider">Admit</p>
-                    <p class="text-lg font-serif">Two (You & Me)</p>
+            <div class="border-y border-white/10 py-6 my-6">
+                <p class="text-2xl text-white font-luxury mb-2">FORREST FRANK</p>
+                <div class="flex justify-center items-center gap-4 text-sm text-white/60 uppercase tracking-widest">
+                    <span>Live In Concert</span>
+                    <span>•</span>
+                    <span>Raleigh, NC</span>
                 </div>
             </div>
 
-            <p class="text-white/80 italic font-serif text-lg">
+            <p class="text-white/80 italic font-light text-lg mb-8">
                 "Pack your bags, my love!"
             </p>
 
-            <button id="manual-play-btn" onclick="forcePlay()" class="mt-6 text-xs text-white/40 hover:text-white uppercase tracking-widest border border-white/20 px-4 py-2 rounded-full hover:bg-white/10 transition">
+            <button onclick="document.getElementById('bg-music').play()" class="text-xs text-[#fcd34d] border border-[#fcd34d]/30 px-6 py-2 rounded hover:bg-[#fcd34d]/10 transition uppercase tracking-widest">
                 Replay Song
             </button>
         </div>
     </div>
 
     <script>
-        // --- YOUTUBE API (The Reliable Method) ---
-        var player;
-        var isPlayerReady = false;
-
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: 'fwjhePqQzzM', // Fan upload (usually fewer ads)
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'rel': 0
-                },
-                events: {
-                    'onReady': onPlayerReady
+        // --- 1. ROBUST AUDIO LOADER (Apple Music) ---
+        // This runs instantly on page load to prep the browser
+        const audio = document.getElementById('bg-music');
+        
+        // Search iTunes API for Forrest Frank - UP!
+        fetch('https://itunes.apple.com/search?term=Forrest+Frank+UP&media=music&limit=1')
+            .then(response => response.json())
+            .then(data => {
+                if(data.results.length > 0) {
+                    audio.src = data.results[0].previewUrl;
+                    console.log("Audio Loaded: " + data.results[0].trackName);
                 }
-            });
-        }
+            })
+            .catch(err => console.error("Audio fetch failed", err));
 
-        function onPlayerReady(event) {
-            isPlayerReady = true;
-            // Pre-cue the video so it buffers and is ready to fire instantly
-            event.target.cueVideoById('fwjhePqQzzM');
-        }
-
-        function forcePlay() {
-            if (player && isPlayerReady) {
-                player.playVideo();
-                player.setVolume(100);
-            }
-        }
-
-        // --- OPENING SEQUENCE ---
-        function openGift() {
-            const container = document.getElementById('gift-container');
+        // --- 2. UNWRAP LOGIC ---
+        function unwrapGift() {
+            const gift = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
 
-            // 1. AUDIO TRIGGER (MUST BE FIRST)
-            // This binds the audio start directly to the user's touch
-            forcePlay();
+            // Play Audio (Browser allows this because it's inside a click event)
+            audio.volume = 0.5; // Start softer
+            audio.play().then(() => {
+                // Fade volume in
+                let vol = 0.5;
+                const interval = setInterval(() => {
+                    if (vol < 1.0) {
+                        vol += 0.1;
+                        audio.volume = Math.min(vol, 1.0);
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 200);
+            }).catch(e => console.log("Audio play blocked by browser settings"));
 
-            // 2. VISUALS
-            container.classList.remove('animate-float');
-            container.classList.add('shaking');
+            // Animation Sequence
+            gift.classList.remove('animate-float');
+            gift.classList.add('shaking');
 
-            // Wait for shake to finish, then pop
             setTimeout(() => {
-                // Zoom out and fade gift
-                container.style.transition = "all 0.5s ease-in";
-                container.style.transform = "scale(0.01) rotate(20deg)";
-                container.style.opacity = "0";
-
+                // "Explode" Gift
+                gift.style.transition = "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+                gift.style.transform = "scale(1.2)";
+                gift.style.opacity = "0";
+                
                 setTimeout(() => {
-                    container.style.display = 'none';
+                    gift.style.display = 'none';
                     ticket.classList.remove('hidden');
                     
-                    // Force Reflow
-                    void ticket.offsetWidth;
-
-                    // Fade In Ticket
+                    // Force Browser Render
+                    void ticket.offsetWidth; 
+                    
+                    // Show Ticket
                     ticket.style.opacity = "1";
                     ticket.style.transform = "scale(1)";
                     
-                    // Burst Confetti
                     startConfetti();
-                }, 400);
-            }, 600);
+                }, 300);
+            }, 800);
         }
 
-        // --- CANVAS SNOW (Optimized) ---
-        const canvas = document.getElementById('snow-canvas');
+        // --- 3. GOLD CONFETTI ---
+        const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let flakes = [];
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        const particles = [];
+        const colors = ['#fcd34d', '#fbbf24', '#ffffff', '#ef4444'];
 
-        function createFlakes() {
-            const count = window.innerWidth < 600 ? 50 : 100;
-            for(let i=0; i<count; i++) {
-                flakes.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    r: Math.random() * 2 + 1,
-                    d: Math.random() * 1 + 0.5
-                });
-            }
-        }
-        createFlakes();
-
-        function drawSnow() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-            ctx.beginPath();
-            for(let i=0; i<flakes.length; i++) {
-                let f = flakes[i];
-                ctx.moveTo(f.x, f.y);
-                ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true);
-            }
-            ctx.fill();
-            moveSnow();
-            requestAnimationFrame(drawSnow);
-        }
-
-        function moveSnow() {
-            for(let i=0; i<flakes.length; i++) {
-                let f = flakes[i];
-                f.y += f.d;
-                if(f.y > height) {
-                    f.y = -5;
-                    f.x = Math.random() * width;
-                }
-            }
-        }
-        drawSnow();
-
-        // --- SIMPLE CONFETTI BURST ---
-        // A separate simple burst for the reveal
         function startConfetti() {
-            const colors = ['#fbbf24', '#ef4444', '#ffffff'];
-            let particles = [];
-            
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 150; i++) {
                 particles.push({
-                    x: width/2,
-                    y: height/2,
+                    x: width / 2,
+                    y: height / 2,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 5 + 2,
                     vx: (Math.random() - 0.5) * 20,
-                    vy: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 1) * 20, // Upward burst
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    life: 100
+                    drag: 0.96,
+                    gravity: 0.5
                 });
             }
-
-            function updateBurst() {
-                if (particles.length === 0) return;
-                
-                // Draw over the snow
-                particles.forEach((p, index) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.life--;
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, 6, 6);
-                    if(p.life <= 0) particles.splice(index, 1);
-                });
-                requestAnimationFrame(updateBurst);
-            }
-            updateBurst();
+            animate();
         }
 
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= p.drag;
+                p.vy *= p.drag;
+                p.vy += p.gravity;
+
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+
+                if (p.y > height) particles.splice(index, 1);
+            });
+
+            if (particles.length > 0) requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
     </script>
 </body>
 </html>
