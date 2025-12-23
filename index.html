@@ -19,32 +19,9 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    html, body {
+    /* Put gradient on html - this truly extends edge-to-edge on iOS */
+    html {
       height: 100%;
-      background: #0a1628;
-    }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      color: rgba(255,255,255,.94);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      overflow-y: auto;
-      overscroll-behavior: none;
-    }
-
-    /* Background layer - extends well beyond viewport edges */
-    body::before {
-      content: "";
-      position: fixed;
-      /* Use large fixed values to guarantee full coverage */
-      top: -100px;
-      left: -100px;
-      right: -100px;
-      bottom: -100px;
-      z-index: -1;
       background: 
         radial-gradient(ellipse 120% 60% at 20% 10%, rgba(212, 184, 150, 0.15), transparent 50%),
         radial-gradient(ellipse 100% 50% at 80% 20%, rgba(126, 215, 193, 0.12), transparent 45%),
@@ -56,7 +33,31 @@
           #06101c 75%,
           #040a14 100%
         );
-      background-color: #0a1628;
+      background-color: #040a14;
+      background-attachment: fixed;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: transparent;
+      color: rgba(255,255,255,.94);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* Cover any overscroll areas at bottom */
+    body::after {
+      content: "";
+      position: fixed;
+      left: -100px;
+      right: -100px;
+      bottom: -200px;
+      height: 300px;
+      background: #040a14;
+      z-index: -2;
     }
 
     /* Christmas lights */
