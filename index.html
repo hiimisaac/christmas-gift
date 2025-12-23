@@ -18,10 +18,19 @@
 
     <style>
       :root {
+        /* iOS Safe Area Insets - essential for iOS 26+ dynamic bars */
         --safeTop: env(safe-area-inset-top, 0px);
         --safeBottom: env(safe-area-inset-bottom, 0px);
         --safeLeft: env(safe-area-inset-left, 0px);
         --safeRight: env(safe-area-inset-right, 0px);
+        
+        /* Keyboard-aware safe area (iOS 26+) */
+        --keyboardTop: env(keyboard-inset-top, 0px);
+        --keyboardBottom: env(keyboard-inset-height, 0px);
+        
+        /* Title bar area for iOS 26 liquid glass effect */
+        --titleBarTop: env(titlebar-area-y, 0px);
+        --titleBarHeight: env(titlebar-area-height, 0px);
 
         --text: rgba(255, 255, 255, 0.94);
         --muted: rgba(255, 255, 255, 0.62);
@@ -43,14 +52,25 @@
 
       html {
         height: 100%;
+        /* Use svh as fallback, then dvh for dynamic iOS behavior */
+        height: 100svh;
+        height: 100dvh;
         background: #04060d;
+        /* Prevent iOS rubber-band showing background */
+        background-attachment: fixed;
       }
 
       body {
         min-height: 100%;
-        min-height: 100dvh; /* Dynamic viewport height for iOS */
+        min-height: 100svh;
+        min-height: 100dvh; /* Dynamic viewport height - responds to iOS bars */
         margin: 0;
         padding: 0;
+        /* Extend padding into safe areas for true edge-to-edge */
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
         background: #04060d;
         color: var(--text);
         font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
@@ -60,15 +80,54 @@
         overflow-x: hidden;
         overflow-y: auto;
         overscroll-behavior: none;
+        /* iOS 26 - allow content under translucent bars */
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* iPhone 16 Pro / Pro Max - taller 19.5:9 aspect ratio */
+      @media screen and (device-aspect-ratio: 39/18),
+             screen and (device-aspect-ratio: 19.5/9),
+             screen and (min-aspect-ratio: 9/19) and (max-aspect-ratio: 9/20) {
+        :root {
+          --safeTop: max(env(safe-area-inset-top, 0px), 59px);
+          --safeBottom: max(env(safe-area-inset-bottom, 0px), 34px);
+        }
+      }
+      
+      /* iPhone 16 series detection via resolution */
+      @media screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3),
+             screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3),
+             screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3),
+             screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) {
+        html, body {
+          /* Ensure full coverage on iPhone 16 series */
+          min-height: 100dvh;
+          min-height: -webkit-fill-available;
+        }
+        
+        .bg {
+          /* Extend background beyond safe areas */
+          top: calc(-1 * env(safe-area-inset-top, 0px));
+          bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+        }
+      }
+      
+      /* Landscape orientation - different safe areas */
+      @media screen and (orientation: landscape) {
+        :root {
+          --safeLeft: max(env(safe-area-inset-left, 0px), 44px);
+          --safeRight: max(env(safe-area-inset-right, 0px), 44px);
+        }
       }
 
-      /* Fullscreen background - truly edge to edge */
+      /* Fullscreen background - truly edge to edge, extends into safe areas */
       .bg {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        /* Extend into safe areas to prevent any gaps */
+        top: calc(-1 * env(safe-area-inset-top, 0px));
+        left: calc(-1 * env(safe-area-inset-left, 0px));
+        right: calc(-1 * env(safe-area-inset-right, 0px));
+        bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
         z-index: 0;
         background: radial-gradient(
             ellipse 1400px 900px at 15% 8%,
@@ -236,10 +295,14 @@
         }
       }
 
-      /* Canvas layers */
+      /* Canvas layers - extend into safe areas */
       canvas {
         position: fixed;
-        inset: 0;
+        /* Extend beyond safe areas so effects cover entire screen */
+        top: calc(-1 * env(safe-area-inset-top, 0px));
+        left: calc(-1 * env(safe-area-inset-left, 0px));
+        right: calc(-1 * env(safe-area-inset-right, 0px));
+        bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
         pointer-events: none;
       }
       #snow {
@@ -253,12 +316,19 @@
       .scroll {
         position: relative;
         z-index: 10;
+        min-height: 100svh;
         min-height: 100dvh;
+        /* Fallback for browsers that don't support dvh */
+        min-height: -webkit-fill-available;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: calc(80px + var(--safeTop)) 16px calc(40px + var(--safeBottom));
+        /* Use env() directly for most reliable safe area handling */
+        padding-top: calc(80px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
       }
 
       /* Card */
@@ -662,8 +732,39 @@
       /* Ensure content extends to edges on all devices */
       @supports (padding: max(0px)) {
         .scroll {
-          padding-left: max(16px, var(--safeLeft));
-          padding-right: max(16px, var(--safeRight));
+          padding-left: max(16px, env(safe-area-inset-left, 0px));
+          padding-right: max(16px, env(safe-area-inset-right, 0px));
+        }
+      }
+      
+      /* iOS 26+ with translucent bars - ensure content visible under glass */
+      @supports (top: env(safe-area-inset-top)) {
+        .lights {
+          /* Lights should appear just below the status bar area */
+          padding-top: env(safe-area-inset-top, 0px);
+        }
+        
+        /* Ensure background covers glass areas */
+        .bg::after,
+        .bg::before {
+          top: calc(-1 * env(safe-area-inset-top, 0px));
+          left: calc(-1 * env(safe-area-inset-left, 0px));
+          right: calc(-1 * env(safe-area-inset-right, 0px));
+          bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+        }
+      }
+      
+      /* Additional fallback for very tall devices (iPhone 16 Pro Max) */
+      @media screen and (min-height: 920px) and (max-width: 450px) {
+        .scroll {
+          padding-top: calc(90px + env(safe-area-inset-top, 0px));
+        }
+      }
+      
+      /* Handle notch/Dynamic Island area on portrait */
+      @media screen and (orientation: portrait) and (min-height: 800px) {
+        :root {
+          --safeTop: max(env(safe-area-inset-top, 0px), 47px);
         }
       }
     </style>
