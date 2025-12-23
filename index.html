@@ -1,320 +1,566 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Merry Christmas Erin!</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- THEME --- */
-        body {
-            background: radial-gradient(circle at center, #ffffff 0%, #f3f4f6 100%);
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎁 Christmas Surprise</title>
+  <meta name="description" content="A little Christmas unwrapping surprise." />
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#0f2b3a;
+      --card: rgba(15, 23, 42, .78);
+      --text:#eaf2ff; --muted:#bcd0ff;
+      --gold:#f59e0b; --green:#22c55e; --red:#ef4444;
+      --shadow: 0 24px 80px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% 20%, rgba(239,68,68,.16), transparent 60%),
+        radial-gradient(1000px 700px at 80% 30%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(1200px 900px at 50% 90%, rgba(245,158,11,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
 
-        .font-script { font-family: 'Great Vibes', cursive; }
+    /* Top Christmas lights */
+    .lights{
+      position:fixed; inset:0 0 auto 0; height:90px;
+      pointer-events:none; z-index:30;
+      display:flex; justify-content:center; padding-top:10px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.55));
+    }
+    .wire{ position:relative; width:min(1100px, 96vw); height:80px; }
+    .wire:before{
+      content:""; position:absolute; left:0; right:0; top:18px; height:3px;
+      background:rgba(255,255,255,.18); border-radius:999px;
+      transform: rotate(-1deg);
+    }
+    .bulb{
+      position:absolute; top:0; width:18px; height:30px;
+      transform-origin: 50% 0%;
+      animation: sway 3.6s ease-in-out infinite;
+      color: var(--gold);
+    }
+    .bulb:before{
+      content:""; position:absolute; left:50%; top:14px; width:18px; height:18px;
+      transform: translateX(-50%);
+      border-radius:999px; background: currentColor;
+      box-shadow: 0 0 12px currentColor, 0 0 28px rgba(255,255,255,.18);
+      opacity:.92; animation: twinkle 1.9s ease-in-out infinite;
+    }
+    .bulb:after{
+      content:""; position:absolute; left:50%; top:11px; width:12px; height:8px;
+      transform: translateX(-50%); border-radius: 5px 5px 6px 6px;
+      background: rgba(255,255,255,.22);
+    }
+    @keyframes twinkle{ 0%,100%{filter:brightness(1);opacity:.82} 50%{filter:brightness(1.35);opacity:1} }
+    @keyframes sway{ 0%,100%{transform: rotate(-2deg)} 50%{transform: rotate(2deg)} }
 
-        /* --- 3D GIFT BOX --- */
-        .gift-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.1s;
-            z-index: 50;
-        }
+    /* Streamers */
+    .streamers{ position:fixed; inset:0; pointer-events:none; z-index:5; opacity:.9; }
+    .streamer{
+      position:absolute; width:140px; height:520px; border-radius:999px; opacity:.32;
+      transform: rotate(18deg);
+      background: linear-gradient(180deg, rgba(245,158,11,.82), rgba(245,158,11,.03));
+    }
+    .streamer.g{ background: linear-gradient(180deg, rgba(34,197,94,.78), rgba(34,197,94,.03)); transform: rotate(-12deg);}
+    .streamer.r{ background: linear-gradient(180deg, rgba(239,68,68,.78), rgba(239,68,68,.03)); transform: rotate(10deg);}
 
-        .gift-container:active { transform: scale(0.95); }
+    /* Canvases */
+    canvas{ position:fixed; inset:0; pointer-events:none; }
+    #snow{ z-index:2; }
+    #confetti{ z-index:25; }
 
-        .face {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: #ef4444;
-            border: 1px solid #dc2626;
-        }
-        .face-front  { transform: translateZ(75px); }
-        .face-back   { transform: rotateY(180deg) translateZ(75px); }
-        .face-right  { transform: rotateY(90deg) translateZ(75px); }
-        .face-left   { transform: rotateY(-90deg) translateZ(75px); }
-        .face-top    { transform: rotateX(90deg) translateZ(75px); background: #f87171; }
-        .face-bottom { transform: rotateX(-90deg) translateZ(75px); box-shadow: 0 50px 50px rgba(0,0,0,0.2); }
+    /* Center card */
+    .wrap{
+      position:relative; z-index:10;
+      height:100%;
+      display:grid; place-items:center;
+      padding: 110px 18px 28px;
+    }
+    .card{
+      width:min(740px, 94vw);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      padding: clamp(18px, 4vw, 34px);
+      overflow:hidden;
+    }
+    .topline{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+      margin-bottom: 12px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      font-weight:700; letter-spacing:.3px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 8px 12px; border-radius: 999px;
+    }
+    .hint{ color: var(--muted); font-size: 14px; }
 
-        .ribbon-v { position: absolute; left: 60px; width: 30px; height: 100%; background: #fbbf24; }
-        .ribbon-h { position: absolute; top: 60px; width: 100%; height: 30px; background: #fbbf24; }
+    h1{
+      margin: 12px 0 10px;
+      font-size: clamp(28px, 4.5vw, 46px);
+      line-height: 1.06;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: clamp(15px, 2vw, 18px);
+      line-height: 1.45;
+      margin: 0 0 18px;
+    }
 
-        .lid {
-            position: absolute;
-            width: 160px;
-            height: 160px;
-            background: #ef4444;
-            top: -5px;
-            left: -5px;
-            transform: translateZ(76px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+    }
+    @media (max-width: 760px){ .grid{grid-template-columns:1fr} }
 
-        .bow {
-            position: absolute;
-            top: -50px;
-            left: 45px;
-            width: 60px;
-            height: 60px;
-            transform: translateZ(76px);
-        }
-        .bow-loop {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 10px solid #fbbf24;
-            border-radius: 50% 50% 0 50%;
-            transform-origin: bottom right;
-        }
-        .bow-l { transform: rotate(45deg); left: -10px; }
-        .bow-r { transform: rotate(135deg) scaleX(-1); left: 20px; }
+    .panel{
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .detail{
+      display:grid; gap:10px;
+      font-size: 15px;
+    }
+    .detail b{ color: #fff; }
+    .detail .row{
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+      border-bottom: 1px dashed rgba(255,255,255,.14);
+      padding-bottom: 10px;
+    }
+    .detail .row:last-child{ border-bottom:none; padding-bottom: 0; }
+    .detail .k{ color: var(--muted); min-width: 92px; }
 
-        /* --- TICKET --- */
-        #ticket {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            width: 90%;
-            max-width: 400px;
-            padding: 30px 20px;
-            text-align: center;
-            position: absolute;
-            z-index: 40;
-            transform: scale(0.8) translateY(50px);
-            opacity: 0;
-            display: none;
-            border: 1px solid #f3f4f6;
-        }
+    /* Gift button */
+    .giftArea{
+      display:grid; place-items:center; gap:12px;
+      padding: 10px 0 2px;
+    }
+    .giftBtn{
+      width:min(330px, 100%);
+      border:none;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-weight: 800;
+      letter-spacing:.3px;
+      color:#0b1020;
+      background: linear-gradient(90deg, var(--gold), #ffd36e);
+      cursor:pointer;
+      box-shadow: 0 16px 30px rgba(245,158,11,.25);
+      transition: transform .12s ease, filter .12s ease;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .giftBtn:active{ transform: scale(.985); filter:brightness(.98); }
 
-        /* --- ANIMATIONS --- */
-        .shaking { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 
-            10%, 90% { transform: translate3d(-1px, 0, 0); } 
-            20%, 80% { transform: translate3d(2px, 0, 0); } 
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 
-            40%, 60% { transform: translate3d(4px, 0, 0); } 
-        }
+    .giftBox{
+      width: 220px; height: 170px; position:relative;
+      margin: 4px auto 0;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.35));
+    }
+    .boxBase{
+      position:absolute; left:0; right:0; bottom:0; height:120px;
+      background: linear-gradient(180deg, rgba(239,68,68,.95), rgba(239,68,68,.75));
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.16);
+      overflow:hidden;
+    }
+    .boxLid{
+      position:absolute; left:-6px; right:-6px; top:18px; height:62px;
+      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.72));
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.16);
+      transform-origin: 50% 100%;
+      transition: transform .6s cubic-bezier(.2,.9,.2,1), top .6s cubic-bezier(.2,.9,.2,1);
+    }
+    .ribbonV{
+      position:absolute; top:0; bottom:0; left:50%; width:26px; transform:translateX(-50%);
+      background: rgba(255,255,255,.22);
+    }
+    .ribbonH{
+      position:absolute; left:0; right:0; top:44px; height:22px;
+      background: rgba(255,255,255,.22);
+    }
+    .bow{
+      position:absolute; top:0; left:50%; transform: translate(-50%, -5px);
+      width: 88px; height: 50px;
+    }
+    .bow:before,.bow:after{
+      content:""; position:absolute; top:10px; width:40px; height:28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.30);
+      border: 1px solid rgba(255,255,255,.22);
+    }
+    .bow:before{ left:0; transform: rotate(-18deg); }
+    .bow:after{ right:0; transform: rotate(18deg); }
+    .knot{
+      position:absolute; left:50%; top:18px; transform: translateX(-50%);
+      width: 14px; height: 14px; border-radius: 6px;
+      background: rgba(255,255,255,.32);
+      border: 1px solid rgba(255,255,255,.22);
+    }
 
-        /* Snow */
-        .snowflake {
-            position: absolute;
-            color: #d1d5db;
-            font-size: 1em;
-            opacity: 0.6;
-            animation: fall linear infinite;
-        }
-        @keyframes fall { to { transform: translateY(100vh); } }
+    .reveal{
+      display:none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+    }
+    .reveal h2{
+      margin: 0 0 6px;
+      font-size: clamp(20px, 3vw, 26px);
+    }
+    .reveal p{ margin:0; color: var(--muted); line-height:1.45; }
 
-        /* Debug Status (Hidden unless needed) */
-        #status-msg {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            color: #ccc;
-            pointer-events: none;
-        }
-    </style>
+    .fine{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(234,242,255,.70);
+    }
+
+    /* Open state */
+    .opened .boxLid{
+      top:-8px;
+      transform: rotate(-18deg) translateY(-10px);
+    }
+  </style>
 </head>
 <body>
+  <!-- Lights -->
+  <div class="lights" aria-hidden="true">
+    <div class="wire" id="wire"></div>
+  </div>
 
-    <audio id="audio-player" preload="auto" playsinline></audio>
+  <!-- Streamers -->
+  <div class="streamers" aria-hidden="true">
+    <div class="streamer r" style="left:-40px; top:120px;"></div>
+    <div class="streamer g" style="right:-60px; top:160px;"></div>
+    <div class="streamer" style="left:18%; top:240px; opacity:.22; height:620px;"></div>
+    <div class="streamer g" style="right:14%; top:290px; opacity:.18; height:680px;"></div>
+  </div>
 
-    <div id="snow"></div>
+  <canvas id="snow"></canvas>
+  <canvas id="confetti"></canvas>
 
-    <div id="gift-wrapper" class="gift-container">
-        <div class="face face-front"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
-        <div class="face face-back"><div class="ribbon-v"></div><div class="ribbon-h"></div></div>
-        <div class="face face-right"><div class="ribbon-h"></div></div>
-        <div class="face face-left"><div class="ribbon-h"></div></div>
-        <div class="face face-top"></div>
-        <div class="face face-bottom"></div>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="topline">
+        <div class="badge">🎄 Merry Christmas</div>
+        <div class="hint">Tap to unwrap (music starts on tap)</div>
+      </div>
 
-        <div class="lid">
-            <div class="ribbon-v" style="left:65px; width:30px;"></div>
-            <div class="ribbon-h" style="top:65px; width:100%; height:30px;"></div>
-            <div class="bow">
-                <div class="bow-loop bow-l"></div>
-                <div class="bow-loop bow-r"></div>
+      <h1>Okay… one more gift 🎁</h1>
+      <p class="sub">
+        I couldn’t put the real tickets in your hands yet… so I made you a tiny “unwrap” anyway.
+      </p>
+
+      <div class="grid">
+        <div class="panel">
+          <div class="giftArea">
+            <button class="giftBtn" id="unwrapBtn" type="button">
+              ✨ Unwrap the surprise
+            </button>
+
+            <div class="giftBox" id="giftBox" aria-hidden="true">
+              <div class="boxLid"></div>
+              <div class="bow"><div class="knot"></div></div>
+              <div class="boxBase">
+                <div class="ribbonV"></div>
+                <div class="ribbonH"></div>
+              </div>
             </div>
-        </div>
-        
-        <div class="absolute -right-12 top-0 bg-white shadow-lg px-3 py-1 rounded text-red-500 font-bold text-xs transform rotate-12" style="transform: translateZ(80px);">
-            For Erin
+
+            <div class="reveal" id="reveal">
+              <h2>We’re going to see <span style="color:var(--gold)">Forrest Frank</span> 🙌</h2>
+              <p>
+                At <b>Lenovo Center</b> — Raleigh, NC.<br/>
+                Tickets are coming closer to the event… but the plan is locked in. 💛
+              </p>
+              <div class="fine" id="audioStatus">🔊 If you don’t hear music, tap “Play Music” below.</div>
+              <button class="giftBtn" id="playBtn" type="button" style="display:none; background: linear-gradient(90deg, var(--green), #a7f3d0);">
+                ▶️ Play Music
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div class="absolute -bottom-16 w-full text-center text-gray-400 text-sm font-bold tracking-widest uppercase animate-pulse">
-            Tap Me
+        <div class="panel">
+          <div class="detail">
+            <div class="row">
+              <div class="k">Artist</div>
+              <div><b>Forrest Frank</b></div>
+            </div>
+            <div class="row">
+              <div class="k">Venue</div>
+              <div style="text-align:right">
+                <b>Lenovo Center</b><br/>
+                <span style="color:var(--muted)">Raleigh, NC</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="k">Vibe</div>
+              <div style="text-align:right">
+                <span>Good music • good night • good memories ✨</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="k">Note</div>
+              <div style="text-align:right; color:var(--muted)">
+                This page is your “ticket wrapper.” The real delivery comes later.
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Option A (recommended): local MP3 in the same folder as index.html -->
+      <audio id="song" preload="auto" src="good-day.mp3"></audio>
+
+      <!-- Option B: YouTube (requires internet). Toggle in JS. -->
+      <div id="ytWrap" style="position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;"></div>
     </div>
+  </div>
 
-    <div id="ticket">
-        <div class="text-red-500 font-script text-4xl mb-2">Merry Christmas</div>
-        
-        <h2 class="text-gray-400 text-xs uppercase tracking-[0.2em] mb-2">We are going to see</h2>
-        <h1 class="text-5xl font-black text-slate-800 mb-2 leading-tight tracking-tight">
-            FORREST<br>FRANK
-        </h1>
-        
-        <div class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-4">
-            LIVE IN RALEIGH, NC
-        </div>
+  <script>
+    /**
+     * MUSIC OPTIONS:
+     * - Recommended: put "good-day.mp3" next to this file. (Most reliable on phones.)
+     * - Or set USE_YOUTUBE = true to use the official audio on YouTube.
+     *   Video ID reference: Forrest Frank - GOOD DAY (Official Audio)
+     */
+    const USE_YOUTUBE = false;
+    const YT_VIDEO_ID = "Uc_HxKMKB_E";
 
-        <p class="text-gray-600 italic text-sm mb-4">
-            "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
-        </p>
+    const unwrapBtn = document.getElementById("unwrapBtn");
+    const playBtn = document.getElementById("playBtn");
+    const reveal = document.getElementById("reveal");
+    const card = document.getElementById("card");
+    const giftBox = document.getElementById("giftBox");
+    const audioEl = document.getElementById("song");
+    const audioStatus = document.getElementById("audioStatus");
+    const ytWrap = document.getElementById("ytWrap");
 
-        <div style="border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-top:15px;">
-             <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/28e5c222718f4857b286?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-    </div>
+    let unwrapped = false;
+    let ytReady = false;
+    let ytPlayer = null;
 
-    <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
-    
-    <div id="status-msg">Loading audio...</div>
+    // Build light bulbs
+    (function buildLights(){
+      const wire = document.getElementById("wire");
+      const colors = ["var(--red)","var(--green)","var(--gold)","#60a5fa","#a78bfa"];
+      const count = 22;
+      for (let i=0;i<count;i++){
+        const b = document.createElement("div");
+        b.className = "bulb";
+        const x = (i/(count-1))*100;
+        b.style.left = `calc(${x}% - 9px)`;
+        b.style.animationDelay = `${(i%7)*0.12}s`;
+        b.style.color = colors[i % colors.length];
+        b.querySelector;
+        wire.appendChild(b);
+      }
+    })();
 
-    <script>
-        // --- 1. LOAD MUSIC IMMEDIATELY ---
-        // We use the JSONP trick to fetch the URL securely from iTunes
-        function loadAudio(data) {
-            const status = document.getElementById('status-msg');
-            if(data.results && data.results.length > 0) {
-                const player = document.getElementById('audio-player');
-                player.src = data.results[0].previewUrl;
-                player.load(); // Preload it
-                status.innerText = "Audio Ready. Tap Box.";
-                console.log("Audio URL Set: " + player.src);
-            } else {
-                status.innerText = "Error loading audio.";
-            }
+    // Snow
+    const snowCanvas = document.getElementById("snow");
+    const snowCtx = snowCanvas.getContext("2d");
+    let snowflakes = [];
+
+    function resizeCanvases(){
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      for (const c of [snowCanvas, confCanvas]){
+        c.width = Math.floor(window.innerWidth * dpr);
+        c.height = Math.floor(window.innerHeight * dpr);
+        c.style.width = window.innerWidth + "px";
+        c.style.height = window.innerHeight + "px";
+        c.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
+      }
+    }
+
+    function initSnow(){
+      snowflakes = [];
+      const n = Math.floor(Math.min(160, 70 + window.innerWidth/8));
+      for (let i=0;i<n;i++){
+        snowflakes.push({
+          x: Math.random()*window.innerWidth,
+          y: Math.random()*window.innerHeight,
+          r: 0.8 + Math.random()*2.2,
+          vx: -0.4 + Math.random()*0.8,
+          vy: 0.6 + Math.random()*1.6,
+          wobble: Math.random()*Math.PI*2
+        });
+      }
+    }
+
+    function drawSnow(){
+      snowCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      snowCtx.globalAlpha = 0.9;
+      for (const f of snowflakes){
+        f.wobble += 0.01;
+        f.x += f.vx + Math.sin(f.wobble)*0.25;
+        f.y += f.vy;
+        if (f.y > window.innerHeight + 10){ f.y = -10; f.x = Math.random()*window.innerWidth; }
+        if (f.x < -10) f.x = window.innerWidth + 10;
+        if (f.x > window.innerWidth + 10) f.x = -10;
+
+        snowCtx.beginPath();
+        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        snowCtx.fillStyle = "rgba(255,255,255,.85)";
+        snowCtx.fill();
+      }
+    }
+
+    // Confetti
+    const confCanvas = document.getElementById("confetti");
+    const confCtx = confCanvas.getContext("2d");
+    let confetti = [];
+
+    function burstConfetti(){
+      const cx = window.innerWidth * 0.5;
+      const cy = window.innerHeight * 0.35;
+      const colors = ["#f59e0b","#22c55e","#ef4444","#60a5fa","#a78bfa","#fda4af","#fde68a"];
+      const count = 220;
+      for (let i=0;i<count;i++){
+        const angle = (Math.random()*Math.PI*2);
+        const speed = 2 + Math.random()*7;
+        confetti.push({
+          x: cx, y: cy,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - 4,
+          w: 4 + Math.random()*6,
+          h: 4 + Math.random()*10,
+          rot: Math.random()*Math.PI,
+          vr: -0.25 + Math.random()*0.5,
+          g: 0.12 + Math.random()*0.18,
+          life: 140 + Math.random()*80,
+          color: colors[i % colors.length]
+        });
+      }
+    }
+
+    function drawConfetti(){
+      confCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      for (let i=confetti.length-1;i>=0;i--){
+        const p = confetti[i];
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 1;
+
+        confCtx.save();
+        confCtx.translate(p.x, p.y);
+        confCtx.rotate(p.rot);
+        confCtx.fillStyle = p.color;
+        confCtx.globalAlpha = Math.max(0, Math.min(1, p.life/160));
+        confCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        confCtx.restore();
+
+        if (p.life <= 0 || p.y > window.innerHeight + 60) confetti.splice(i,1);
+      }
+    }
+
+    // Optional YouTube support
+    function loadYouTube(){
+      if (!USE_YOUTUBE) return;
+      ytWrap.innerHTML = `<div id="ytPlayer"></div>`;
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        ytPlayer = new YT.Player('ytPlayer', {
+          height: '1',
+          width: '1',
+          videoId: YT_VIDEO_ID,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            playsinline: 1,
+            rel: 0
+          },
+          events: {
+            'onReady': () => { ytReady = true; }
+          }
+        });
+      };
+    }
+
+    async function tryPlayMusic(){
+      playBtn.style.display = "none";
+      audioStatus.textContent = "🎶 Starting the music…";
+      try{
+        if (USE_YOUTUBE){
+          if (ytReady && ytPlayer){
+            ytPlayer.unMute?.();
+            ytPlayer.playVideo?.();
+            audioStatus.textContent = "🎶 Good Day is playing.";
+            return;
+          } else {
+            audioStatus.textContent = "🎶 Loading music… tap again in a second if needed.";
+            return;
+          }
+        } else {
+          await audioEl.play();
+          audioStatus.textContent = "🎶 Good Day is playing.";
         }
+      } catch (e){
+        audioStatus.textContent = "🔊 Your phone blocked autoplay. Tap “Play Music”.";
+        playBtn.style.display = "inline-flex";
+      }
+    }
 
-        // Fetch "Good Day" by Forrest Frank
-        const script = document.createElement('script');
-        script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=loadAudio';
-        document.body.appendChild(script);
+    unwrapBtn.addEventListener("click", async () => {
+      if (unwrapped) return;
+      unwrapped = true;
 
+      card.classList.add("opened");
+      giftBox.classList.add("opened");
+      reveal.style.display = "block";
 
-        // --- 2. THE TOUCH TRIGGER ---
-        const box = document.getElementById('gift-wrapper');
-        const ticket = document.getElementById('ticket');
-        const audio = document.getElementById('audio-player');
-        let opened = false;
+      burstConfetti();
+      // Music starts on the same tap as the unwrap (works best on iOS).
+      await tryPlayMusic();
+    });
 
-        function runSequence(e) {
-            if(opened) return;
-            // PREVENT DEFAULT to stop double-firing on some phones
-            // BUT only if it's touch, otherwise click might get blocked
-            if(e.type === 'touchstart') e.preventDefault();
-            
-            opened = true;
-            document.getElementById('status-msg').style.display = 'none';
+    playBtn.addEventListener("click", () => {
+      tryPlayMusic();
+    });
 
-            // --- IMMEDIATE PLAY ---
-            // This is the critical moment. Browser allows play inside this event.
-            audio.volume = 1.0;
-            var playPromise = audio.play();
+    // Animation loop
+    function tick(){
+      drawSnow();
+      drawConfetti();
+      requestAnimationFrame(tick);
+    }
 
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Playing!");
-                })
-                .catch(error => {
-                    console.log("Playback prevented. User didn't interact enough?", error);
-                });
-            }
+    window.addEventListener("resize", () => {
+      resizeCanvases();
+      initSnow();
+    });
 
-            // --- ANIMATION ---
-            box.classList.add('shaking');
-
-            setTimeout(() => {
-                // Explode
-                box.style.transition = "all 0.5s ease-in";
-                box.style.transform = "scale(1.5) rotate(15deg)";
-                box.style.opacity = "0";
-
-                setTimeout(() => {
-                    box.style.display = 'none';
-                    ticket.style.display = 'block';
-                    
-                    requestAnimationFrame(() => {
-                        ticket.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
-                        ticket.style.transform = "scale(1) translateY(0)";
-                        ticket.style.opacity = "1";
-                    });
-
-                    startConfetti();
-                }, 300);
-            }, 600);
-        }
-
-        // Attach to both Touch and Click to catch everything
-        box.addEventListener('touchstart', runSequence, {passive: false});
-        box.addEventListener('click', runSequence);
-
-
-        // --- 3. CONFETTI ---
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        let particles = [];
-        const colors = ['#ef4444', '#fbbf24', '#3b82f6', '#10b981'];
-
-        function startConfetti() {
-            for(let i=0; i<200; i++) {
-                particles.push({
-                    x: window.innerWidth/2,
-                    y: window.innerHeight/2,
-                    vx: (Math.random()-0.5)*20,
-                    vy: (Math.random()-1)*20,
-                    size: Math.random()*8+4,
-                    color: colors[Math.floor(Math.random()*colors.length)]
-                });
-            }
-            animateConfetti();
-        }
-
-        function animateConfetti() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            particles.forEach((p,i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.5;
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
-                if(p.y > canvas.height) particles.splice(i,1);
-            });
-            if(particles.length > 0) requestAnimationFrame(animateConfetti);
-        }
-
-        // --- 4. SNOW ---
-        const snowContainer = document.getElementById('snow');
-        for(let i=0; i<30; i++) {
-            const flake = document.createElement('div');
-            flake.classList.add('snowflake');
-            flake.innerText = '❄';
-            flake.style.left = Math.random()*100 + 'vw';
-            flake.style.animationDuration = Math.random()*3 + 2 + 's';
-            flake.style.fontSize = Math.random()*10 + 10 + 'px';
-            flake.style.top = -20 + 'px';
-            snowContainer.appendChild(flake);
-        }
-    </script>
+    resizeCanvases();
+    initSnow();
+    loadYouTube();
+    tick();
+  </script>
 </body>
 </html>
