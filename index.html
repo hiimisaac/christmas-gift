@@ -175,7 +175,12 @@
 </head>
 <body class="flex flex-col items-center justify-center relative">
 
-    <div id="player" class="absolute top-0 left-0 opacity-0 pointer-events-none w-px h-px overflow-hidden"></div>
+    <iframe id="music-frame" 
+        class="absolute top-0 left-0 w-1 h-1 opacity-0 pointer-events-none"
+        src="" 
+        allow="autoplay; encrypted-media" 
+        allowfullscreen>
+    </iframe>
 
     <div id="snow-container" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
     <div class="light-wire" id="lights"></div>
@@ -216,54 +221,34 @@
             <p class="text-md text-gray-400 mt-2">Best. Gift. Ever.</p>
         </div>
 
-        <button onclick="playMusicFallback()" class="mt-4 px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-200 transition">
+        <button onclick="startMusicForce()" class="mt-4 px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-200 transition">
             🎵 Play Song
         </button>
     </div>
 
     <script>
-        // --- YOUTUBE SETUP (New Video Link) ---
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: 'fwjhePqQzzM', // The user-upload video (AMV)
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0
-                },
-                events: { 'onReady': onPlayerReady }
-            });
+        // --- 1. AD-FREE PLAYER LOGIC ---
+        // Using "Invidious" (yewtu.be) which mirrors YouTube but strips ads
+        function playMusic() {
+            const frame = document.getElementById('music-frame');
+            // wCw-W-2Rs0k is the ID for "UP!"
+            // autoplay=1 starts it, listen=1 optimizes for audio
+            frame.src = "https://yewtu.be/embed/wCw-W-2Rs0k?autoplay=1&controls=0&listen=1";
         }
 
-        function onPlayerReady(event) {
-            console.log("Player Ready");
+        function startMusicForce() {
+            playMusic();
         }
 
-        function playMusicFallback() {
-            if (player && player.playVideo) {
-                player.playVideo();
-                player.setVolume(100);
-            }
-        }
-
-        // --- INTERACTION ---
+        // --- 2. INTERACTION ---
         function openGift() {
             const giftBox = document.getElementById('giftBox');
             const ticket = document.getElementById('ticket');
 
-            // 1. Play Music (Tied to click)
-            playMusicFallback();
+            // Trigger music
+            playMusic();
 
-            // 2. Animate
+            // Animate
             giftBox.classList.remove('animate-bounce-slow');
             giftBox.classList.add('shaking');
 
@@ -285,13 +270,11 @@
             }, 500);
         }
 
-        // --- SCENERY ---
+        // --- 3. SCENERY ---
         function createSnow() {
             const container = document.getElementById('snow-container');
             const icons = ['❄', '•', '❅'];
-            // Less snow on mobile to prevent lag
             const count = window.innerWidth < 600 ? 30 : 50;
-
             for (let i = 0; i < count; i++) {
                 const flake = document.createElement('div');
                 flake.innerHTML = icons[Math.floor(Math.random() * icons.length)];
@@ -323,7 +306,7 @@
         }
         createLights();
 
-        // --- CONFETTI ---
+        // --- 4. CONFETTI ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let pieces = [];
