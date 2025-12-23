@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
     
     <style>
-        /* --- MODERN BRIGHT THEME --- */
+        /* --- THEME --- */
         body {
             background: radial-gradient(circle at center, #ffffff 0%, #f3f4f6 100%);
             height: 100vh;
@@ -40,10 +40,9 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: #ef4444; /* Xmas Red */
+            background: #ef4444;
             border: 1px solid #dc2626;
         }
-
         .face-front  { transform: translateZ(75px); }
         .face-back   { transform: rotateY(180deg) translateZ(75px); }
         .face-right  { transform: rotateY(90deg) translateZ(75px); }
@@ -84,7 +83,7 @@
         .bow-l { transform: rotate(45deg); left: -10px; }
         .bow-r { transform: rotate(135deg) scaleX(-1); left: 20px; }
 
-        /* --- THE TICKET --- */
+        /* --- TICKET --- */
         #ticket {
             background: white;
             border-radius: 20px;
@@ -120,19 +119,21 @@
         }
         @keyframes fall { to { transform: translateY(100vh); } }
 
-        /* Spotify Container */
-        #spotify-visual {
-            margin-top: 15px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            pointer-events: none; /* Just for looks */
+        /* Debug Status (Hidden unless needed) */
+        #status-msg {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: #ccc;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" src="song.mp3" preload="auto"></audio>
+    <audio id="audio-player" preload="auto" playsinline></audio>
 
     <div id="snow"></div>
 
@@ -178,45 +179,79 @@
             "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
         </p>
 
-        <div id="spotify-visual">
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/28e5c222718f4857b286?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div style="border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-top:15px;">
+             <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/28e5c222718f4857b286?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
     </div>
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
+    
+    <div id="status-msg">Loading audio...</div>
 
     <script>
-        // --- 1. INTERACTION LOGIC ---
-        const giftBox = document.getElementById('gift-wrapper');
+        // --- 1. LOAD MUSIC IMMEDIATELY ---
+        // We use the JSONP trick to fetch the URL securely from iTunes
+        function loadAudio(data) {
+            const status = document.getElementById('status-msg');
+            if(data.results && data.results.length > 0) {
+                const player = document.getElementById('audio-player');
+                player.src = data.results[0].previewUrl;
+                player.load(); // Preload it
+                status.innerText = "Audio Ready. Tap Box.";
+                console.log("Audio URL Set: " + player.src);
+            } else {
+                status.innerText = "Error loading audio.";
+            }
+        }
+
+        // Fetch "Good Day" by Forrest Frank
+        const script = document.createElement('script');
+        script.src = 'https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1&callback=loadAudio';
+        document.body.appendChild(script);
+
+
+        // --- 2. THE TOUCH TRIGGER ---
+        const box = document.getElementById('gift-wrapper');
         const ticket = document.getElementById('ticket');
-        const audio = document.getElementById('bg-music');
-        let hasOpened = false;
+        const audio = document.getElementById('audio-player');
+        let opened = false;
 
-        function triggerSurprise(e) {
-            if (hasOpened) return;
-            if (e.type === 'touchstart') e.preventDefault(); 
-            hasOpened = true;
+        function runSequence(e) {
+            if(opened) return;
+            // PREVENT DEFAULT to stop double-firing on some phones
+            // BUT only if it's touch, otherwise click might get blocked
+            if(e.type === 'touchstart') e.preventDefault();
+            
+            opened = true;
+            document.getElementById('status-msg').style.display = 'none';
 
-            // PLAY AUDIO (Local File)
-            audio.play().catch(err => {
-                console.log("Audio Error:", err);
-                alert("Tap the screen again to play music! (Browser blocked it)");
-            });
+            // --- IMMEDIATE PLAY ---
+            // This is the critical moment. Browser allows play inside this event.
+            audio.volume = 1.0;
+            var playPromise = audio.play();
 
-            // ANIMATION
-            giftBox.classList.add('shaking');
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Playing!");
+                })
+                .catch(error => {
+                    console.log("Playback prevented. User didn't interact enough?", error);
+                });
+            }
+
+            // --- ANIMATION ---
+            box.classList.add('shaking');
 
             setTimeout(() => {
-                // Explode box
-                giftBox.style.transition = "all 0.5s ease-in";
-                giftBox.style.transform = "scale(1.2) rotate(15deg)";
-                giftBox.style.opacity = "0";
+                // Explode
+                box.style.transition = "all 0.5s ease-in";
+                box.style.transform = "scale(1.5) rotate(15deg)";
+                box.style.opacity = "0";
 
                 setTimeout(() => {
-                    giftBox.style.display = 'none';
+                    box.style.display = 'none';
                     ticket.style.display = 'block';
                     
-                    // Ticket slide up
                     requestAnimationFrame(() => {
                         ticket.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
                         ticket.style.transform = "scale(1) translateY(0)";
@@ -228,11 +263,12 @@
             }, 600);
         }
 
-        // Add both listeners for maximum compatibility
-        giftBox.addEventListener('touchstart', triggerSurprise, {passive: false});
-        giftBox.addEventListener('click', triggerSurprise);
+        // Attach to both Touch and Click to catch everything
+        box.addEventListener('touchstart', runSequence, {passive: false});
+        box.addEventListener('click', runSequence);
 
-        // --- 2. CONFETTI ---
+
+        // --- 3. CONFETTI ---
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -267,7 +303,7 @@
             if(particles.length > 0) requestAnimationFrame(animateConfetti);
         }
 
-        // --- 3. SNOW ---
+        // --- 4. SNOW ---
         const snowContainer = document.getElementById('snow');
         for(let i=0; i<30; i++) {
             const flake = document.createElement('div');
