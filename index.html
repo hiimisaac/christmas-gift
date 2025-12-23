@@ -1,4 +1,4 @@
-<!doctype html>
+<! doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -15,37 +15,41 @@
     html {
       height: 100%;
       /* Background applied here covers the iOS overscroll area (rubber banding) */
-      background: linear-gradient(170deg, #0a1525 0%, #071018 40%, #04080f 100%);
+      background:  linear-gradient(170deg, #0a1525 0%, #071018 40%, #04080f 100%);
       background-color: #050a12;
     }
 
     body {
       min-height: 100vh;
       min-height: 100dvh;
-      color: rgba(255,255,255,.94);
+      color: rgba(255,255,255,. 94);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
       overflow-y: auto;
-      overscroll-behavior: none;
+      overscroll-behavior:  none;
       /* Transparent body so html background shows through */
       background: transparent;
+      /* Extend content into safe areas on iOS 26 */
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
     }
 
-    /* Lights at top */
+    /* Lights at top - account for safe area */
     .lights {
       position: fixed;
       left: 0;
       right: 0;
-      top: 0;
-      /* REMOVED: padding-top: env(safe-area-inset-top, 0px); */
+      top: env(safe-area-inset-top, 0px);
       z-index: 20;
       pointer-events: none;
     }
 
-    .wire {
-      position: relative;
-      width: 100%;
+    . wire {
+      position:  relative;
+      width:  100%;
       max-width: 700px;
       height: 52px;
       margin: 0 auto;
@@ -56,14 +60,14 @@
       position: absolute;
       top: 6px;
       left: 0;
-      width: 100%;
-      height: 26px;
+      width:  100%;
+      height:  26px;
       overflow: visible;
     }
 
     .wire svg path {
       fill: none;
-      stroke: rgba(255,255,255,.15);
+      stroke:  rgba(255,255,255,.15);
       stroke-width: 2;
       stroke-linecap: round;
     }
@@ -76,18 +80,18 @@
     }
 
     .bulb-cap {
-      position: absolute;
+      position:  absolute;
       left: 50%;
       top: 0;
-      width: 7px;
+      width:  7px;
       height: 4px;
       transform: translateX(-50%);
       border-radius: 2px 2px 0 0;
-      background: rgba(255,255,255,.25);
+      background: rgba(255,255,255,. 25);
     }
 
     .bulb-glass {
-      position: absolute;
+      position:  absolute;
       left: 50%;
       top: 3px;
       width: 9px;
@@ -99,49 +103,59 @@
       animation: bulbGlow 2s ease-in-out infinite;
     }
 
-    .bulb-glass::after {
-      content: "";
+    . bulb-glass:: after {
+      content:  "";
       position: absolute;
       top: 2px;
       left: 2px;
       width: 2px;
       height: 3px;
       border-radius: 50%;
-      background: rgba(255,255,255,.5);
+      background:  rgba(255,255,255,.5);
     }
 
     @keyframes bulbGlow {
-      0%, 100% { filter: brightness(0.85); opacity: .75; }
+      0%, 100% { filter: brightness(0.85); opacity: . 75; }
       50% { filter: brightness(1.15); opacity: 1; }
     }
 
     @keyframes sway {
-      0%, 100% { transform: rotate(-1.2deg); }
-      50% { transform: rotate(1.2deg); }
+      0%, 100% { transform: rotate(-1. 2deg); }
+      50% { transform:  rotate(1.2deg); }
     }
 
-    /* Canvas effects */
+    /* Canvas effects - extend to full viewport including safe areas */
     canvas {
-      position: fixed;
-      inset: 0;
+      position:  fixed;
+      top:  0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height:  100vh;
+      height: 100dvh;
       pointer-events: none;
     }
     #snow { z-index: 5; }
-    #spark { z-index: 25; }
+    #spark { z-index:  25; }
 
     /* Scroll container */
     .scroll {
+      display: flex;
       justify-content: center;
-      /* REMOVED: padding-top/bottom env() to fix the black bars issue */
+      min-height: 100vh;
+      min-height: 100dvh;
     }
 
     /* Card */
     .stage {
       width: min(560px, 92vw);
-      animation: cardEnter .7s cubic-bezier(.2,.9,.3,1) both;
-      /* Adjusted max-height logic to be cleaner */
+      animation: cardEnter . 7s cubic-bezier(. 2,. 9,.3,1) both;
       max-height: 96dvh;
-      margin: 20px auto; 
+      margin: 20px auto;
+      /* Account for safe areas */
+      margin-top: calc(20px + env(safe-area-inset-top, 0px));
+      margin-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     }
 
     @keyframes cardEnter {
@@ -149,9 +163,9 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .card {
+    . card {
       border-radius: 26px;
-      background: linear-gradient(175deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.035) 100%);
+      background: linear-gradient(175deg, rgba(255,255,255,. 09) 0%, rgba(255,255,255,.035) 100%);
       border: 1px solid rgba(255,255,255,.10);
       box-shadow: 0 28px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
       backdrop-filter: blur(20px) saturate(1.15);
@@ -176,7 +190,7 @@
     }
 
     .chipRow {
-      display: flex;
+      display:  flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
@@ -186,14 +200,14 @@
     .chip {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap:  7px;
       padding: 9px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+      background: linear-gradient(135deg, rgba(255,255,255,. 07), rgba(255,255,255,.025));
       color: rgba(255,255,255,.90);
       font-weight: 600;
-      font-size: 13.5px;
+      font-size: 13. 5px;
       white-space: nowrap;
     }
 
@@ -204,8 +218,8 @@
     }
 
     @keyframes hintPulse {
-      0%, 100% { opacity: .45; }
-      50% { opacity: .7; }
+      0%, 100% { opacity: . 45; }
+      50% { opacity: . 7; }
     }
 
     .heroIcon {
@@ -213,29 +227,29 @@
       line-height: 1;
       margin-bottom: 12px;
       display: inline-block;
-      animation: giftBounce 2.5s ease-in-out infinite;
+      animation: giftBounce 2. 5s ease-in-out infinite;
       filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
     }
 
     @keyframes giftBounce {
-      0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+      0%, 100% { transform:  translateY(0) rotate(-1. 5deg); }
       50% { transform: translateY(-5px) rotate(1.5deg); }
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: clamp(36px, 9.5vw, 54px);
+      font-size: clamp(36px, 9. 5vw, 54px);
       letter-spacing: -.8px;
       line-height: 1;
       font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,.82) 50%, rgba(214,180,106,.85) 100%);
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,. 82) 50%, rgba(214,180,106,.85) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
+      background-clip:  text;
     }
 
-    .lead {
-      margin: 0 0 20px;
+    . lead {
+      margin:  0 0 20px;
       color: rgba(255,255,255,.55);
       font-size: clamp(16px, 4.5vw, 18px);
       line-height: 1.45;
@@ -249,7 +263,7 @@
 
     /* Slider */
     .sliderWrap {
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,. 22);
       border: 1px solid rgba(255,255,255,.07);
       border-radius: 20px;
       padding: 12px;
@@ -257,63 +271,63 @@
 
     .track {
       position: relative;
-      height: 60px;
+      height:  60px;
       border-radius: 14px;
       background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
       border: 1px solid rgba(255,255,255,.08);
       overflow: hidden;
       user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color:  transparent;
       touch-action: none;
       cursor: grab;
     }
 
     .track:active { cursor: grabbing; }
 
-    .track::before {
+    .track:: before {
       content: "";
       position: absolute;
       inset: -50px;
-      background: radial-gradient(ellipse 400px 180px at 20% 50%, rgba(255,255,255,.10), transparent 50%);
+      background:  radial-gradient(ellipse 400px 180px at 20% 50%, rgba(255,255,255,.10), transparent 50%);
       transform: rotate(-5deg);
-      opacity: .5;
+      opacity: . 5;
       pointer-events: none;
     }
 
     .trackLabel {
-      position: absolute;
+      position:  absolute;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       color: rgba(255,255,255,.65);
       font-weight: 600;
-      font-size: 15px;
+      font-size:  15px;
       pointer-events: none;
-      transition: opacity .15s ease;
+      transition: opacity . 15s ease;
     }
 
     .trackLabel span {
       margin-left: 6px;
-      animation: arrowSlide 1.4s ease-in-out infinite;
+      animation: arrowSlide 1. 4s ease-in-out infinite;
     }
 
     @keyframes arrowSlide {
-      0%, 100% { transform: translateX(0); opacity: .5; }
-      50% { transform: translateX(5px); opacity: 1; }
+      0%, 100% { transform: translateX(0); opacity: . 5; }
+      50% { transform:  translateX(5px); opacity: 1; }
     }
 
     .fill {
-      position: absolute;
+      position:  absolute;
       left: 0;
       top: 0;
       bottom: 0;
       width: 0%;
-      background: linear-gradient(90deg, rgba(214,180,106,.35), rgba(126,215,193,.25));
+      background: linear-gradient(90deg, rgba(214,180,106,. 35), rgba(126,215,193,.25));
     }
 
     .thumb {
-      position: absolute;
+      position:  absolute;
       top: 5px;
       left: 5px;
       width: 50px;
@@ -323,17 +337,17 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.32), 0 2px 5px rgba(0,0,0,.18), inset 0 1px 0 #fff;
       display: grid;
       place-items: center;
-      color: rgba(0,0,0,.6);
+      color: rgba(0,0,0,. 6);
       font-size: 18px;
       font-weight: 600;
       transform: translateX(var(--x, 0px));
-      transition: transform .15s cubic-bezier(.2,.8,.3,1);
+      transition: transform . 15s cubic-bezier(.2,.8,.3,1);
     }
 
-    .dragging .thumb { transition: none; }
+    .dragging . thumb { transition: none; }
 
-    .thumb::after {
-      content: "→";
+    . thumb:: after {
+      content:  "→";
       font-size: 18px;
     }
 
@@ -345,7 +359,7 @@
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.10);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
-      animation: revealRise .55s cubic-bezier(.2,.9,.25,1) both;
+      animation: revealRise . 55s cubic-bezier(.2,.9,.25,1) both;
     }
 
     @keyframes revealRise {
@@ -356,13 +370,13 @@
     .reveal h2 {
       margin: 0 0 6px;
       font-size: clamp(20px, 6vw, 26px);
-      letter-spacing: -.2px;
+      letter-spacing: -. 2px;
       font-weight: 750;
       line-height: 1.2;
     }
 
     .reveal p {
-      margin: 0;
+      margin:  0;
       color: rgba(255,255,255,.55);
       line-height: 1.45;
       font-size: 14px;
@@ -379,9 +393,9 @@
 
     .audioStatus {
       color: rgba(255,255,255,.55);
-      font-size: 12.5px;
+      font-size: 12. 5px;
       line-height: 1.3;
-      flex: 1 1 180px;
+      flex:  1 1 180px;
     }
 
     .playBtn {
@@ -392,36 +406,36 @@
       border-radius: 10px;
       padding: 9px 14px;
       font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+      font-size:  13px;
+      cursor:  pointer;
+      -webkit-tap-highlight-color:  transparent;
     }
 
     .playBtn:active {
       transform: scale(0.96);
-      background: rgba(255,255,255,.12);
+      background: rgba(255,255,255,. 12);
     }
 
     .details {
-      display: none;
+      display:  none;
       margin-top: 12px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,.07);
-      background: rgba(0,0,0,.18);
+      background: rgba(0,0,0,. 18);
       overflow: hidden;
     }
 
     .row {
-      display: flex;
+      display:  flex;
       justify-content: space-between;
       gap: 10px;
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-      font-size: 13.5px;
+      border-bottom: 1px solid rgba(255,255,255,. 05);
+      font-size: 13. 5px;
     }
-    .row:last-child { border-bottom: none; }
+    . row:last-child { border-bottom: none; }
 
-    .k {
+    . k {
       color: rgba(255,255,255,.48);
       min-width: 65px;
     }
@@ -432,12 +446,12 @@
     }
     .v small {
       display: block;
-      color: rgba(255,255,255,.50);
+      color: rgba(255,255,255,. 50);
       margin-top: 2px;
       font-size: 11.5px;
     }
 
-    .foot {
+    . foot {
       margin-top: 14px;
       text-align: center;
       color: rgba(255,255,255,.38);
@@ -472,7 +486,7 @@
           </div>
 
           <div class="heroIcon">🎁</div>
-          <h1>For you.</h1>
+          <h1>For you. </h1>
           <p class="lead">A little something special—open when you're ready.</p>
 
           <div class="divider"></div>
@@ -485,7 +499,7 @@
             </div>
 
             <div class="reveal" id="reveal"></div>
-            <div class="foot" id="foot">If audio doesn't start, tap Play once.</div>
+            <div class="foot" id="foot">If audio doesn't start, tap Play once. </div>
           </div>
         </div>
       </section>
@@ -493,6 +507,15 @@
   </div>
 
   <script>
+    // iOS 26 viewport height fix
+    function setViewportHeight() {
+      const vh = window.visualViewport?. height || window.innerHeight;
+      document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+    }
+    window.visualViewport?. addEventListener('resize', setViewportHeight);
+    window.addEventListener('resize', setViewportHeight);
+    setViewportHeight();
+
     // Christmas lights
     (function buildLights() {
       const wire = document.getElementById("wire");
@@ -503,22 +526,22 @@
         const t = i / (count - 1);
         const x = t * 100;
         // Match the SVG curve
-        const y = 10 + Math.sin(t * Math.PI * 2) * 3 + (t < 0.5 ? t * 6 : (1 - t) * 6);
+        const y = 10 + Math.sin(t * Math.PI * 2) * 3 + (t < 0.5 ? t * 6 :  (1 - t) * 6);
         
         const bulb = document.createElement("div");
         bulb.className = "bulb";
-        bulb.style.left = `calc(${x}% - 6px)`;
-        bulb.style.top = `${y}px`;
+        bulb. style.left = `calc(${x}% - 6px)`;
+        bulb. style.top = `${y}px`;
         bulb.style.color = colors[i % colors.length];
-        bulb.style.animation = `sway 3.2s ease-in-out infinite`;
-        bulb.style.animationDelay = `${(i % 4) * 0.12}s`;
+        bulb.style.animation = `sway 3. 2s ease-in-out infinite`;
+        bulb.style. animationDelay = `${(i % 4) * 0.12}s`;
         
         bulb.innerHTML = `
           <div class="bulb-cap"></div>
           <div class="bulb-glass" style="animation-delay: ${i * 0.18}s"></div>
         `;
         
-        wire.appendChild(bulb);
+        wire. appendChild(bulb);
       }
     })();
 
@@ -529,19 +552,21 @@
 
     function resizeSnow() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      snowCanvas.width = Math.floor(window.innerWidth * dpr);
-      snowCanvas.height = Math.floor(window.innerHeight * dpr);
-      snowCanvas.style.width = window.innerWidth + "px";
-      snowCanvas.style.height = window.innerHeight + "px";
+      const width = window.innerWidth;
+      const height = window.visualViewport?.height || window.innerHeight;
+      snowCanvas.width = Math.floor(width * dpr);
+      snowCanvas.height = Math.floor(height * dpr);
+      snowCanvas.style.width = width + "px";
+      snowCanvas.style.height = height + "px";
       sn.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       flakes = [];
-      const n = Math.floor(Math.min(120, 50 + window.innerWidth / 10));
+      const n = Math.floor(Math.min(120, 50 + width / 10));
       for (let i = 0; i < n; i++) {
         flakes.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          r: 0.7 + Math.random() * 2.2,
+          x: Math.random() * width,
+          y:  Math.random() * height,
+          r: 0.7 + Math.random() * 2. 2,
           vy: 0.4 + Math.random() * 1.2,
           vx: -0.15 + Math.random() * 0.3,
           wob: Math.random() * Math.PI * 2,
@@ -549,27 +574,30 @@
         });
       }
     }
+    window.visualViewport?.addEventListener("resize", resizeSnow);
     window.addEventListener("resize", resizeSnow);
     resizeSnow();
 
     function drawSnow() {
-      sn.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      const width = window.innerWidth;
+      const height = window.visualViewport?.height || window.innerHeight;
+      sn.clearRect(0, 0, width, height);
       for (const f of flakes) {
         f.wob += 0.007;
-        f.x += f.vx + Math.sin(f.wob) * 0.15;
-        f.y += f.vy;
+        f. x += f.vx + Math.sin(f.wob) * 0.15;
+        f. y += f. vy;
 
-        if (f.y > window.innerHeight + 8) { 
+        if (f.y > height + 8) { 
           f.y = -8; 
-          f.x = Math.random() * window.innerWidth; 
+          f. x = Math.random() * width; 
         }
-        if (f.x < -8) f.x = window.innerWidth + 8;
-        if (f.x > window.innerWidth + 8) f.x = -8;
+        if (f.x < -8) f.x = width + 8;
+        if (f. x > width + 8) f.x = -8;
 
         sn.beginPath();
-        sn.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        sn.arc(f.x, f. y, f.r, 0, Math.PI * 2);
         sn.fillStyle = `rgba(255,255,255,${0.65 * f.a})`;
-        sn.fill();
+        sn. fill();
       }
       requestAnimationFrame(drawSnow);
     }
@@ -577,38 +605,41 @@
 
     // Sparkles
     const sparkCanvas = document.getElementById("spark");
-    const sctx = sparkCanvas.getContext("2d");
+    const sctx = sparkCanvas. getContext("2d");
     let sparks = [];
 
     function resizeSpark() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      sparkCanvas.width = Math.floor(window.innerWidth * dpr);
-      sparkCanvas.height = Math.floor(window.innerHeight * dpr);
-      sparkCanvas.style.width = window.innerWidth + "px";
-      sparkCanvas.style.height = window.innerHeight + "px";
+      const width = window.innerWidth;
+      const height = window.visualViewport?.height || window.innerHeight;
+      sparkCanvas. width = Math.floor(width * dpr);
+      sparkCanvas.height = Math. floor(height * dpr);
+      sparkCanvas.style.width = width + "px";
+      sparkCanvas.style.height = height + "px";
       sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+    window. visualViewport?.addEventListener("resize", resizeSpark);
     window.addEventListener("resize", resizeSpark);
     resizeSpark();
 
     function burstSparks(cx, cy) {
       const palette = [
-        "rgba(214,180,106,.92)",
-        "rgba(126,215,193,.88)",
+        "rgba(214,180,106,. 92)",
+        "rgba(126,215,193,. 88)",
         "rgba(255,255,255,.82)",
         "rgba(250,204,21,.88)",
-        "rgba(239,68,68,.80)"
+        "rgba(239,68,68,. 80)"
       ];
       const count = 80;
 
       for (let i = 0; i < count; i++) {
         const a = Math.random() * Math.PI * 2;
-        const sp = 1.8 + Math.random() * 4.5;
+        const sp = 1. 8 + Math.random() * 4. 5;
         sparks.push({
           x: cx,
           y: cy,
           vx: Math.cos(a) * sp,
-          vy: Math.sin(a) * sp - 2,
+          vy:  Math.sin(a) * sp - 2,
           r: 1 + Math.random() * 1.8,
           g: 0.09 + Math.random() * 0.07,
           life: 70 + Math.random() * 45,
@@ -618,22 +649,24 @@
     }
 
     function drawSparks() {
-      sctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      const width = window.innerWidth;
+      const height = window.visualViewport?.height || window.innerHeight;
+      sctx.clearRect(0, 0, width, height);
       for (let i = sparks.length - 1; i >= 0; i--) {
         const p = sparks[i];
-        p.vy += p.g;
-        p.x += p.vx;
+        p. vy += p.g;
+        p. x += p.vx;
         p.y += p.vy;
         p.life -= 1;
 
         const alpha = Math.max(0, Math.min(1, p.life / 90));
         sctx.beginPath();
-        sctx.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
+        sctx.arc(p.x, p.y, p. r * alpha, 0, Math.PI * 2);
         sctx.fillStyle = p.c;
         sctx.globalAlpha = alpha;
         sctx.fill();
 
-        if (p.life <= 0 || p.y > window.innerHeight + 40) {
+        if (p. life <= 0 || p.y > height + 40) {
           sparks.splice(i, 1);
         }
       }
@@ -656,7 +689,7 @@
     let unlocked = false;
 
     function clamp(n, min, max) { 
-      return Math.max(min, Math.min(max, n)); 
+      return Math. max(min, Math. min(max, n)); 
     }
     
     function metrics() {
@@ -689,7 +722,7 @@
     }
 
     // Audio
-    const audioUrl = new URL("./good-day.mp3", window.location.href).toString();
+    const audioUrl = new URL("./good-day. mp3", window.location.href).toString();
     let audio = null;
 
     function primeAudio() {
@@ -700,7 +733,7 @@
     }
 
     function tryPlayAudio(audioStatusEl, playBtnEl) {
-      if (!audio) primeAudio();
+      if (! audio) primeAudio();
       try {
         const p = audio.play();
         if (p && typeof p.then === "function") {
@@ -708,11 +741,11 @@
             audioStatusEl.textContent = "🎵 Now playing…";
           }).catch(() => {
             audioStatusEl.textContent = "Tap Play to start music";
-            playBtnEl.style.display = "inline-block";
+            playBtnEl. style.display = "inline-block";
           });
         }
       } catch {
-        audioStatusEl.textContent = "Tap Play to start music";
+        audioStatusEl. textContent = "Tap Play to start music";
         playBtnEl.style.display = "inline-block";
       }
     }
@@ -723,7 +756,7 @@
 
       const { maxX, trackRect } = metrics();
       setX(maxX);
-      track.classList.remove("dragging");
+      track.classList. remove("dragging");
       track.style.cursor = "default";
       trackLabel.innerHTML = "✓ Opened";
       trackLabel.style.opacity = "0.8";
@@ -732,7 +765,7 @@
       burstSparks(cardRect.left + cardRect.width / 2, cardRect.top + cardRect.height * 0.35);
 
       reveal.innerHTML = `
-        <h2>We're going to see <span style="background: linear-gradient(135deg, rgba(214,180,106,1), rgba(255,220,150,1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Forrest Frank</span> 🎤</h2>
+        <h2>We're going to see <span style="background: linear-gradient(135deg, rgba(214,180,106,1), rgba(255,220,150,1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Forrest[...]
         <p style="font-size: 22px; margin: 6px 0;">🤍</p>
         <div class="audioRow">
           <div class="audioStatus" id="audioStatus">Starting music…</div>
@@ -779,7 +812,7 @@
       primeAudio();
       dragging = true;
       track.classList.add("dragging");
-      track.setPointerCapture?.(e.pointerId);
+      track.setPointerCapture? .(e.pointerId);
       startX = e.clientX;
     });
 
@@ -807,12 +840,12 @@
       if (unlocked) return;
       primeAudio();
       dragging = true;
-      track.classList.add("dragging");
+      track.classList. add("dragging");
       startX = e.touches[0].clientX;
     }, { passive: true });
 
     track.addEventListener("touchmove", (e) => {
-      if (!dragging || unlocked) return;
+      if (! dragging || unlocked) return;
       const { maxX } = metrics();
       setX(clamp(e.touches[0].clientX - startX, 0, maxX));
     }, { passive: true });
