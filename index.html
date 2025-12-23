@@ -41,7 +41,7 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: #ef4444;
+            background: #ef4444; /* Xmas Red */
             border: 1px solid #dc2626;
         }
 
@@ -121,19 +121,11 @@
             animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(100vh); } }
-
-        /* Spotify Container */
-        #spotify-wrapper {
-            margin-top: 20px;
-            width: 100%;
-            height: 80px; /* Small player */
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body>
+
+    <audio id="bg-music" preload="auto" loop></audio>
 
     <div id="snow"></div>
 
@@ -175,55 +167,44 @@
             LIVE IN RALEIGH, NC
         </div>
 
-        <p class="text-gray-600 italic text-sm mb-4">
-            "Pack your bags! It's gonna be a Good Day!"
+        <p class="text-gray-600 italic text-sm mb-6">
+            "Pack your bags! It's gonna be a <strong>Good Day</strong>!"
         </p>
 
-        <div id="spotify-wrapper">
-            <div id="embed-iframe"></div>
+        <div class="flex items-center justify-center space-x-2 text-xs text-gray-400 uppercase tracking-widest border border-gray-200 py-2 px-4 rounded-full">
+            <span class="animate-pulse">♫</span>
+            <span>Now Playing: Good Day</span>
         </div>
     </div>
 
     <canvas id="confetti" class="absolute inset-0 pointer-events-none z-[60]"></canvas>
 
-    <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
-    
     <script>
-        // --- SPOTIFY LOGIC ---
-        let embedController;
+        // --- 1. FETCH EXACT SONG (Good Day) ---
+        const audio = document.getElementById('bg-music');
+        
+        // Searching specifically for "Forrest Frank Good Day"
+        fetch('https://itunes.apple.com/search?term=Forrest+Frank+Good+Day&media=music&limit=1')
+            .then(response => response.json())
+            .then(data => {
+                if(data.results && data.results.length > 0) {
+                    audio.src = data.results[0].previewUrl;
+                    console.log("Loaded: " + data.results[0].trackName);
+                }
+            })
+            .catch(err => console.error("Audio fetch failed", err));
 
-        window.onSpotifyIframeApiReady = (IFrameAPI) => {
-            const element = document.getElementById('embed-iframe');
-            const options = {
-                // --------------------------------------------------
-                // PASTE YOUR SONG ID BELOW!
-                // --------------------------------------------------
-                uri: 'spotify:track:5KXXi90Q4pjVxEapZjRC9O', 
-                // --------------------------------------------------
-                width: '100%',
-                height: '80',
-                theme: 'light' 
-            };
-            
-            const callback = (EmbedController) => {
-                embedController = EmbedController;
-                console.log("Spotify Ready");
-            };
-            
-            IFrameAPI.createController(element, options, callback);
-        };
-
-        // --- INTERACTION ---
+        // --- 2. INTERACTION ---
         function openGift() {
             const box = document.getElementById('gift-wrapper');
             const ticket = document.getElementById('ticket');
 
-            // 1. TRIGGER AUDIO
-            if (embedController) {
-                embedController.play();
-            }
+            // Play Audio
+            // This works on mobile because it is inside a click event!
+            audio.volume = 0.8;
+            audio.play().catch(e => console.log("Audio play blocked"));
 
-            // 2. ANIMATION
+            // Animation
             box.classList.add('shaking');
 
             setTimeout(() => {
